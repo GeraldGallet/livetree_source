@@ -1,5 +1,5 @@
 # livetree_source
-##L'équipe
+## L'équipe
 - Jean-Charles Simonnet
 - Robin Poiret
 - Alexis Fardel
