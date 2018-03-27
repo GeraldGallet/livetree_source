@@ -17,11 +17,11 @@ USE `projet_LiveTree`;
 
 CREATE TABLE user(
         id_user      int (11) Auto_increment  NOT NULL ,
-        email        Varchar (100) NOT NULL ,
-        password     Varchar (100) NOT NULL ,
-        phone_number Varchar (25) NOT NULL ,
-        first_name   Varchar (50) NOT NULL ,
-        last_name    Varchar (50) NOT NULL ,
+        email        Varchar (100)  not null,
+        password     Varchar (100) not null,
+        phone_number Varchar (25) ,
+        first_name   Varchar (50) ,
+        last_name    Varchar (50) ,
         PRIMARY KEY (id_user ) ,
         UNIQUE (email )
 )ENGINE=InnoDB;
