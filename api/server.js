@@ -36,9 +36,10 @@ app.get('/user/all', function(req, res, next) {
 app.get('/user/:mail', function(req, res, next) {
   console.log('/user/' + req.params.mail);
   var query = 'SELECT * FROM user WHERE email = \'' + req.params.mail + '\';';
-  
+
   res.locals.connection.query(query, function(error, results, fields) {
     if(error) throw error;
-    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+    console.log(results);
+    res.send(JSON.stringify({"status": 200, "error": null, "response": JSON.stringify(results)}));
   });
 });
