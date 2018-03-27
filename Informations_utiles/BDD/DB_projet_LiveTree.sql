@@ -7,11 +7,6 @@ CREATE DATABASE IF NOT EXISTS `projet_LiveTree` DEFAULT CHARACTER SET latin1 COL
 USE `projet_LiveTree`;
 
 #------------------------------------------------------------
-#        Script MySQL.
-#------------------------------------------------------------
-
-
-#------------------------------------------------------------
 # Table: user
 #------------------------------------------------------------
 
@@ -22,6 +17,7 @@ CREATE TABLE user(
         phone_number Varchar (25) NOT NULL ,
         first_name   Varchar (50) NOT NULL ,
         last_name    Varchar (50) NOT NULL ,
+        id_status    Varchar (50) NOT NULL ,
         PRIMARY KEY (id_user ) ,
         UNIQUE (email )
 )ENGINE=InnoDB;
@@ -33,7 +29,7 @@ CREATE TABLE user(
 
 CREATE TABLE borne(
         id_borne int (11) Auto_increment  NOT NULL ,
-        nom      Varchar (100) NOT NULL ,
+        name     Varchar (100) NOT NULL ,
         place    Varchar (100) NOT NULL ,
         id_place Int NOT NULL ,
         PRIMARY KEY (id_borne )
@@ -105,8 +101,8 @@ CREATE TABLE resa_borne(
         start_time Time NOT NULL ,
         end_time   Time NOT NULL ,
         charge     Float NOT NULL ,
-        id_borne   Int NOT NULL ,
         id_user    Int NOT NULL ,
+        id_place   Int NOT NULL ,
         PRIMARY KEY (id_resa )
 )ENGINE=InnoDB;
 
@@ -123,7 +119,29 @@ CREATE TABLE resa_car(
         reason         Varchar (200) ,
         id_user        Int NOT NULL ,
         id_company_car Int NOT NULL ,
+        id_reason      Varchar (50) NOT NULL ,
         PRIMARY KEY (id_resa )
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: status
+#------------------------------------------------------------
+
+CREATE TABLE status(
+        id_status Varchar (50) NOT NULL ,
+        PRIMARY KEY (id_status )
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
+# Table: reason
+#------------------------------------------------------------
+
+CREATE TABLE reason(
+        id_reason Varchar (50) NOT NULL ,
+        infos     Varchar (200) ,
+        PRIMARY KEY (id_reason )
 )ENGINE=InnoDB;
 
 
@@ -148,14 +166,16 @@ CREATE TABLE work(
         PRIMARY KEY (id_user ,id_facility )
 )ENGINE=InnoDB;
 
+ALTER TABLE user ADD CONSTRAINT FK_user_id_status FOREIGN KEY (id_status) REFERENCES status(id_status);
 ALTER TABLE borne ADD CONSTRAINT FK_borne_id_place FOREIGN KEY (id_place) REFERENCES place(id_place);
 ALTER TABLE company_car ADD CONSTRAINT FK_company_car_id_facility FOREIGN KEY (id_facility) REFERENCES facility(id_facility);
 ALTER TABLE place ADD CONSTRAINT FK_place_id_facility FOREIGN KEY (id_facility) REFERENCES facility(id_facility);
 ALTER TABLE personal_car ADD CONSTRAINT FK_personal_car_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
-ALTER TABLE resa_borne ADD CONSTRAINT FK_resa_borne_id_borne FOREIGN KEY (id_borne) REFERENCES borne(id_borne);
 ALTER TABLE resa_borne ADD CONSTRAINT FK_resa_borne_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
+ALTER TABLE resa_borne ADD CONSTRAINT FK_resa_borne_id_place FOREIGN KEY (id_place) REFERENCES place(id_place);
 ALTER TABLE resa_car ADD CONSTRAINT FK_resa_car_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
 ALTER TABLE resa_car ADD CONSTRAINT FK_resa_car_id_company_car FOREIGN KEY (id_company_car) REFERENCES company_car(id_company_car);
+ALTER TABLE resa_car ADD CONSTRAINT FK_resa_car_id_reason FOREIGN KEY (id_reason) REFERENCES reason(id_reason);
 ALTER TABLE has_access ADD CONSTRAINT FK_has_access_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
 ALTER TABLE has_access ADD CONSTRAINT FK_has_access_id_place FOREIGN KEY (id_place) REFERENCES place(id_place);
 ALTER TABLE work ADD CONSTRAINT FK_work_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
