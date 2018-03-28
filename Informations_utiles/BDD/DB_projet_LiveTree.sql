@@ -12,12 +12,12 @@ USE `projet_LiveTree`;
 
 CREATE TABLE user(
         id_user      int (11) Auto_increment  NOT NULL ,
-        email        Varchar (100)  not null,
-        password     Varchar (100) not null,
-        phone_number Varchar (25) ,
-        first_name   Varchar (50) ,
-        last_name    Varchar (50) ,
-        id_status    Varchar(50) not null,
+        email        Varchar (100) NOT NULL ,
+        password     Varchar (100) NOT NULL ,
+        phone_number Varchar (25) NOT NULL ,
+        first_name   Varchar (50) NOT NULL ,
+        last_name    Varchar (50) NOT NULL ,
+        id_status    Varchar (50) NOT NULL ,
         PRIMARY KEY (id_user ) ,
         UNIQUE (email )
 )ENGINE=InnoDB;
@@ -117,6 +117,8 @@ CREATE TABLE resa_car(
         start_time     Time NOT NULL ,
         end_time       Time NOT NULL ,
         reason         Varchar (200) ,
+        km_start       Int ,
+        km_end         Int ,
         id_user        Int NOT NULL ,
         id_company_car Int NOT NULL ,
         id_reason      Varchar (50) NOT NULL ,
