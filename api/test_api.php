@@ -1,27 +1,12 @@
 <?php
+  include '../interfaces/api.php';
+  $mail = 'robin.poiret@isen.yncrea.fr';
+
   echo "Hello TEST API ;)\n";
-  $api_url = 'http://localhost:3000/';
-  $mail = "alexis.fardel@isen.yncrea.fr";
-
   // GET EXAMPLE
-  /*
-  $ch = curl_init($api_url . 'get_user/');
-  $getData = array(
-    'email' => 'robin.poiret@isen.yncrea.fr'
-  );
-
-  //Encode the array into JSON.
-  $getDataEncoded = json_encode($getData);
-  curl_setopt($ch, CURLOPT_POSTFIELDS, $getDataEncoded);
-  curl_setopt($ch, CURLOPT_POST, 1);
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-
-  $data = curl_exec($ch);
-  $data = json_decode($data, true);
-  $user = $data['response'][0];
-
-  var_dump($user);
+  ///*
+  $api_interface = new API();
+  var_dump($api_interface->user_get($mail));
   //*/
 
   // POST EXAMPLE
@@ -45,7 +30,7 @@
   //*/
 
   // DELETE EXAMPLE
-  ///*
+  /*
   $ch = curl_init($api_url . 'user/');
   $postData = array(
     'email' => 'robin.poiret@isen.yncrea.fr'

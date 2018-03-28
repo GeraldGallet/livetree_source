@@ -1,16 +1,23 @@
-const mysql = require('mysql');
+/********** SERVER *********/
+/* The server we use as an API */
+
+// Configuration import
 const config = require('./config.json');
 
+// Needed packages
+const mysql = require('mysql');
 var express = require('express'),
   app = express(),
   port = process.env.PORT || 3000;
-
+app.listen(port);
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 
-app.listen(port);
+// Import our own classes
+const User = require('./classes/user.js');
+const user = new User();
 
-//Database connection
+// Connecting to DB
 app.use(function(req, res, next){
 	res.locals.connection = mysql.createConnection({
 		host     : config.host,
@@ -26,25 +33,13 @@ app.get('/', function(req, res, next) {
   res.send('hello world :)');
 });
 
-/*app.get('/user', function(req, res, next) {
-  console.log('GET /user');
-  var query = 'SELECT * FROM user;';
+// Get all users
+app.get('/user', function(req, res, next) {
+});
 
-  res.locals.connection.query(query, function(error, results, fields) {
-    if(error) throw error;
-    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
-  });
-});*/
-
+// Get the DB line of specified user
 app.post('/get_user', jsonParser, function(req, res, next) {
-  console.log("POST /get_user");
-  var data = req.body;
-  var query = 'SELECT * FROM user WHERE email = \'' + data.email + '\';';
-
-  res.locals.connection.query(query, function(error, results, fields) {
-    if(error) throw error;
-    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
-  });
+  user.get(req.body, res);
 });
 
 app.post('/user', jsonParser, function (req, res) {
