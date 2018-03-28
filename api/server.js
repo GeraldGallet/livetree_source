@@ -35,42 +35,49 @@ app.get('/', function(req, res, next) {
 
 // Get all users
 app.get('/user', function(req, res, next) {
+  console.log('GET /user');
 });
 
-// Get the DB line of specified user
-app.post('/get_user', jsonParser, function(req, res, next) {
-  user.get(req.body, res);
+// The commands that can be done on a user
+app.post('/user/:cmd', jsonParser, function(req, res, next) {
+  switch(req.params.cmd) {
+      case "get":
+        console.log("/user/get");
+        user.get(req.body, res);
+        break;
+
+      case "add":
+        console.log("/user/add");
+        user.add(req.body, res);
+        break;
+
+      default:
+        console.log("UNKNOWN COMMAND POST /user/:cmd");
+        break;
+  }
 });
 
-app.post('/user', jsonParser, function (req, res) {
-  console.log('POST /user');
-  var postData  = req.body;
+app.delete('/:cmd', jsonParser, function(req, res, next) {
+  switch(req.params.cmd) {
+    case "user":
+      console.log("delete /user");
+      user.delete(req.body, res);
+      break;
 
-  res.locals.connection.query('INSERT INTO user SET ?', postData, function (error, results, fields) {
-    if (error) throw error;
-    res.end(JSON.stringify(results));
-  });
+    default:
+      console.log("UNKNOWN COMMAND DELETE /:cmd");
+      break;
+  }
 });
 
-app.patch('/user/password', jsonParser, function(req, res) {
-  console.log("PATCH /user/password");
-  var data = req.body;
-  var query = "UPDATE user SET password = \'" + data.password + '\' WHERE email = \'' + data.email + '\';';
+app.patch('/user/:cmd', jsonParser, function(req, res) {
+  switch(req.params.cmd) {
+    case "password":
+      console.log("patch /user/password");
+      user.change_password(req.body, res);
+      break;
 
-  res.locals.connection.query(query, function (err, result) {
-    if (err) throw err;
-    console.log(result.affectedRows + " record(s) updated");
-  });
-});
-
-app.delete('/user', jsonParser, function(req, res, next) {
-  console.log("DELETE /user");
-  var data = req.body;
-  var query = 'DELETE FROM user WHERE email = \'' + data.email + '\'';
-
-  res.locals.connection.query(query, function(error, results, fields) {
-    if(error) throw error;
-    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
-  });
-
+    default:
+      console.log("UNKNOWN COMMAND PATCH /user/:cmd");
+  }
 });
