@@ -1,22 +1,21 @@
-/*********** PERSONALCAR **********/
-/* Part that touches the personal cars of the users */
+/*********** FACILITY **********/
+/* Part that touches thefacilities */
 
-class PersonalCar {
+class Facility {
   constructor() { }
 
   // Gets all the personal car from a user
   get_all(body, res) {
-    var query = "SELECT * FROM personal_car WHERE id_user = \'" + body.id_user + "\';";
-    //console.log(query)
+    var query = "SELECT * FROM facility;";
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
       res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
     });
   }
 
-  // Get a specified personal car
+  // Gets a specified personal car
   get(body, res) {
-    var query = "SELECT * FROM personal_car WHERE id_user = \'" + body.id_user + "\' AND name = \'" + body.name + "\';";
+    var query = "SELECT * FROM facility WHERE name = \'" + body.name + "\';";
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
       res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
@@ -25,7 +24,7 @@ class PersonalCar {
 
   // Adds a new personal car to the specified user
   add(body, res) {
-    res.locals.connection.query('INSERT INTO personal_car SET ?', body, function (error, results, fields) {
+    res.locals.connection.query('INSERT INTO facility SET ?', body, function (error, results, fields) {
       if (error) throw error;
       res.end(JSON.stringify(results));
     });
@@ -33,7 +32,7 @@ class PersonalCar {
 
   // Removes a specified personal car
   delete(body, res) {
-    var query = 'DELETE FROM personal_car WHERE id_personal_car = \'' + body.id_personal_car + '\'';
+    var query = 'DELETE FROM facility WHERE name = \'' + body.name + '\'';
 
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
@@ -43,4 +42,4 @@ class PersonalCar {
 
 }
 
-module.exports = PersonalCar;
+module.exports = Facility;

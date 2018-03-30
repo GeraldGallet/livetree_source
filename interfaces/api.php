@@ -23,6 +23,12 @@
     public function personal_car_add($car);
     public function personal_car_delete($user, $name);
 
+    // Facilities functions
+    public function facility_get_all();
+    public function facility_get($name);
+    public function facility_add($facility);
+    public function facility_delete($name);
+
   }
 
 
@@ -47,10 +53,10 @@
           break;
 
         case "DELETE":
-          curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-          curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-          curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-          curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+          curl_setopt($connection, CURLOPT_POSTFIELDS, $data);
+          curl_setopt($connection, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+          curl_setopt($connection, CURLOPT_RETURNTRANSFER, TRUE);
+          curl_setopt($connection, CURLOPT_CUSTOMREQUEST, 'DELETE');
           break;
 
         case "PATCH":
@@ -191,7 +197,7 @@
       curl_close($ch);
 
       $result = json_decode($result, true);
-      return $result['response'];
+      return $result['response'][0];
     }
 
     // Adds a new personal car
@@ -205,8 +211,63 @@
 
     // Deletes a specific personal car of the specified user
     public function personal_car_delete($user, $name) {
+      $car = $this->personal_car_get($user, $name)['id_personal_car'];
+      $data = array(
+        'id_personal_car' => $car
+      );
+      $data = json_encode($data);
 
+      $ch = $this->api_connect($this->url . 'personal_car');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
     }
 
+    /* The functions that are facility related */
+
+    // Returns all the facilities
+    public function facility_get_all() {
+      $ch = $this->api_connect($this->url . 'facility/get_all/');
+      $ch = $this->api_options($ch, "POST", NULL);
+      $result = curl_exec($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    // Returns the specified facility
+    public function facility_get($name) {
+      $data = array(
+        'name' => $name
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'facility/get/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    // Adds a new facility
+    public function facility_add($facility) {
+      $facility = json_encode($facility);
+
+      $ch = $this->api_connect($this->url . "facility/add/");
+      $ch = $this->api_options($ch, "POST", $facility);
+      $response = curl_exec($ch);
+    }
+
+    // Deletes a facility
+    public function facility_delete($name) {
+      $data = array(
+        'name' => $name
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'facility/');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
   }
 ?>

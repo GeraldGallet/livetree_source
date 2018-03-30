@@ -40,5 +40,16 @@
   );
   //$api_interface->personal_car_add($car);
   //var_dump($api_interface->personal_car_get_all($user));
-  var_dump($api_interface->personal_car_get(1, "Voiture perso"));
+  //var_dump($api_interface->personal_car_get(1, "Voiture perso"));
+  //$api_interface->personal_car_delete(1, "Voiture perso 2")
+
+  $facility = array(
+    'name' => "Yncréa",
+    'address' => "29 Boulevard Vauban, 59800 Lille",
+    'complementary' => "RAS"
+  );
+  //$api_interface->facility_add($facility);
+  //var_dump($api_interface->facility_get_all());
+  //var_dump($api_interface->facility_get("Yncréa"));
+  $api_interface->facility_delete("Yncréa");
 ?>

@@ -20,6 +20,8 @@ const Status = require('./classes/status.js');
 const status = new Status();
 const PersonalCar = require('./classes/personalcar.js');
 const personal_car = new PersonalCar();
+const Facility = require('./classes/facility.js');
+const facility = new Facility();
 
 // Connecting to DB
 app.use(function(req, res, next){
@@ -35,11 +37,6 @@ app.use(function(req, res, next){
 
 app.get('/', function(req, res, next) {
   res.send('hello world :)');
-});
-
-// Get all users
-app.get('/user', function(req, res, next) {
-  console.log('GET /user');
 });
 
 // The commands that can be done on a table (get / add)
@@ -84,13 +81,33 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
         case "get_all":
           personal_car.get_all(req.body, res);
           break;
-          
+
         case "get":
           personal_car.get(req.body, res);
           break;
 
         case "add":
           personal_car.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
+    case "facility":
+      switch(req.params.cmd) {
+        case "get_all":
+          facility.get_all(req.body, res);
+          break;
+
+        case "get":
+          facility.get(req.body, res);
+          break;
+
+        case "add":
+          facility.add(req.body, res);
           break;
 
         default:
@@ -116,6 +133,14 @@ app.delete('/:table', jsonParser, function(req, res, next) {
 
     case "user":
       user.delete(req.body, res);
+      break;
+
+    case "personal_car":
+      personal_car.delete(req.body, res);
+      break;
+
+    case "facility":
+      facility.delete(req.body, res);
       break;
 
     default:
