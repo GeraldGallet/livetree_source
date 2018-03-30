@@ -17,6 +17,7 @@ CREATE TABLE user(
         phone_number Varchar (25) NOT NULL ,
         first_name   Varchar (50) NOT NULL ,
         last_name    Varchar (50) NOT NULL ,
+        activated    Bool NOT NULL ,
         id_status    Varchar (50) NOT NULL ,
         PRIMARY KEY (id_user ) ,
         UNIQUE (email )
@@ -43,8 +44,8 @@ CREATE TABLE borne(
 CREATE TABLE company_car(
         id_company_car int (11) Auto_increment  NOT NULL ,
         model          Varchar (100) NOT NULL ,
-        registration   Varchar (100) NOT NULL ,
         power          Int NOT NULL ,
+        name           Varchar (100) NOT NULL ,
         id_facility    Int NOT NULL ,
         PRIMARY KEY (id_company_car )
 )ENGINE=InnoDB;
@@ -83,7 +84,6 @@ CREATE TABLE facility(
 CREATE TABLE personal_car(
         id_personal_car int (11) Auto_increment  NOT NULL ,
         model           Varchar (100) NOT NULL ,
-        registration    Varchar (100) NOT NULL ,
         power           Int NOT NULL ,
         name            Varchar (100) NOT NULL ,
         id_user         Int NOT NULL ,
@@ -119,6 +119,7 @@ CREATE TABLE resa_car(
         reason         Varchar (200) ,
         km_start       Int ,
         km_end         Int ,
+        km_planned     Int NOT NULL ,
         id_user        Int NOT NULL ,
         id_company_car Int NOT NULL ,
         id_reason      Varchar (50) NOT NULL ,
@@ -132,6 +133,7 @@ CREATE TABLE resa_car(
 
 CREATE TABLE status(
         id_status Varchar (50) NOT NULL ,
+        rights    Int NOT NULL ,
         PRIMARY KEY (id_status )
 )ENGINE=InnoDB;
 

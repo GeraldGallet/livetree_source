@@ -1,5 +1,5 @@
 /*********** USER **********/
-/* La partie de l'API qui touche aux users de la BDD */
+/* Part that touches the users */
 
 class User {
   constructor() { }
@@ -12,6 +12,7 @@ class User {
     });
   }
 
+  // Get the line of a specified user
   get(body, res) {
     var query = 'SELECT * FROM user WHERE email = \'' + body.email + '\';';
     var ret = '';
@@ -21,6 +22,7 @@ class User {
     });
   }
 
+  // Adds a new user in the database
   add(body, res) {
     res.locals.connection.query('INSERT INTO user SET ?', body, function (error, results, fields) {
       if (error) throw error;
@@ -28,6 +30,7 @@ class User {
     });
   }
 
+  // Deletes a user of the database
   delete(body, res) {
     var query = 'DELETE FROM user WHERE email = \'' + body.email + '\'';
 
@@ -37,6 +40,7 @@ class User {
     });
   }
 
+  // Changes the password of a user
   change_password(body, res) {
     var query = "UPDATE user SET password = \'" + body.password + '\' WHERE email = \'' + body.email + '\';';
 

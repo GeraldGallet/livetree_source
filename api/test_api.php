@@ -19,20 +19,26 @@
     'id_status' => 'student'
   );
   //$api_interface->user_add($user);
-  $api_interface->user_change_password($mail, $pass2);
-  //*/
+  //$api_interface->user_change_password($mail, $pass2);
 
-  // POST EXAMPLE
-  /*
+  $status = array(
+    'id_status' => 'teacher',
+    'rights' => 2
+  );
+  //$api_interface->status_add($status);
+  //$api_interface->status_delete("teacher");
+  //var_dump($api_interface->status_get("guest"));
 
-  //*/
-
-  // DELETE EXAMPLE
-  /*
-
-  //*/
-
-  // PATCH EXAMPLE
-  /*
-  //*/
+  $car = array(
+    'model' => "Renault Kangoo",
+    'power' => 30,
+    'name' => "Voiture perso 2",
+    'id_user' => 1
+  );
+  $user = array(
+    'id_user' => 1,
+  );
+  //$api_interface->personal_car_add($car);
+  //var_dump($api_interface->personal_car_get_all($user));
+  var_dump($api_interface->personal_car_get(1, "Voiture perso"));
 ?>

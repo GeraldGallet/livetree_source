@@ -16,6 +16,10 @@ var jsonParser = bodyParser.json();
 // Import our own classes
 const User = require('./classes/user.js');
 const user = new User();
+const Status = require('./classes/status.js');
+const status = new Status();
+const PersonalCar = require('./classes/personalcar.js');
+const personal_car = new PersonalCar();
 
 // Connecting to DB
 app.use(function(req, res, next){
@@ -38,34 +42,84 @@ app.get('/user', function(req, res, next) {
   console.log('GET /user');
 });
 
-// The commands that can be done on a user
-app.post('/user/:cmd', jsonParser, function(req, res, next) {
-  switch(req.params.cmd) {
-      case "get":
-        console.log("/user/get");
-        user.get(req.body, res);
-        break;
+// The commands that can be done on a table (get / add)
+app.post('/:table/:cmd', jsonParser, function(req, res, next) {
+  console.log(req.params.table + "/" + req.params.cmd);
 
-      case "add":
-        console.log("/user/add");
-        user.add(req.body, res);
-        break;
+  switch(req.params.table) {
+    case "user":
+      switch(req.params.cmd) {
+          case "get":
+            user.get(req.body, res);
+            break;
 
-      default:
-        console.log("UNKNOWN COMMAND POST /user/:cmd");
-        break;
+          case "add":
+            user.add(req.body, res);
+            break;
+
+          default:
+            console.log("UNKNOWN POST COMMAND");
+            break;
+      }
+      break;
+
+    case "status":
+      switch(req.params.cmd) {
+        case "get":
+          status.get(req.body, res);
+          break;
+
+        case "add":
+          status.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
+    case "personal_car":
+      switch(req.params.cmd) {
+        case "get_all":
+          personal_car.get_all(req.body, res);
+          break;
+          
+        case "get":
+          personal_car.get(req.body, res);
+          break;
+
+        case "add":
+          personal_car.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
+
+    default:
+      console.log("UNKNOWN TABLE POST /" + req.params.table + "/");
+      break;
   }
 });
 
-app.delete('/:cmd', jsonParser, function(req, res, next) {
-  switch(req.params.cmd) {
+app.delete('/:table', jsonParser, function(req, res, next) {
+  console.log("delete /" + req.params.table);
+
+  switch(req.params.table) {
+    case "status":
+      status.delete(req.body, res);
+      break;
+
     case "user":
-      console.log("delete /user");
       user.delete(req.body, res);
       break;
 
     default:
-      console.log("UNKNOWN COMMAND DELETE /:cmd");
+      console.log("UNKNOWN COMMAND DELETE /" + req.params.table);
       break;
   }
 });
