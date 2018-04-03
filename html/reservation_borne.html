@@ -1,0 +1,45 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script>
+		$( function() {
+			$( "#slider-range" ).slider({
+				min: 0,
+				max: 100,
+				step :1,
+				values: [ 100 ],
+				slide: function( event, ui ) {
+					$( "#amount" ).val(  ui.values[ 0 ] +"%" );
+					}
+				});
+			$( "#amount" ).val(  $( "#slider-range" ).slider( "values", 0 )+"%"  );
+		} );
+	</script>
+    <script>
+		$( function() {
+			$( "#datepicker" ).datepicker({ minDate: -0, });
+		} );
+	</script>
+</head>
+
+
+<body>
+	<center>
+	<form method="get" action="..\php\Models\PhpObjects\reservation_borne.php">
+	<p>Date: <input type="text" id="datepicker" name="date"><br/></p>
+	Heure de début : <input type="time" name="heure_debut" value="" class="reservation_borne"><br/>
+	Heure de fin : <input type="time" name="heure_fin" min="<?php echo $depart; ?>" class="reservation_borne"><br/>
+	<!-- TODO regarder timepicker a l'instar de datepicker 
+		OU datetime pick et on degage la date -->
+	<p>
+	<label for="amount">Niveau de charge:</label>
+	<input type="text" id="amount" name="amount" readonly style="border:0; " >
+	</p>
+	<div id="slider-range"></div>
+	<input type="submit" value="Réserver" id="reserver_borne">
+</body>
+
+</html>
