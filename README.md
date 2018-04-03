@@ -23,3 +23,6 @@ Site / Application de réservation des bornes de rechargement de véhicules éle
 - git commit -m "..."
   - On mets une description claire des modifications faites
 - git push
+
+### Branches
+- https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches
