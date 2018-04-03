@@ -1,5 +1,5 @@
 <?php
-  include '../interfaces/api.php';
+  include 'interfaces/api.php';
   $mail = 'robin.poiret@isen.yncrea.fr';
   $pass1 = "passw0rdR";
   $pass2 = "hell0g00dpass";
