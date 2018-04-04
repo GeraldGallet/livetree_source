@@ -11,6 +11,8 @@
 		$phoneNumber = isset($_GET['phoneNumber']) ? $_GET['phoneNumber'] : '';
 		$etablissement = isset($_GET['etablissement'])? $_GET['etablissement'] : '';
 		$statut = isset($_GET['statut'])? $_GET['statut'] : '';
+		$emailInterlocuteur = isset($_GET['emailInterlocuteur'])? $_GET['emailInterlocuteur'] : '';
+		echo "$statut";
 		
 		if ( $name != ''|| $prenom !=''|| $email != ''|| $phoneNumber != '' || $etablissement != '' || $statut != '')
 		{
@@ -57,6 +59,15 @@
 		$vmail->Debugoutput= 'html';
 		$vmail->setEmailFrom('viska@viska.is');
 		if ($vmail->check($email)) {
+			if ($statut!="visiteur" && preg_match("#^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}\.yncrea\.[a-z]{2,4}$#",$email)){
+				echo"adressse yncrea";
+			}
+			elseif($statut =="visiteur" && preg_match("#^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}\.yncrea\.[a-z]{2,4}$#",$emailInterlocuteur)&& $vmail->check($emailInterlocuteur) ){
+				echo "adresse interlocuteur yncrea";
+			}
+			else{
+				echo"adresse invalide";
+			}
 		} elseif (verifyEmail::validate($email)) {
 			echo 'email &lt;' . $email . '&gt; valid, but not exist!';
 		} else {
@@ -66,19 +77,3 @@
 
 
 ?>
-<html>
-<head></head>
-<body>
-    <center>
-    <form method="get" action=" inscription">
-    Nom	: <input type="text" name="nom" value="" class=" inscription" ><br>
-	Prenom: <input type="text" name="prenom" value="" class=" inscription"><br>
-	Email: <input type="email" name="email" value="" class=" inscription"><br>
-    Numéros de téléphone: <input type="text" name="phoneNumber" value="" class=" inscription"><br>
-	Etablissement : <input type="text" name="etablissement" value="" class=" inscription"><br>
-	Statut : <input type="text" name="statut" value="" class=" inscription"><br>
-    <input type="submit" value="valider" i="bouton_inscription_valider">
-    </form>
-    </center>
-</body>
-</html>
