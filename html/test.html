@@ -1,0 +1,25 @@
+<?php
+$email = isset($_GET['test'])? $_GET['test'] : '';
+
+if(preg_match("#^[a-zA-Z0-9._-]+@[a-z0-9._-]{2,}\.yncrea\.[a-z]{2,4}$#",$email)){
+	echo "ca marche $email";}
+?>
+
+<head>
+<script>
+function ajoutchamp(element){
+	if(element.selectedIndex == 2){
+		document.getElementById('autres').style.display = 'block';
+	}else{
+		document.getElementById('autres').style.display = 'none';
+	}
+}
+</script>
+</head>
+
+<form method="post" cible="suite.php">
+ 
+
+<input id="autres" name="test"type="text" />
+ 
+</form>

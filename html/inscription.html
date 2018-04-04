@@ -1,14 +1,34 @@
 <html>
-<head></head>
+<head>
+	<meta charset="utf-8">
+	<script>
+	function ajoutchamp(element){
+		if(element.selectedIndex == 3){
+			document.getElementById('autreraison').style.display = 'block';
+		}else{
+			document.getElementById('autreraison').style.display = 'none';
+		}
+	}
+	</script>
+</head>
 <body>
     <center>
     <form method="get" action="..\php\Models\PhpObjects\inscription.php">
-    Nom	: <input type="text" name="nom" value="" class=" inscription" ><br>
-	Prenom: <input type="text" name="prenom" value="" class=" inscription"><br>
-	Email: <input type="email" name="email" value="" class=" inscription"><br>
-    Numéros de téléphone: <input type="text" name="phoneNumber" value="" class=" inscription"><br>
-	Etablissement : <input type="text" name="etablissement" value="" class=" inscription"><br>
-	Statut : <input type="text" name="statut" value="" class=" inscription"><br>
+    Nom	: <input type="text" name="nom" value="" class=" inscription" ></br>
+	Prenom: <input type="text" name="prenom" value="" class=" inscription"></br>
+	Email: <input type="email" name="email" value="" class=" inscription"></br>
+    Numéros de téléphone: <input type="text" name="phoneNumber" value="" class=" inscription"></br>
+	Etablissement : <input type="text" name="etablissement" value="" class=" inscription"></br>
+	Statut : <select onchange="ajoutchamp(this)" name="statut"  required>
+		<option value= "etudiant">étudiant</option>
+		<option value="staff">staff</option>
+		<option value="enseignant">enseignant</option>
+		<option value="visiteur">visiteur</option>
+	</select><br/>
+	<div id="autreraison" style="display:none;">
+		Votre interlocuteur  <input id="autres" type="email" name="emailInterlocuteur" placeholder="adresse mail de votre interlocuteur " />
+		</div>
+	</br>
     <input type="submit" value="valider" i="bouton_inscription_valider">
     </form>
     </center>

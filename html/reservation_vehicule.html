@@ -4,20 +4,21 @@
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script>
+	function ajoutchamp(element){
+		if(element.selectedIndex == 3){
+			document.getElementById('autreraison').style.display = 'block';
+		}else{
+			document.getElementById('autreraison').style.display = 'none';
+		}
+	}
+	</script>
 	
     <script>
-    $( function() {
-    $( "#datepicker" ).datepicker({ minDate: -0, });
-  } );
-  </script>
-  <script>
-  function () 
-		{
-		$('#champ').hide();
-		
-		 alert("$('#afficherchamp option:selected').val()");
-	 }
-</script>
+		$( function() {
+			$( "#datepicker" ).datepicker({ minDate: -0, });
+		} );
+	</script>
 </head>
 <body>
 	<center>
@@ -29,15 +30,14 @@
 	<label for="jour"  > jour(s)</label>
 	<input type="radio" name="jourheure"checked>
 	<label for="jour"> heures(s)</label><br/>
-	Kilomètre estimé <input type="number_format" name="kilometre" required> km<br/>
-	Raison <select name="raison" id="raisons" required>
+	Kilomètres estimés <input type="number_format" name="kilometre" required> km<br/>
+	Raison <select onchange="ajoutchamp(this)" name="raison" id="raisons" required>
 		<option value="déplacement1" id="choix1">déplacement1</option>
 		<option value="déplacement2">déplacement2</option>
 		<option value="déplacement3">déplacement3</option>
-		<option value="autre" id="afficherchamp">Autre</option>
-		</select><br/>
-		<div id="afficherchamp"  >
-		<input type="text"  id="champ"name="autreraison">
+		<option value="autre" >Autre</option>
+		</select><br/><div id="autreraison" style="display:none;">
+		Votre raison <input id="autres" type="text" placeholder="afficher votre raison" />
 		</div>
 	Voiture <select name="voiture" required>
 		<option value="voiture1">Zoé1</option>
