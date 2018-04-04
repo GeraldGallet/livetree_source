@@ -1,0 +1,57 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script>
+	function ajoutchamp(element){
+		if(element.selectedIndex == 3){
+			document.getElementById('autreraison').style.display = 'block';
+		}else{
+			document.getElementById('autreraison').style.display = 'none';
+		}
+	}
+	</script>
+	
+    <script>
+		$( function() {
+			$( "#datepicker" ).datepicker({ minDate: -0, });
+		} );
+	</script>
+</head>
+<body>
+	<center>
+	<form method="get" action="..\php\Models\PhpObjects\reservation_vehicule.php">
+	<p>Date: <input type="text" id="datepicker" name="date" required><br/></p>
+	Heure de début : <input type="time" name="heure_debut" value=""  class="reservation_borne"  required><br/>
+	Durée <input type="number" name="heure_fin"  class="reservation_borne" required>
+	<input type="radio" name="jourheure" >
+	<label for="jour"  > jour(s)</label>
+	<input type="radio" name="jourheure"checked>
+	<label for="jour"> heures(s)</label><br/>
+	Kilomètres estimés <input type="number_format" name="kilometre" required> km<br/>
+	Raison <select onchange="ajoutchamp(this)" name="raison" id="raisons" required>
+		<option value="déplacement1" id="choix1">déplacement1</option>
+		<option value="déplacement2">déplacement2</option>
+		<option value="déplacement3">déplacement3</option>
+		<option value="autre" >Autre</option>
+		</select><br/><div id="autreraison" style="display:none;">
+		Votre raison <input id="autres" type="text" placeholder="afficher votre raison" />
+		</div>
+	Voiture <select name="voiture" required>
+		<option value="voiture1">Zoé1</option>
+		<option value="voiture2">Zoé2</option>
+		<option value="voiture3">Kangoo</option>
+		<option value="voiture">Kangoo1</option>
+		</select>
+		
+	
+	
+ 
+	
+	<input type="submit" value="Réserver" id="reserver_vehicule">
+
+
+</body>
+</html>

@@ -25,19 +25,7 @@
 
 
 ?>
-<html>
-<head></head>
-<body>
-    <center>
-    <form method="get" action="add_car.php">
-    model: <input type="text" name="model" value="" class="add_car" ><br/>
-	power: <input type="text" name="power" value="" class="add_car"><br/>
-    name: <input type="text" name="name" value="" class="add_car"><br/>
-    <input type="submit" value="valider">
-    </form>
-    </center>
-</body>
-</html>
+
 
 
 
