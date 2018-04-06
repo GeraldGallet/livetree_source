@@ -28,9 +28,52 @@ class srcDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
             $canonicalMethod = 'GET';
         }
 
-        // app_acceuil_acceuil
-        if ('/acceuil' === $pathinfo) {
-            return array (  '_controller' => 'App\\Controller\\Acceuil::acceuil',  '_route' => 'app_acceuil_acceuil',);
+        // app_pages_accueil_load_accueil
+        if ('' === $trimmedPathinfo) {
+            $ret = array (  '_controller' => 'App\\Controller\\Pages\\Accueil::load_accueil',  '_route' => 'app_pages_accueil_load_accueil',);
+            if ('/' === substr($pathinfo, -1)) {
+                // no-op
+            } elseif ('GET' !== $canonicalMethod) {
+                goto not_app_pages_accueil_load_accueil;
+            } else {
+                return array_replace($ret, $this->redirect($rawPathinfo.'/', 'app_pages_accueil_load_accueil'));
+            }
+
+            return $ret;
+        }
+        not_app_pages_accueil_load_accueil:
+
+        // app_pages_admin_load_admin
+        if ('/admin' === $pathinfo) {
+            return array (  '_controller' => 'App\\Controller\\Pages\\Admin::load_admin',  '_route' => 'app_pages_admin_load_admin',);
+        }
+
+        // app_pages_bornes_load_bornes
+        if ('/bornes' === $pathinfo) {
+            return array (  '_controller' => 'App\\Controller\\Pages\\Bornes::load_bornes',  '_route' => 'app_pages_bornes_load_bornes',);
+        }
+
+        // app_pages_cars_load_cars
+        if ('/voitures' === $pathinfo) {
+            return array (  '_controller' => 'App\\Controller\\Pages\\Cars::load_cars',  '_route' => 'app_pages_cars_load_cars',);
+        }
+
+        if (0 === strpos($pathinfo, '/profil')) {
+            // app_pages_history_load_history
+            if ('/profil/historique' === $pathinfo) {
+                return array (  '_controller' => 'App\\Controller\\Pages\\History::load_history',  '_route' => 'app_pages_history_load_history',);
+            }
+
+            // app_pages_profile_load_profile
+            if ('/profil' === $pathinfo) {
+                return array (  '_controller' => 'App\\Controller\\Pages\\Profile::load_profile',  '_route' => 'app_pages_profile_load_profile',);
+            }
+
+        }
+
+        // app_pages_planning_load_planning
+        if ('/planning' === $pathinfo) {
+            return array (  '_controller' => 'App\\Controller\\Pages\\Planning::load_planning',  '_route' => 'app_pages_planning_load_planning',);
         }
 
         if (0 === strpos($pathinfo, '/_')) {
