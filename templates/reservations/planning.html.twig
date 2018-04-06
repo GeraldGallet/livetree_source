@@ -1,4 +1,26 @@
 {# templates/reservations/planning.html.twig #}
+{% extends "base.html.twig" %}
 
-<h1>Planning</h1>
-<h2>Hello {{ first_name }} {{ last_name }}</h2>
+{% block head %}
+<title>Planning</title>
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<h1>Planning {{ object }}</h1>
+<a href="{{ path('go_back') }}">Retour à ma réservation</a>
+<ul>
+{% for key, date in dates %}
+  <li>
+  {{ key }}
+  <ul>
+    {% for time in date %}
+      <li>
+        {{ time.first }} - {{ time.second }}
+      </li>
+    {% endfor %}
+  </ul>
+  </li>
+{% endfor %}
+<ul>
+{% endblock %}
