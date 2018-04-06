@@ -3,4 +3,4 @@ Informations_utiles/exempleAliasWamp/
 /.env
 /public/bundles/
 /var/
-/vendor/
+**/vendor/
