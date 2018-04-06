@@ -12,7 +12,7 @@
       */
     public function load_accueil() {
       $first_name = "Gérald";
-      $last_name = "Gallet";
+      $last_name = "Poiret";
       return $this->render('accueil.html.twig', array(
             'first_name' => $first_name,
             'last_name' => $last_name
