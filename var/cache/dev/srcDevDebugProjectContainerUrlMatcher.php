@@ -28,6 +28,11 @@ class srcDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
             $canonicalMethod = 'GET';
         }
 
+        // app_form_inscription_new
+        if ('/inscription' === $pathinfo) {
+            return array (  '_controller' => 'App\\Controller\\Form\\Inscription::new',  '_route' => 'app_form_inscription_new',);
+        }
+
         // app_pages_accueil_load_accueil
         if ('' === $trimmedPathinfo) {
             $ret = array (  '_controller' => 'App\\Controller\\Pages\\Accueil::load_accueil',  '_route' => 'app_pages_accueil_load_accueil',);

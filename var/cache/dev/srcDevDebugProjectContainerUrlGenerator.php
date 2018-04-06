@@ -18,6 +18,7 @@ class srcDevDebugProjectContainerUrlGenerator extends Symfony\Component\Routing\
         $this->logger = $logger;
         if (null === self::$declaredRoutes) {
             self::$declaredRoutes = array(
+        'app_form_inscription_new' => array (  0 =>   array (  ),  1 =>   array (    '_controller' => 'App\\Controller\\Form\\Inscription::new',  ),  2 =>   array (  ),  3 =>   array (    0 =>     array (      0 => 'text',      1 => '/inscription',    ),  ),  4 =>   array (  ),  5 =>   array (  ),),
         'app_pages_accueil_load_accueil' => array (  0 =>   array (  ),  1 =>   array (    '_controller' => 'App\\Controller\\Pages\\Accueil::load_accueil',  ),  2 =>   array (  ),  3 =>   array (    0 =>     array (      0 => 'text',      1 => '/',    ),  ),  4 =>   array (  ),  5 =>   array (  ),),
         'app_pages_admin_load_admin' => array (  0 =>   array (  ),  1 =>   array (    '_controller' => 'App\\Controller\\Pages\\Admin::load_admin',  ),  2 =>   array (  ),  3 =>   array (    0 =>     array (      0 => 'text',      1 => '/admin',    ),  ),  4 =>   array (  ),  5 =>   array (  ),),
         'app_pages_bornes_load_bornes' => array (  0 =>   array (  ),  1 =>   array (    '_controller' => 'App\\Controller\\Pages\\Bornes::load_bornes',  ),  2 =>   array (  ),  3 =>   array (    0 =>     array (      0 => 'text',      1 => '/bornes',    ),  ),  4 =>   array (  ),  5 =>   array (  ),),
