@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Routing\Annotation\Route;
 
 class Inscription extends Controller
@@ -25,14 +26,20 @@ class Inscription extends Controller
     $user = new User();
 
     $form = $this->createFormBuilder($user)
-        ->add('email', EmailType::class)
-        ->add('password', PasswordType::class)
         ->add('last_name', TextType::class)
         ->add('first_name', TextType::class)
+        ->add('email', EmailType::class)
+        ->add('password', PasswordType::class)
+        ->add('id_status', ChoiceType::class, array(
+          'choices'  => array(
+            'Visiteur' => 0,
+            'Etudiant' => 1,
+            'Salarié' => 2,
+            'Professeur' => 3
+          )))
         ->add('phone_number', NumberType::class)
         ->add('subscribe', SubmitType::class, array('label' => 'Je m\'inscris'))
         ->getForm();
-
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -46,7 +53,7 @@ class Inscription extends Controller
         // $entityManager->persist($task);
         // $entityManager->flush();
 
-        return $this->redirectToRoute('inscription_success');
+        return $this->redirectToRoute('validation');
     }
 
     return $this->render('forms/inscription.html.twig', array(
