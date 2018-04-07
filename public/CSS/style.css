@@ -1,0 +1,12 @@
+p {
+    margin: 4px;
+    font-size: 16px;
+    font-weight: bolder;
+    cursor: pointer;
+}
+.red {
+    color: darkred;
+}
+.highlight {
+    background: yellow;
+}

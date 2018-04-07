@@ -1,13 +1,22 @@
-{# templates/forms/inscription.html.twig #}
+{#
+ href="{{ path('app_form_ReservationVoitureFonction_numberOfReservation',{slug:slug}) }}"
+ templates/forms/inscription.html.twig #}
 {% extends "base.html.twig" %}
 
 {% block head %}
-{{ parent() }}
+    {{ parent() }}
 {% endblock %}
 
 {% block body %}
-<h1>Inscription</h1>
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-{{ form_widget(form) }}
-{{ form_end(form) }}
+    <h1><a class="inscription red">Inscription </a> <span class="inscription-number"> 0</span></h1>
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src={{ asset('JS/my_js_file.js') }}></script>
+
 {% endblock %}
