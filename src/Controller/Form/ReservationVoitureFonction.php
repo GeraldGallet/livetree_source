@@ -1,16 +1,13 @@
 <?php
 namespace App\Controller\Form;
 
-use App\Entity\User;
+use App\Entity\Reservation;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ReservationVoitureFonction extends Controller
@@ -22,13 +19,13 @@ class ReservationVoitureFonction extends Controller
   public function new(Request $request)
   {
     // Create a user
-    $user = new User();
+    $user = new Reservation();
 
     $form = $this->createFormBuilder($user)
         ->add('startdatetime', DateTimeType::class)
         ->add('stopdatetime', DateTimeType::class)
-        ->add('reason-proposition', TextType::class)
-        ->add('reason-description', TextType::class)
+          ->add('reason_proposition', TextType::class)
+        ->add('reason_description', TextType::class)
         ->add('submit_book', SubmitType::class, array('label' => 'Je réserve'))
         ->getForm();
 
