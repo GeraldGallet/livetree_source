@@ -12,6 +12,7 @@
       */
     public function load_admin_bornes() {
       $resa = array(
+        'id_resa' => -1,
         'date_resa' => 0,
         'start_time' => 1,
         'end_time' => 2,
@@ -24,6 +25,13 @@
       return $this->render('admin/admin_bornes.html.twig', array(
             'resa_bornes' => $resas
       ));
+    }
+
+    /**
+     * @Route("/admin/bornes/delete/{id_resa}", name="delete_resa_borne")
+     */
+    public function delete_resa($id_resa) {
+      // Delete a reservation
     }
   }
 
