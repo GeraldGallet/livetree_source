@@ -1,4 +1,10 @@
 {# templates/admin/admin.html.twig #}
+{% extends "base.html.twig" %}
 
-<h1>Admin</h1>
-<h2>Hello {{ first_name }} {{ last_name }}</h2>
+{% block head %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<h1>Administration</h1>
+{% endblock %}

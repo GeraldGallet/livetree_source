@@ -1,5 +1,5 @@
 <?php
-  namespace App\Controller\Pages;
+  namespace App\Controller\Pages\Admin;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Response;
