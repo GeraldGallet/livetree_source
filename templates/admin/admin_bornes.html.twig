@@ -12,4 +12,16 @@
 <a href='/admin/voitures'>Voitures</a>
 <a href='/admin/profils'>Profils</a>
 <h1>Administration des bornes</h1>
+<ul>
+{% for resa in resa_bornes %}
+<li><ul>
+  <li>{{resa.date_resa}}</li>
+  <li>{{resa.start_time}}</li>
+  <li>{{resa.end_time}}</li>
+  <li>{{resa.charge}}</li>
+  <li>{{resa.id_place}}</li>
+  <li>{{resa.id_user}}</li>
+</ul></li>
+{% endfor %}
+</ul>
 {% endblock %}

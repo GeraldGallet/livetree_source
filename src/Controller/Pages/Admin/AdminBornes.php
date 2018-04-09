@@ -11,11 +11,18 @@
       * @Route("/admin/bornes")
       */
     public function load_admin_bornes() {
-      $first_name = "Gérald";
-      $last_name = "Gallet";
+      $resa = array(
+        'date_resa' => 0,
+        'start_time' => 1,
+        'end_time' => 2,
+        'charge' => 3,
+        'id_place' => 4,
+        'id_user' => 5
+      );
+
+      $resas = [$resa, $resa, $resa, $resa];
       return $this->render('admin/admin_bornes.html.twig', array(
-            'first_name' => $first_name,
-            'last_name' => $last_name
+            'resa_bornes' => $resas
       ));
     }
   }
