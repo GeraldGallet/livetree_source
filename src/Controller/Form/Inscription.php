@@ -47,6 +47,12 @@ class Inscription extends Controller
         // but, the original `$task` variable has also been updated
         $user = $form->getData();
 
+        if($user->getPhoneNumber() == 1) {
+          return $this->render('forms/inscription.html.twig', array(
+              'form' => $form->createView(),
+          ));
+        }
+
         // ... perform some action, such as saving the task to the database
         // for example, if Task is a Doctrine entity, save it!
         // $entityManager = $this->getDoctrine()->getManager();
