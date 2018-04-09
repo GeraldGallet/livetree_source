@@ -19,15 +19,15 @@
     /**
       * @Route("/bornes",name="bornes")
       */
-	  
-	
-    public function new(Request $request) 
+
+
+    public function new(Request $request)
 	{
-	
+
 	$reservationBorne = new ReservationBorne();
-		
+
     $form = $this->createFormBuilder($reservationBorne)
-		
+
 	    ->add('date_time',DateType::class,array
 		(
 		'widget' => 'single_text',
@@ -44,11 +44,11 @@
                     "data-provide" => "slider",
                     "data-slider-ticks" => "[1, 2, 3, 4]",
                     "data-slider-ticks-labels" => '["short", "medium", "long", "xxl"]',
-                    "data-slider-min" => "1",
-                    "data-slider-max" => "100",
-                    "data-slider-step" => "1",
-                    "data-slider-value" => "100",
-                  
+                    "data-slider-min" => 1,
+                    "data-slider-max" => 100,
+                    "data-slider-step" => 1,
+                    "data-slider-value" => 100,
+
                  ]
              ]
 		)
@@ -76,22 +76,22 @@
 			}
 		}
 
-		
+
         // ... perform some action, such as saving the task to the database
         // for example, if Task is a Doctrine entity, save it!
         // $entityManager = $this->getDoctrine()->getManager();
         // $entityManager->persist($task);
         // $entityManager->flush();
-		
-          return $this->render('forms/reservationBorne.html.twig', array(
+
+          return $this->render('reservations/bornes.html.twig', array(
         'form' => $form->createView(),
     ));
     }
 
-    return $this->render('forms/reservationBorne.html.twig', array(
+    return $this->render('reservations/bornes.html.twig', array(
         'form' => $form->createView(),
     ));
-		
+
     }
   }
 
