@@ -2,10 +2,23 @@
   // src/Entity/Task.php
   namespace App\Entity;
 
+  use Symfony\Component\Validator\Constraints as Assert;
+
   class PersonalCar
   {
+    /**
+     * @Assert\NotBlank()
+     */
       protected $name;
+
+      /**
+       * @Assert\NotBlank()
+       */
       protected $model;
+
+      /**
+       * @Assert\NotBlank()
+       */
       protected $power;
       protected $id_user;
 

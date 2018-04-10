@@ -55,7 +55,7 @@
       //$api_interface->facility_add($facility);
       //var_dump($api_interface->facility_get_all());
       //var_dump($api_interface->facility_get("Yncréa"));
-      $api_interface->facility_delete("Yncréa");
+      //$api_interface->facility_delete("Yncréa");
 
     }
   }

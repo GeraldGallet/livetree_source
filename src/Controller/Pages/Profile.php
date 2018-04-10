@@ -78,12 +78,12 @@
     /**
      * @Route("/profil/personal_car/delete/{car_name}", name="delete_personal_car")
      */
-     public function delete_personal_car($car_name) {
+    public function delete_personal_car($car_name) {
       session_start();
       $api = new CustomApi();
       $api->personal_car_delete($_SESSION['id_user'], $car_name);
       return $this->redirectToRoute('profile');
-     }
+    }
   }
 
 ?>

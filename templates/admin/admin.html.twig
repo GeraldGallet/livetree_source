@@ -12,6 +12,15 @@
 <a href='/admin/voitures'>Voitures</a>
 <a href='/admin/profils'>Profils</a>
 <h1>Administration</h1>
+<h2>Etablissements</h2>
+{% for facility in facilities %}
+<ul>
+  <li>{{facility.name}}</li>
+  <li>{{facility.address}}</li>
+  <li>{{facility.complementary}}</li>
+  <li><a href="{{ path('delete_facility', {'name': facility.name}) }}"><button>Supprimer</button></a></li>
+</ul>
+{% endfor %}
 {{ form_start(facility_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(facility_form) }}
 {{ form_end(facility_form) }}

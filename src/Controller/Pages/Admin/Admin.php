@@ -5,6 +5,8 @@
   use App\Entity\CompanyCar;
   use App\Entity\Place;
   use App\Entity\Borne;
+  use App\Controller\CustomApi;
+
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Request;
   use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +19,7 @@
   class Admin extends Controller
   {
     /**
-      * @Route("/admin")
+      * @Route("/admin", name="admin")
       */
     public function load_admin(Request $request) {
 
@@ -25,6 +27,17 @@
       $company_car = new CompanyCar();
       $place = new Place();
       $borne = new Borne();
+      $api = new CustomApi();
+
+      $facilities = [];
+      foreach($api->facility_get_all() as $temp_facility)
+      {
+          array_push($facilities, array(
+            'name' => $temp_facility['name'],
+            'address' => $temp_facility['address'],
+            'complementary' => $temp_facility['complementary']
+          ));
+      }
 
       $facility_form = $this->createFormBuilder($facility)
       ->add('name', TextType::class)
@@ -76,6 +89,12 @@
 
       if ($facility_form->isSubmitted() && $facility_form->isValid()) {
         $facility = $facility_form->getData();
+        $api->facility_add(array(
+          'name' => $facility->getName(),
+          'address' => $facility->getAddress(),
+          'complementary' => $facility->getComplementary()
+        ));
+        return $this->redirectToRoute('admin');
       }
 
       if ($place_form->isSubmitted() && $place_form->isValid()) {
@@ -91,12 +110,23 @@
       }
 
       return $this->render('admin/admin.html.twig', array(
+            'facilities' => $facilities,
             'facility_form' => $facility_form->createView(),
             'place_form' => $place_form->createView(),
             'car_form' => $car_form->createView(),
             'borne_form' => $borne_form->createView(),
       ));
     }
+
+    /**
+     * @Route("/admin/facility/delete/{name}", name="delete_facility")
+     */
+     public function delete_facility($name) {
+      session_start();
+      $api = new CustomApi();
+      $api->facility_delete($name);
+      return $this->redirectToRoute('admin');
+     }
   }
 
  ?>
