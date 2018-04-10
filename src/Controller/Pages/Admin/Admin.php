@@ -30,6 +30,7 @@
       $api = new CustomApi();
 
       $facilities = [];
+      $choices_facilities = [];
       foreach($api->facility_get_all() as $temp_facility)
       {
           array_push($facilities, array(
@@ -37,6 +38,7 @@
             'address' => $temp_facility['address'],
             'complementary' => $temp_facility['complementary']
           ));
+          $choices_facilities[$temp_facility['name']] = $temp_facility['id_facility'];
       }
 
       $places = [];
@@ -62,11 +64,7 @@
       ->add('name', TextType::class)
       ->add('address', TextType::class)
       ->add('id_facility', ChoiceType::class, array(
-        'choices'  => array(
-          'Yncréa' => 0,
-          'IESEG' => 1,
-          'ICL' => 2
-        )))
+        'choices'  => $choices_facilities))
       ->add('add_place', SubmitType::class, array('label' => 'Ajouter le lieu'))
       ->getForm();
       $place_form->handleRequest($request);
