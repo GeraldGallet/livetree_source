@@ -1,0 +1,34 @@
+{# templates/admin/admin_bornes.html.twig #}
+{% extends "base.html.twig" %}
+
+{% block head %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<br/>
+<a href='/admin'>Général</a>
+<a href='/admin/bornes'>Bornes</a>
+<a href='/admin/voitures'>Voitures</a>
+<a href='/admin/profils'>Profils</a>
+<h1>Administration des bornes</h1>
+<h2>Ajouter une réservation</h2>
+{{ form_start(resa_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(resa_form) }}
+{{ form_end(resa_form) }}
+
+<h2>Réservations de bornes</h2>
+<ul>
+{% for resa in resa_bornes %}
+<li><ul>
+  <li>{{resa.date_time}}</li>
+  <li>{{resa.start_time}}</li>
+  <li>{{resa.end_time}}</li>
+  <li>{{resa.charge}}</li>
+  <li>{{resa.id_place}}</li>
+  <li>{{resa.id_user}}</li>
+  <li><a href="{{ path('delete_resa_borne', {'id_resa': resa.id_resa}) }}"><button>Supprimer</button></a></li>
+</ul></li>
+{% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,15 @@
+{# templates/admin/admin_cars.html.twig #}
+{% extends "base.html.twig" %}
+
+{% block head %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<br/>
+<a href='/admin'>Général</a>
+<a href='/admin/bornes'>Bornes</a>
+<a href='/admin/voitures'>Voitures</a>
+<a href='/admin/profils'>Profils</a>
+<h1>Administration des voitures</h1>
+{% endblock %}

@@ -1,4 +1,34 @@
 {# templates/admin/admin.html.twig #}
+{% extends "base.html.twig" %}
 
-<h1>Admin</h1>
-<h2>Hello {{ first_name }} {{ last_name }}</h2>
+{% block head %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<br/>
+<a href='/admin'>Général</a>
+<a href='/admin/bornes'>Bornes</a>
+<a href='/admin/voitures'>Voitures</a>
+<a href='/admin/profils'>Profils</a>
+<h1>Administration</h1>
+{{ form_start(facility_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(facility_form) }}
+{{ form_end(facility_form) }}
+<br/>
+
+{{ form_start(place_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(place_form) }}
+{{ form_end(place_form) }}
+<br/>
+
+{{ form_start(car_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(car_form) }}
+{{ form_end(car_form) }}
+<br/>
+
+{{ form_start(borne_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(borne_form) }}
+{{ form_end(borne_form) }}
+<br/>
+{% endblock %}

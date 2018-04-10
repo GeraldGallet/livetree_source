@@ -1,4 +1,6 @@
 {# templates/reservations/bornes.html.twig #}
 
 <h1>Bornes</h1>
-<h2>Hello {{ first_name }} {{ last_name }}</h2>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(form) }}
+{{ form_end(form) }}
