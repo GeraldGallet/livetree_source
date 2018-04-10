@@ -26,6 +26,15 @@
 {{ form_end(facility_form) }}
 <br/>
 
+<h2>Lieux</h2>
+{% for place in places %}
+<ul>
+  <li>{{place.name}}</li>
+  <li>{{place.address}}</li>
+  <li>{{place.id_facility}}</li>
+  <li><a href="{{ path('delete_place', {'id_place': place.id_place}) }}"><button>Supprimer</button></a></li>
+</ul>
+{% endfor %}
 {{ form_start(place_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(place_form) }}
 {{ form_end(place_form) }}

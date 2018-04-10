@@ -39,6 +39,17 @@
           ));
       }
 
+      $places = [];
+      foreach($api->place_get_all() as $temp_place)
+      {
+          array_push($places, array(
+            'name' => $temp_place['name'],
+            'address' => $temp_place['address'],
+            'id_facility' => $temp_place['id_facility'],
+            'id_place' => $temp_place['id_place']
+          ));
+      }
+
       $facility_form = $this->createFormBuilder($facility)
       ->add('name', TextType::class)
       ->add('address', TextType::class)
@@ -99,6 +110,12 @@
 
       if ($place_form->isSubmitted() && $place_form->isValid()) {
         $place = $place_form->getData();
+        $api->place_add(array(
+          'name' => $place->getName(),
+          'address' => $place->getAddress(),
+          'id_facility' => $place->getIdFacility()
+        ));
+        return $this->redirectToRoute('admin');
       }
 
       if ($car_form->isSubmitted() && $car_form->isValid()) {
@@ -111,6 +128,7 @@
 
       return $this->render('admin/admin.html.twig', array(
             'facilities' => $facilities,
+            'places' => $places,
             'facility_form' => $facility_form->createView(),
             'place_form' => $place_form->createView(),
             'car_form' => $car_form->createView(),
@@ -127,6 +145,16 @@
       $api->facility_delete($name);
       return $this->redirectToRoute('admin');
      }
+
+   /**
+    * @Route("/admin/place/delete/{id_place}", name="delete_place")
+    */
+    public function delete_place($id_place) {
+     session_start();
+     $api = new CustomApi();
+     $api->place_delete($id_place);
+     return $this->redirectToRoute('admin');
+    }
   }
 
  ?>

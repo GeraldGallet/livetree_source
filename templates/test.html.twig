@@ -1,0 +1,11 @@
+{# templates/test.html.twig #}
+{% extends "base.html.twig" %}
+
+{% block head %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<h1>Test de l'API</h1>
+{{dump(result)}}
+{% endblock %}

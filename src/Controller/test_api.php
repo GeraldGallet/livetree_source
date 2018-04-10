@@ -1,8 +1,17 @@
 <?php
   namespace App\Controller;
-  use CustomApi;
 
-  class test_api {
+  use App\Controller\CustomApi;
+
+  use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+  use Symfony\Component\HttpFoundation\Request;
+  use Symfony\Component\HttpFoundation\Response;
+  use Symfony\Component\Routing\Annotation\Route;
+
+  class test_api extends Controller {
+    /**
+      * @Route("/test", name="test")
+      */
     function test() {
       $mail = 'robin.poiret@isen.yncrea.fr';
       $pass1 = "passw0rdR";
@@ -56,7 +65,12 @@
       //var_dump($api_interface->facility_get_all());
       //var_dump($api_interface->facility_get("Yncréa"));
       //$api_interface->facility_delete("Yncréa");
+      $result = NULL;
+      $result = $api_interface->place_get_all();
 
+      return $this->render('test.html.twig', array(
+            'result' => $result,
+      ));
     }
   }
 ?>
