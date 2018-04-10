@@ -45,23 +45,64 @@ class ReservationVoitureFonction extends Controller
 
             return $this->redirectToRoute('inscription_success');
         }
-        return $this->render('forms/inscription.html.twig', array(
-            /*'slug' => $slug,
-            */
+        return $this->render('forms/reservationVehicules.html.twig', array(
+
+            'slug'=>$slug,
             'form' => $form->createView(),
 
         ));
     }
 
     /**
-     * @Route("/reserver1", name="app_form_ReservationVoitureFonction_numberOfReservation" )
+     * @Route("/reserver/{slug}/add", name="app_form_ReservationVoitureFonction_numberOfReservation", methods={"POST"})
      */
-    public function toggleNumberOfReservation()
+    public function toggleNumberOfReservation($slug)
     {
-        $numberofhearts = 5;
-/*        return new JsonResponse(['hearts' => $numberofhearts]);*/
-        return new JsonResponse(['hearts' => rand(0,100)]);
-/*        * @Route(/reserver/{slug}/number, name="app_form_ReservationVoitureFonction_numberOfReservation" ,methods={POST})*/
+
+
+        if(file_exists('compteur_visites.txt'))
+        {
+            $compteur_f = fopen('compteur_visites.txt', 'r+') or die ("unable to open file");
+            $compte = fgets($compteur_f);
+        }
+        else
+        {
+            $compteur_f = fopen('compteur_visites.txt', 'w+');
+            $compte = 0;
+        }
+
+        $compte++;
+        fseek($compteur_f, 0);
+        fputs($compteur_f, $compte);
+        fclose($compteur_f);
+        return new JsonResponse(['hearts' => $compte]);
+
+
+    }
+    /**
+     * @Route("/reserver/{slug}/reset", name="app_form_ReservationVoitureFonction_numberOfReservationReset", methods={"POST"})
+     */
+    public function toggleNumberOfReservationReset($slug)
+    {
+
+
+        if(file_exists('compteur_visites.txt'))
+        {
+            $compteur_f = fopen('compteur_visites.txt', 'a+');
+            $compte = fgets($compteur_f);
+
+        }
+        else
+        {
+            $compteur_f = fopen('compteur_visites.txt', 'w+');
+            $compte = 0;
+        }
+        $compte=0;
+        $compteur_f = fopen('compteur_visites.txt', 'w+');
+        fputs($compteur_f, $compte);
+        fclose($compteur_f);
+
+        return new JsonResponse(['hearts' => $compte]);
 
 
     }

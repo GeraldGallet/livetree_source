@@ -5,10 +5,10 @@ $(document).ready(function () {
         $link.toggleClass("highlight");
 
         $.ajax({
-            methode:'POST',
+            method:'POST',
             url: $link.attr('href')
         }).done(function(data){
-            $('.inscription-number').html(data.hearts)
+            $('.inscription-number').html(data.hearts  )
 
         })
 
