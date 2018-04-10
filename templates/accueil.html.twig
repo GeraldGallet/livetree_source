@@ -1,4 +1,14 @@
 {# templates/accueil.html.twig #}
+{% extends "base.html.twig" %}
 
-<h1>Accueil</h1>
-<h2>Hello {{ first_name }} {{ last_name }}</h2>
+{% block head %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<a href='/inscription'><button>S'inscrire</button></a>
+{{ form_start(connection_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(connection_form) }}
+{{ form_end(connection_form) }}
+<h1>Acceuil</h1>
+{% endblock %}
