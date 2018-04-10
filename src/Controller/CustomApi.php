@@ -38,6 +38,11 @@
     public function place_add($place);
     public function place_delete($id_place);
 
+    // Personal cars functions
+    public function company_car_get_all($id_facility);
+    public function company_car_get($id_facility, $name);
+    public function company_car_add($car);
+    public function company_car_delete($id_company_car);
   }
 
 
@@ -179,7 +184,7 @@
 
     /* Personal cars related functions */
 
-    // Gets all the personal cars of the specified
+    // Gets all the personal cars of the specified user
     public function personal_car_get_all($user) {
       $user = json_encode($user);
 
@@ -292,10 +297,12 @@
       return $result['response'];
     }
 
+    // Returns a specific place
     public function place_get($name) {
 
     }
 
+    // Adds a new place to the DB
     public function place_add($place) {
       $place = json_encode($place);
 
@@ -304,6 +311,7 @@
       $response = curl_exec($ch);
     }
 
+    // Removes a place from the DB
     public function place_delete($id_place) {
       $data = array(
         'id_place' => $id_place
@@ -311,6 +319,61 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'place/');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    /* All the company car related functions */
+    // Gets all the company cars of the specified facility
+    public function company_car_get_all($id_facility) {
+      $fac = array(
+        'id_facility' => $id_facility
+      );
+      $fac = json_encode($fac);
+
+      $ch = $this->api_connect($this->url . "company_car/get_all/");
+      $ch = $this->api_options($ch, "POST", $fac);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    // Gets a specific personal car of the specified user
+    public function company_car_get($id_facility, $name) {
+      $data = array(
+        'name' => $name,
+        'id_facility' => $id_facility
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "company_car/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    // Adds a new personal car
+    public function company_car_add($car) {
+      $car = json_encode($car);
+
+      $ch = $this->api_connect($this->url . 'company_car/add/');
+      $ch = $this->api_options($ch, "POST", $car);
+      $result = curl_exec($ch);
+    }
+
+    // Deletes a specific personal car of the specified user
+    public function company_car_delete($id_company_car) {
+      $data = array(
+        'id_company_car' => $id_company_car
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'company_car');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }

@@ -66,7 +66,21 @@
       //var_dump($api_interface->facility_get("Yncréa"));
       //$api_interface->facility_delete("Yncréa");
       $result = NULL;
-      $result = $api_interface->place_get_all();
+      //$result = $api_interface->place_get_all();
+
+      $car = array(
+        'model' => "Renault Kangoo",
+        'power' => 30,
+        'name' => "Voiture #2",
+        'id_facility' => 2
+      );
+      $id_facility = 2;
+      //$result = $api_interface->company_car_get_all(2);
+      //$api_interface->company_car_add($car);
+      $api_interface->company_car_delete(2);
+      //var_dump($api_interface->personal_car_get_all($user));
+      //var_dump($api_interface->personal_car_get(1, "Voiture perso"));
+      //$api_interface->personal_car_delete(1, "Voiture perso 2")
 
       return $this->render('test.html.twig', array(
             'result' => $result,

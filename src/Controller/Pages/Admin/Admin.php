@@ -31,6 +31,8 @@
 
       $facilities = [];
       $choices_facilities = [];
+      $places = [];
+      $cars = [];
       foreach($api->facility_get_all() as $temp_facility)
       {
           array_push($facilities, array(
@@ -41,7 +43,6 @@
           $choices_facilities[$temp_facility['name']] = $temp_facility['id_facility'];
       }
 
-      $places = [];
       foreach($api->place_get_all() as $temp_place)
       {
           array_push($places, array(
@@ -50,6 +51,19 @@
             'id_facility' => $temp_place['id_facility'],
             'id_place' => $temp_place['id_place']
           ));
+      }
+
+      foreach($choices_facilities as $id_fac) {
+        foreach($api->company_car_get_all($id_fac) as $temp_car)
+        {
+            array_push($cars, array(
+              'name' => $temp_car['name'],
+              'model' => $temp_car['model'],
+              'facility' => array_search($temp_car['id_facility'], $choices_facilities),
+              'power' => $temp_car['power'],
+              'id_company_car' => $temp_car['id_company_car']
+            ));
+        }
       }
 
       $facility_form = $this->createFormBuilder($facility)
@@ -74,11 +88,7 @@
       ->add('model', TextType::class)
       ->add('power', NumberType::class)
       ->add('id_facility', ChoiceType::class, array(
-        'choices'  => array(
-          'Yncréa' => 0,
-          'IESEG' => 1,
-          'ICL' => 2
-        )))
+        'choices'  => $choices_facilities))
       ->add('add_company_car', SubmitType::class, array('label' => 'Ajouter la voiture'))
       ->getForm();
       $car_form->handleRequest($request);
@@ -111,13 +121,20 @@
         $api->place_add(array(
           'name' => $place->getName(),
           'address' => $place->getAddress(),
-          'id_facility' => $place->getIdFacility()
+          'id_facility' => $place->getIdFacility(),
         ));
         return $this->redirectToRoute('admin');
       }
 
       if ($car_form->isSubmitted() && $car_form->isValid()) {
         $company_car = $car_form->getData();
+        $api->company_car_add(array(
+          'name' => $company_car->getName(),
+          'model' => $company_car->getModel(),
+          'power' => $company_car->getPower(),
+          'id_facility' => $company_car->getIdFacility(),
+        ));
+        return $this->redirectToRoute('admin');
       }
 
       if ($borne_form->isSubmitted() && $borne_form->isValid()) {
@@ -127,6 +144,7 @@
       return $this->render('admin/admin.html.twig', array(
             'facilities' => $facilities,
             'places' => $places,
+            'cars' => $cars,
             'facility_form' => $facility_form->createView(),
             'place_form' => $place_form->createView(),
             'car_form' => $car_form->createView(),
@@ -153,6 +171,16 @@
      $api->place_delete($id_place);
      return $this->redirectToRoute('admin');
     }
+
+    /**
+     * @Route("/admin/company_car/delete/{id_company_car}", name="delete_company_car")
+     */
+     public function delete_company_car($id_company_car) {
+      session_start();
+      $api = new CustomApi();
+      $api->company_car_delete($id_company_car);
+      return $this->redirectToRoute('admin');
+     }
   }
 
  ?>

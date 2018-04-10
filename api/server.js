@@ -24,6 +24,8 @@ const Facility = require('./classes/facility.js');
 const facility = new Facility();
 const Place = require('./classes/place.js');
 const place = new Place();
+const CompanyCar = require('./classes/companycar.js');
+const company_car = new CompanyCar();
 
 // Connecting to DB
 app.use(function(req, res, next){
@@ -138,6 +140,25 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
       }
       break;
 
+    case "company_car":
+      switch(req.params.cmd) {
+        case "get_all":
+          company_car.get_all(req.body, res);
+          break;
+
+        case "get":
+          company_car.get(req.body, res);
+          break;
+
+        case "add":
+          company_car.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
 
     default:
       console.log("UNKNOWN TABLE POST /" + req.params.table + "/");
@@ -167,6 +188,10 @@ app.delete('/:table', jsonParser, function(req, res, next) {
 
     case "place":
       place.delete(req.body, res);
+      break;
+
+    case "company_car":
+      company_car.delete(req.body, res);
       break;
 
     default:

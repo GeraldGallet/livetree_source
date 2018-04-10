@@ -40,6 +40,16 @@
 {{ form_end(place_form) }}
 <br/>
 
+<h2>Voitures</h2>
+{% for car in cars %}
+<ul>
+  <li>{{car.facility}}</li>
+  <li>{{car.name}}</li>
+  <li>{{car.model}}</li>
+  <li>{{car.power}}</li>
+  <li><a href="{{ path('delete_company_car', {'id_company_car': car.id_company_car}) }}"><button>Supprimer</button></a></li>
+</ul>
+{% endfor %}
 {{ form_start(car_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(car_form) }}
 {{ form_end(car_form) }}
