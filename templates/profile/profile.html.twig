@@ -39,7 +39,10 @@
     <li><b> {{car.name}} </b></li>
     <li> {{car.model}} </li>
     <li> {{car.power}} </li>
-    <li> Delete </li>
+    <li><a href="{{ path('delete_personal_car', {'car_name': car.name}) }}"><button>Supprimer</button></a></li>
   </ul>
 {% endfor %}
+{{ form_start(personal_car_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(personal_car_form) }}
+{{ form_end(personal_car_form) }}
 {% endblock %}

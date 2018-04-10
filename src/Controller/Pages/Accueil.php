@@ -47,6 +47,7 @@
             $_SESSION['first_name'] = $db_user['first_name'];
             $_SESSION['last_name'] = $db_user['last_name'];
             $_SESSION['id_status'] = $db_user['id_status'];
+            $_SESSION['phone_number'] = $db_user['phone_number'];
           } else
           {
             return $this->render('accueil.html.twig', array(

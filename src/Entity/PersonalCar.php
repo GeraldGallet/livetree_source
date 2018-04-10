@@ -7,6 +7,7 @@
       protected $name;
       protected $model;
       protected $power;
+      protected $id_user;
 
       public function getName()
       {
@@ -36,6 +37,16 @@
       public function setPower($power)
       {
           $this->power = $power;
+      }
+
+      public function getIdUser()
+      {
+          return $this->id_user;
+      }
+
+      public function setIdUser($id_user)
+      {
+          $this->id_user = $id_user;
       }
   }
 
