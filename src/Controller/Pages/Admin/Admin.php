@@ -31,8 +31,11 @@
 
       $facilities = [];
       $choices_facilities = [];
+      $choices_places = [];
       $places = [];
       $cars = [];
+      $bornes = [];
+
       foreach($api->facility_get_all() as $temp_facility)
       {
           array_push($facilities, array(
@@ -51,6 +54,7 @@
             'id_facility' => $temp_place['id_facility'],
             'id_place' => $temp_place['id_place']
           ));
+          $choices_places[$temp_place['name']] = $temp_place['id_place'];
       }
 
       foreach($choices_facilities as $id_fac) {
@@ -62,6 +66,19 @@
               'facility' => array_search($temp_car['id_facility'], $choices_facilities),
               'power' => $temp_car['power'],
               'id_company_car' => $temp_car['id_company_car']
+            ));
+        }
+      }
+
+      foreach($choices_places as $id_place) {
+        foreach($api->borne_get_all($id_place) as $temp_borne)
+        {
+            array_push($bornes, array(
+              'name' => $temp_borne['name'],
+              'place' => $temp_borne['place'],
+              'id_place' => $temp_borne['id_place'],
+              'id_borne' => $temp_borne['id_borne'],
+              'desc_place' => array_search($temp_borne['id_place'], $choices_places)
             ));
         }
       }
@@ -97,11 +114,7 @@
       ->add('name', TextType::class)
       ->add('place', TextType::class)
       ->add('id_place', ChoiceType::class, array(
-        'choices'  => array(
-          'Parking P1' => 0,
-          'Parking P2' => 1,
-          'Parking IESEG' => 2
-        )))
+        'choices'  => $choices_places))
       ->add('add_borne', SubmitType::class, array('label' => 'Ajouter la borne'))
       ->getForm();
       $borne_form->handleRequest($request);
@@ -139,12 +152,19 @@
 
       if ($borne_form->isSubmitted() && $borne_form->isValid()) {
         $borne = $borne_form->getData();
+        $api->borne_add(array(
+          'name' => $borne->getName(),
+          'place' => $borne->getPlace(),
+          'id_place' => $borne->getIdPlace(),
+        ));
+        return $this->redirectToRoute('admin');
       }
 
       return $this->render('admin/admin.html.twig', array(
             'facilities' => $facilities,
             'places' => $places,
             'cars' => $cars,
+            'bornes' => $bornes,
             'facility_form' => $facility_form->createView(),
             'place_form' => $place_form->createView(),
             'car_form' => $car_form->createView(),
@@ -181,6 +201,16 @@
       $api->company_car_delete($id_company_car);
       return $this->redirectToRoute('admin');
      }
+
+     /**
+      * @Route("/admin/borne/delete/{id_borne}", name="delete_borne")
+      */
+      public function delete_borne($id_borne) {
+       session_start();
+       $api = new CustomApi();
+       $api->borne_delete($id_borne);
+       return $this->redirectToRoute('admin');
+      }
   }
 
  ?>

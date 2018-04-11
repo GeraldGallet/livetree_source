@@ -26,6 +26,8 @@ const Place = require('./classes/place.js');
 const place = new Place();
 const CompanyCar = require('./classes/companycar.js');
 const company_car = new CompanyCar();
+const Borne = require('./classes/borne.js');
+const borne = new Borne();
 
 // Connecting to DB
 app.use(function(req, res, next){
@@ -160,6 +162,26 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
       }
       break;
 
+    case "borne":
+      switch(req.params.cmd) {
+        case "get_all":
+          borne.get_all(req.body, res);
+          break;
+
+        case "get":
+          borne.get(req.body, res);
+          break;
+
+        case "add":
+          borne.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
     default:
       console.log("UNKNOWN TABLE POST /" + req.params.table + "/");
       break;
@@ -192,6 +214,10 @@ app.delete('/:table', jsonParser, function(req, res, next) {
 
     case "company_car":
       company_car.delete(req.body, res);
+      break;
+
+    case "borne":
+      borne.delete(req.body, res);
       break;
 
     default:

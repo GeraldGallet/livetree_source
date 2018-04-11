@@ -43,6 +43,12 @@
     public function company_car_get($id_facility, $name);
     public function company_car_add($car);
     public function company_car_delete($id_company_car);
+
+    // Bornes functions
+    public function borne_get_all($id_place);
+    public function borne_get($id_borne);
+    public function borne_add($borne);
+    public function borne_delete($id_borne);
   }
 
 
@@ -374,6 +380,56 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'company_car');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    /* Bornes */
+    public function borne_get_all($id_place) {
+      $fac = array(
+        'id_place' => $id_place
+      );
+      $fac = json_encode($fac);
+
+      $ch = $this->api_connect($this->url . "borne/get_all/");
+      $ch = $this->api_options($ch, "POST", $fac);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function borne_get($id_borne) {
+      $data = array(
+        'id_borne' => $id_borne
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "borne/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    public function borne_add($borne) {
+      $borne = json_encode($borne);
+
+      $ch = $this->api_connect($this->url . 'borne/add/');
+      $ch = $this->api_options($ch, "POST", $borne);
+      $result = curl_exec($ch);
+    }
+
+    public function borne_delete($id_borne) {
+      $data = array(
+        'id_borne' => $id_borne
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'borne');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }
