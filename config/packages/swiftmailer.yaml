@@ -1,0 +1,9 @@
+swiftmailer:
+    transport:  smtp
+    encryption: ssl
+    auth_mode:  login
+    host:       smtp.gmail.com
+    username:   mailsender59270@gmail.com
+    password:   b6ef6e93
+    port:       587
+    spool: { type: memory }
