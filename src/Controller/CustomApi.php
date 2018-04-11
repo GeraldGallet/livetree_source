@@ -49,6 +49,12 @@
     public function borne_get($id_borne);
     public function borne_add($borne);
     public function borne_delete($id_borne);
+
+    // Work functions
+    public function work_get_all();
+    public function work_get($id_user);
+    public function work_add($id_user, $id_facility);
+    public function work_delete($id_user, $id_facility);
   }
 
 
@@ -430,6 +436,58 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'borne');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    /* Work related functions */
+
+    // Gets all works
+    public function work_get_all() {
+      $ch = $this->api_connect($this->url . "work/get_all/");
+      $ch = $this->api_options($ch, "POST", []);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function work_get($id_user) {
+      $data = array(
+        'id_user' => $id_user
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "work/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function work_add($id_user, $id_facility) {
+      $work = array(
+        'id_user' => $id_user,
+        'id_facility' => $id_facility
+      );
+      $work = json_encode($work);
+
+      $ch = $this->api_connect($this->url . 'work/add/');
+      $ch = $this->api_options($ch, "POST", $work);
+      $result = curl_exec($ch);
+    }
+
+    public function work_delete($id_user, $id_facility) {
+      $data = array(
+        'id_user' => $id_user,
+        'id_facility' => $id_facility
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'work');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }

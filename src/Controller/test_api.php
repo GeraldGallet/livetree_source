@@ -91,6 +91,11 @@
       //$result = $api_interface->borne_get(1);
       //$api_interface->borne_add($borne);
       //$api_interface->borne_delete(2);
+
+      //$result = $api_interface->work_get_all();
+      //$result = $api_interface->work_get(3);
+      //$api_interface->work_add(3, 2);
+      $api_interface->work_delete(3, 3);
       return $this->render('test.html.twig', array(
             'result' => $result,
       ));
