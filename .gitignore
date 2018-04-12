@@ -4,10 +4,9 @@ Informations_utiles/exempleAliasWamp/
 /public/bundles/
 /var/
 **/vendor/
-
-
-
-
+/api/node_modules
+/api/package-lock.json
+/api/package.json
 
 # Created by https://www.gitignore.io/api/phpstorm
 

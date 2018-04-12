@@ -38,6 +38,8 @@ const PhoneIndicative = require('./classes/phoneIndicative.js');
 const phoneIndicative = new PhoneIndicative();
 const HasAccess = require('./classes/hasAccess.js');
 const hasAccess = new HasAccess();
+const ReservationBorne = require('./classes/reservationBorne.js');
+const reservationBorne = new ReservationBorne();
 
 // Connecting to DB
 app.use(function(req, res, next){
@@ -140,6 +142,10 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
 
         case "get":
           place.get(req.body, res);
+          break;
+
+        case "get_by_id":
+          place.get_by_id(req.body, res);
           break;
 
         case "add":
@@ -292,6 +298,26 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
       }
       break;
 
+    case "reservation_borne":
+      switch(req.params.cmd) {
+        case "get_all":
+          reservationBorne.getAll(res);
+          break;
+
+        case "get":
+          reservationBorne.get(req.body, res);
+          break;
+
+        case "add":
+          reservationBorne.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
     default:
       console.log("UNKNOWN TABLE POST /" + req.params.table + "/");
       break;
@@ -348,6 +374,10 @@ app.delete('/:table', jsonParser, function(req, res, next) {
 
     case "has_access":
       hasAccess.delete(req.body, res);
+      break;
+
+    case "reservation_borne":
+      reservationBorne.delete(req.body, res);
       break;
 
     default:

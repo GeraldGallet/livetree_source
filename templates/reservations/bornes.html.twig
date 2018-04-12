@@ -1,6 +1,14 @@
 {# templates/reservations/bornes.html.twig #}
+{% extends "base.html.twig" %}
 
-<h1>Bornes</h1>
+{% block head %}
+{{ parent() }}
+<title>Profil</title>
+{% endblock %}
+
+{% block body %}
+<h1>Réservation de bornes</h1>
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(form) }}
 {{ form_end(form) }}
+{% endblock %}

@@ -2,6 +2,7 @@
   namespace App\Controller;
 
   use App\Controller\CustomApi;
+  use \DateTime;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Request;
@@ -123,8 +124,10 @@
 
       //$api_interface->has_access_add(3, 1);
       //$result = $api_interface->has_access_get(3);
-      $api_interface->has_access_delete(3, 1);
-
+      //$api_interface->has_access_delete(3, 1);
+      //$date = new DateTime('2018-04-15 17:00:00');
+      //$date2 = new DateTime('2018-04-15 19:00:00');
+      // /$api_interface->reservation_borne_add(date_format($date, 'Y-m-d'), date_format($date, 'H:i:s'), date_format($date2, 'H:i:s'), 50, 3, 1);
       return $this->render('test.html.twig', array(
             'result' => $result,
       ));

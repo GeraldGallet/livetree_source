@@ -35,6 +35,7 @@
     // Places functions
     public function place_get_all();
     public function place_get($id_facility);
+    public function place_get_by_id($id_place);
     public function place_add($place);
     public function place_delete($id_place);
 
@@ -79,6 +80,12 @@
     public function has_access_get($id_user);
     public function has_access_add($id_user, $id_place);
     public function has_access_delete($id_user, $id_place);
+
+    // Resa bornes functions
+    public function reservation_borne_get_all();
+    public function reservation_borne_get($id_place, $date_resa);
+    public function reservation_borne_add($date_resa, $start_time, $end_time, $charge, $id_user, $id_place);
+    public function reservation_borne_delete($id_resa);
   }
 
 
@@ -346,6 +353,21 @@
 
       $result = json_decode($result, true);
       return $result['response'];
+    }
+
+    // Gets a place by its id
+    public function place_get_by_id($id_place) {
+      $data = array(
+        'id_place' => $id_place
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'place/get_by_id/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
     }
 
     // Adds a new place to the DB
@@ -720,6 +742,59 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'has_access');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function reservation_borne_get_all() {
+      $ch = $this->api_connect($this->url . "reservation_borne/get_all/");
+      $ch = $this->api_options($ch, "POST", []);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function reservation_borne_get($id_place, $date_resa) {
+      $data = array(
+        'id_place' => $id_place,
+        'date_resa' => $date_resa
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "reservation_borne/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function reservation_borne_add($date_resa, $start_time, $end_time, $charge, $id_user, $id_place) {
+      $data = array(
+        'date_resa' => $date_resa,
+        'start_time' => $start_time,
+        'end_time' => $end_time,
+        'charge' => $charge,
+        'id_user' => $id_user,
+        'id_place' => $id_place
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'reservation_borne/add/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function reservation_borne_delete($id_resa) {
+      $data = array(
+        'id_resa' => $id_resa
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'reservation_borne');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }
