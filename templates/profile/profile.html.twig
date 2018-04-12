@@ -20,8 +20,13 @@
   <li><u>Etablissements</u>:
     <ul>
       {% for facility in facilities %}
-        <li>{{ facility }}</li>
+        <li>{{ facility.name }} <a href="{{ path('delete_work', {'id_facility': facility.id_facility}) }}"><button>Supprimer</button></a></li>
       {% endfor %}
+      <li>
+        {{ form_start(work_form, {'attr': {'novalidate': 'novalidate'}}) }}
+        {{ form_widget(work_form) }}
+        {{ form_end(work_form) }}
+      </li>
     </ul>
   </li>
   <li><u>Lieux</u>:
@@ -39,7 +44,10 @@
     <li><b> {{car.name}} </b></li>
     <li> {{car.model}} </li>
     <li> {{car.power}} </li>
-    <li> Delete </li>
+    <li><a href="{{ path('delete_personal_car', {'car_name': car.name}) }}"><button>Supprimer</button></a></li>
   </ul>
 {% endfor %}
+{{ form_start(personal_car_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(personal_car_form) }}
+{{ form_end(personal_car_form) }}
 {% endblock %}

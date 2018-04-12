@@ -29,6 +29,12 @@
     public function facility_add($facility);
     public function facility_delete($name);
 
+    // Places functions
+    public function place_get_all();
+    public function place_get($name);
+    public function place_add($facility);
+    public function place_delete($name);
+
   }
 
 
@@ -268,6 +274,35 @@
       $ch = $this->api_connect($this->url . 'facility/');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
+    }
+
+
+    /* The functions that are place-related */
+
+    // Returns all the places
+    public function place_get_all() {
+      $ch = $this->api_connect($this->url . 'place/get_all/');
+      $ch = $this->api_options($ch, "POST", NULL);
+      $result = curl_exec($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function place_get($name) {
+
+    }
+
+    public function place_add($place) {
+      $place = json_encode($place);
+
+      $ch = $this->api_connect($this->url . "place/add/");
+      $ch = $this->api_options($ch, "POST", $place);
+      $response = curl_exec($ch);
+    }
+
+    public function place_delete($name) {
+
     }
   }
 ?>

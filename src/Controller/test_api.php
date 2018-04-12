@@ -1,8 +1,17 @@
 <?php
   namespace App\Controller;
-  use CustomApi;
 
-  class test_api {
+  use App\Controller\CustomApi;
+
+  use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+  use Symfony\Component\HttpFoundation\Request;
+  use Symfony\Component\HttpFoundation\Response;
+  use Symfony\Component\Routing\Annotation\Route;
+
+  class test_api extends Controller {
+    /**
+      * @Route("/test_api", name="test")
+      */
     function test() {
       $mail = 'robin.poiret@isen.yncrea.fr';
       $pass1 = "passw0rdR";
@@ -55,8 +64,41 @@
       //$api_interface->facility_add($facility);
       //var_dump($api_interface->facility_get_all());
       //var_dump($api_interface->facility_get("Yncréa"));
-      $api_interface->facility_delete("Yncréa");
+      //$api_interface->facility_delete("Yncréa");
+      $result = NULL;
+      //$result = $api_interface->place_get_all();
 
+      $car = array(
+        'model' => "Renault Kangoo",
+        'power' => 30,
+        'name' => "Voiture #2",
+        'id_facility' => 2
+      );
+      $id_facility = 2;
+      //$result = $api_interface->company_car_get_all(2);
+      //$api_interface->company_car_add($car);
+      //$api_interface->company_car_delete(2);
+      //var_dump($api_interface->personal_car_get_all($user));
+      //var_dump($api_interface->personal_car_get(1, "Voiture perso"));
+      //$api_interface->personal_car_delete(1, "Voiture perso 2")
+
+      $borne = array(
+        'name' => "Borne #2",
+        'place' => "2e étage",
+        'id_place' => 1
+      );
+
+      //$result = $api_interface->borne_get(1);
+      //$api_interface->borne_add($borne);
+      //$api_interface->borne_delete(2);
+
+      //$result = $api_interface->work_get_all();
+      //$result = $api_interface->work_get(3);
+      //$api_interface->work_add(3, 2);
+      $api_interface->work_delete(3, 3);
+      return $this->render('test.html.twig', array(
+            'result' => $result,
+      ));
     }
   }
 ?>

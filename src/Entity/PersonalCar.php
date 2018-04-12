@@ -2,11 +2,25 @@
   // src/Entity/Task.php
   namespace App\Entity;
 
+  use Symfony\Component\Validator\Constraints as Assert;
+
   class PersonalCar
   {
+    /**
+     * @Assert\NotBlank()
+     */
       protected $name;
+
+      /**
+       * @Assert\NotBlank()
+       */
       protected $model;
+
+      /**
+       * @Assert\NotBlank()
+       */
       protected $power;
+      protected $id_user;
 
       public function getName()
       {
@@ -36,6 +50,16 @@
       public function setPower($power)
       {
           $this->power = $power;
+      }
+
+      public function getIdUser()
+      {
+          return $this->id_user;
+      }
+
+      public function setIdUser($id_user)
+      {
+          $this->id_user = $id_user;
       }
   }
 

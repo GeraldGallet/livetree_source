@@ -12,21 +12,58 @@
 <a href='/admin/voitures'>Voitures</a>
 <a href='/admin/profils'>Profils</a>
 <h1>Administration</h1>
+<h2>Etablissements</h2>
+{% for facility in facilities %}
+<ul>
+  <li>{{facility.name}}</li>
+  <li>{{facility.address}}</li>
+  <li>{{facility.complementary}}</li>
+  <li><a href="{{ path('delete_facility', {'name': facility.name}) }}"><button>Supprimer</button></a></li>
+</ul>
+{% endfor %}
 {{ form_start(facility_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(facility_form) }}
 {{ form_end(facility_form) }}
 <br/>
 
+<h2>Lieux</h2>
+{% for place in places %}
+<ul>
+  <li>{{place.name}}</li>
+  <li>{{place.address}}</li>
+  <li>{{place.id_facility}}</li>
+  <li><a href="{{ path('delete_place', {'id_place': place.id_place}) }}"><button>Supprimer</button></a></li>
+</ul>
+{% endfor %}
 {{ form_start(place_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(place_form) }}
 {{ form_end(place_form) }}
 <br/>
 
+<h2>Voitures</h2>
+{% for car in cars %}
+<ul>
+  <li>{{car.facility}}</li>
+  <li>{{car.name}}</li>
+  <li>{{car.model}}</li>
+  <li>{{car.power}}</li>
+  <li><a href="{{ path('delete_company_car', {'id_company_car': car.id_company_car}) }}"><button>Supprimer</button></a></li>
+</ul>
+{% endfor %}
 {{ form_start(car_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(car_form) }}
 {{ form_end(car_form) }}
 <br/>
 
+<h2>Bornes</h2>
+{% for borne in bornes %}
+<ul>
+  <li>{{borne.desc_place}}</li>
+  <li>{{borne.name}}</li>
+  <li>{{borne.place}}</li>
+  <li><a href="{{ path('delete_borne', {'id_borne': borne.id_borne}) }}"><button>Supprimer</button></a></li>
+</ul>
+{% endfor %}
 {{ form_start(borne_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(borne_form) }}
 {{ form_end(borne_form) }}

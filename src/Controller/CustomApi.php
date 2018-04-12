@@ -32,6 +32,29 @@
     public function facility_add($facility);
     public function facility_delete($name);
 
+    // Places functions
+    public function place_get_all();
+    public function place_get($name);
+    public function place_add($place);
+    public function place_delete($id_place);
+
+    // Personal cars functions
+    public function company_car_get_all($id_facility);
+    public function company_car_get($id_facility, $name);
+    public function company_car_add($car);
+    public function company_car_delete($id_company_car);
+
+    // Bornes functions
+    public function borne_get_all($id_place);
+    public function borne_get($id_borne);
+    public function borne_add($borne);
+    public function borne_delete($id_borne);
+
+    // Work functions
+    public function work_get_all();
+    public function work_get($id_user);
+    public function work_add($id_user, $id_facility);
+    public function work_delete($id_user, $id_facility);
   }
 
 
@@ -173,7 +196,7 @@
 
     /* Personal cars related functions */
 
-    // Gets all the personal cars of the specified
+    // Gets all the personal cars of the specified user
     public function personal_car_get_all($user) {
       $user = json_encode($user);
 
@@ -269,6 +292,202 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'facility/');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+
+    /* The functions that are place-related */
+
+    // Returns all the places
+    public function place_get_all() {
+      $ch = $this->api_connect($this->url . 'place/get_all/');
+      $ch = $this->api_options($ch, "POST", NULL);
+      $result = curl_exec($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    // Returns a specific place
+    public function place_get($name) {
+
+    }
+
+    // Adds a new place to the DB
+    public function place_add($place) {
+      $place = json_encode($place);
+
+      $ch = $this->api_connect($this->url . "place/add/");
+      $ch = $this->api_options($ch, "POST", $place);
+      $response = curl_exec($ch);
+    }
+
+    // Removes a place from the DB
+    public function place_delete($id_place) {
+      $data = array(
+        'id_place' => $id_place
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'place/');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    /* All the company car related functions */
+    // Gets all the company cars of the specified facility
+    public function company_car_get_all($id_facility) {
+      $fac = array(
+        'id_facility' => $id_facility
+      );
+      $fac = json_encode($fac);
+
+      $ch = $this->api_connect($this->url . "company_car/get_all/");
+      $ch = $this->api_options($ch, "POST", $fac);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    // Gets a specific personal car of the specified user
+    public function company_car_get($id_facility, $name) {
+      $data = array(
+        'name' => $name,
+        'id_facility' => $id_facility
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "company_car/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    // Adds a new personal car
+    public function company_car_add($car) {
+      $car = json_encode($car);
+
+      $ch = $this->api_connect($this->url . 'company_car/add/');
+      $ch = $this->api_options($ch, "POST", $car);
+      $result = curl_exec($ch);
+    }
+
+    // Deletes a specific personal car of the specified user
+    public function company_car_delete($id_company_car) {
+      $data = array(
+        'id_company_car' => $id_company_car
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'company_car');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    /* Bornes */
+    public function borne_get_all($id_place) {
+      $fac = array(
+        'id_place' => $id_place
+      );
+      $fac = json_encode($fac);
+
+      $ch = $this->api_connect($this->url . "borne/get_all/");
+      $ch = $this->api_options($ch, "POST", $fac);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function borne_get($id_borne) {
+      $data = array(
+        'id_borne' => $id_borne
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "borne/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    public function borne_add($borne) {
+      $borne = json_encode($borne);
+
+      $ch = $this->api_connect($this->url . 'borne/add/');
+      $ch = $this->api_options($ch, "POST", $borne);
+      $result = curl_exec($ch);
+    }
+
+    public function borne_delete($id_borne) {
+      $data = array(
+        'id_borne' => $id_borne
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'borne');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    /* Work related functions */
+
+    // Gets all works
+    public function work_get_all() {
+      $ch = $this->api_connect($this->url . "work/get_all/");
+      $ch = $this->api_options($ch, "POST", []);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function work_get($id_user) {
+      $data = array(
+        'id_user' => $id_user
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "work/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function work_add($id_user, $id_facility) {
+      $work = array(
+        'id_user' => $id_user,
+        'id_facility' => $id_facility
+      );
+      $work = json_encode($work);
+
+      $ch = $this->api_connect($this->url . 'work/add/');
+      $ch = $this->api_options($ch, "POST", $work);
+      $result = curl_exec($ch);
+    }
+
+    public function work_delete($id_user, $id_facility) {
+      $data = array(
+        'id_user' => $id_user,
+        'id_facility' => $id_facility
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'work');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }
