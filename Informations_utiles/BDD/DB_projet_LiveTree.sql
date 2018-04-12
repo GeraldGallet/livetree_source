@@ -7,6 +7,11 @@ CREATE DATABASE IF NOT EXISTS `projet_LiveTree` DEFAULT CHARACTER SET latin1 COL
 USE `projet_LiveTree`;
 
 #------------------------------------------------------------
+#        Script MySQL.
+#------------------------------------------------------------
+
+
+#------------------------------------------------------------
 # Table: user
 #------------------------------------------------------------
 
@@ -184,3 +189,36 @@ ALTER TABLE has_access ADD CONSTRAINT FK_has_access_id_user FOREIGN KEY (id_user
 ALTER TABLE has_access ADD CONSTRAINT FK_has_access_id_place FOREIGN KEY (id_place) REFERENCES place(id_place);
 ALTER TABLE work ADD CONSTRAINT FK_work_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
 ALTER TABLE work ADD CONSTRAINT FK_work_id_facility FOREIGN KEY (id_facility) REFERENCES facility(id_facility);
+
+
+
+insert into status(id_status,rights)
+values('teacher',1);
+
+insert into user(email,password,phone_number,first_name,last_name,activated,id_status)
+values ('aa@htt.fr','abcdef',09876543212,'jc','sim',true,'teacher');
+
+insert into facility(name,complementary,address)
+values ('ISEN','lille','quartier vauband'),
+('HEI','lille','tool');
+
+insert into facility(name,complementary,address)
+values (1,'ISEN','lille','quartier vauband');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
