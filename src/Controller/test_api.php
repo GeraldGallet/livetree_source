@@ -21,8 +21,8 @@
       // GET EXAMPLE
       ///*
       $api_interface = new CustomApi();
-      var_dump($api_interface->user_get($mail));
-      $api_interface->user_delete($mail);
+      //var_dump($api_interface->user_get($mail));
+      //$api_interface->user_delete($mail);
       $user = array(
         'email' => 'robin.poiret@isen.yncrea.fr',
         'first_name' => 'Robin',
@@ -31,8 +31,8 @@
         'phone_number' => '0606060606',
         'id_status' => 'student'
       );
-      $api_interface->user_add($user);
-      $api_interface->user_change_password($mail, $pass2);
+      //$api_interface->user_add($user);
+      //$api_interface->user_change_password($mail, $pass2);
 
       $status = array(
         'id_status' => 'teacher',
@@ -75,12 +75,12 @@
         'id_facility' => 2
       );
       $id_facility = 2;
-      $result = $api_interface->company_car_get_all(2);
-      $api_interface->company_car_add($car);
-      $api_interface->company_car_delete(2);
-      var_dump($api_interface->personal_car_get_all($user));
-      var_dump($api_interface->personal_car_get(1, "Voiture perso"));
-      $api_interface->personal_car_delete(1, "Voiture perso 2");
+      //$result = $api_interface->company_car_get_all(2);
+      //$api_interface->company_car_add($car);
+      //$api_interface->company_car_delete(2);
+      //var_dump($api_interface->personal_car_get_all($user));
+      //var_dump($api_interface->personal_car_get(1, "Voiture perso"));
+      //$api_interface->personal_car_delete(1, "Voiture perso 2")
 
       $borne = array(
         'name' => "Borne #2",
@@ -105,6 +105,7 @@
       //$result = $api_interface->has_domain_get(2);
       //$api_interface->has_domain_delete(1, 2);
 
+      /*
       $domain_name = substr(strrchr("gerald.gallet@yncrea.fr", "@"), 1);
       $res = $api_interface->domain_get($domain_name);
       $id_domain = $api_interface->domain_get($domain_name)[0]['id_domain'];
@@ -113,9 +114,19 @@
       foreach($api_interface->has_domain_get($res[0]['id_domain']) as $has_domain) {
         array_push($id_facs, $has_domain['id_facility']);
       }
+      */
+
+      //$result = $api_interface->phone_indicative_get_all();
+      //$result = $api_interface->phone_indicative_get("+33");
+      //$api_interface->phone_indicative_add("+34", "Allemagne");
+      //$api_interface->phone_indicative_delete("+34");
+
+      //$api_interface->has_access_add(3, 1);
+      //$result = $api_interface->has_access_get(3);
+      $api_interface->has_access_delete(3, 1);
 
       return $this->render('test.html.twig', array(
-            'result' => $id_facs,
+            'result' => $result,
       ));
     }
   }

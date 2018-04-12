@@ -20,20 +20,20 @@
   <li><u>Etablissements</u>:
     <ul>
       {% for facility in facilities %}
-        <li>{{ facility.name }} <a href="{{ path('delete_work', {'id_facility': facility.id_facility}) }}"><button>Supprimer</button></a></li>
+        <li>{{ facility.name }}</li>
       {% endfor %}
-      <li>
-        {{ form_start(work_form, {'attr': {'novalidate': 'novalidate'}}) }}
-        {{ form_widget(work_form) }}
-        {{ form_end(work_form) }}
-      </li>
     </ul>
   </li>
   <li><u>Lieux</u>:
     <ul>
       {% for place in places %}
-        <li>{{ place }}</li>
+        <li>{{ place.name }} <a href="{{ path('delete_access', {'id_place': place.id_place}) }}"><button>Je n'ai pas accès à ce lieu</button></a></li>
       {% endfor %}
+      <li>
+        {{ form_start(access_form, {'attr': {'novalidate': 'novalidate'}}) }}
+        {{ form_widget(access_form) }}
+        {{ form_end(access_form) }}
+      </li>
     </ul>
   </li>
 </ul>
