@@ -67,6 +67,12 @@
     public function has_domain_get($id_domain);
     public function has_domain_add($id_facility, $id_domain);
     public function has_domain_delete($id_facility, $id_domain);
+
+    // Phone indicative functions
+    public function phone_indicative_get_all();
+    public function phone_indicative_get($indicative);
+    public function phone_indicative_add($indicative, $country);
+    public function phone_indicative_delete($indicative);
   }
 
 
@@ -600,6 +606,54 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'has_domain');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function phone_indicative_get_all() {
+      $ch = $this->api_connect($this->url . "phone_indicative/get_all/");
+      $ch = $this->api_options($ch, "POST", []);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function phone_indicative_get($indicative) {
+      $data = array(
+        'indicative' => $indicative
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "phone_indicative/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function phone_indicative_add($indicative, $country) {
+      $data = array(
+        'indicative' => $indicative,
+        'country' => $country
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'phone_indicative/add/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function phone_indicative_delete($indicative) {
+      $data = array(
+        'indicative' => $indicative
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'phone_indicative');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }

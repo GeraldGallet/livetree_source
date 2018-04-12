@@ -25,6 +25,12 @@ class Inscription extends Controller
   {
     // Create a user
     $user = new User();
+    $api = new CustomApi();
+
+    $indicative_choices = [];
+    foreach($api->phone_indicative_get_all() as $pi) {
+      $indicative_choices[$pi['country']] = $pi['indicative'];
+    }
 
     $form = $this->createFormBuilder($user)
         ->add('last_name', TextType::class)
@@ -39,10 +45,7 @@ class Inscription extends Controller
             'Professeur' => 'Professeur'
           )))
         ->add('indicative', ChoiceType::class, array(
-          'choices'  => array(
-            'France' => "+33",
-            'Angleterre' => "+32",
-          )))
+          'choices'  => $indicative_choices))
         ->add('phone_number', NumberType::class)
         ->add('subscribe', SubmitType::class, array('label' => 'Je m\'inscris'))
         ->getForm();
@@ -56,7 +59,6 @@ class Inscription extends Controller
 
         $domain_name = substr(strrchr($user->getEmail(), "@"), 1);
         $res = $api->domain_get($domain_name);
-
         if(sizeof($res) == 0)
           return $this->render('forms/inscription.html.twig', array(
               'form' => $form->createView(),
