@@ -55,6 +55,18 @@
     public function work_get($id_user);
     public function work_add($id_user, $id_facility);
     public function work_delete($id_user, $id_facility);
+
+    // Domain functions
+    public function domain_get_all();
+    public function domain_get($domain);
+    public function domain_add($domain);
+    public function domain_delete($domain);
+
+    // Domain-Facilities functions
+    public function has_domain_get_all();
+    public function has_domain_get($id_domain);
+    public function has_domain_add($id_facility, $id_domain);
+    public function has_domain_delete($id_facility, $id_domain);
   }
 
 
@@ -488,6 +500,106 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'work');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    /* Functions that are domain-related */
+
+    // Gets all lines from domain table
+    public function domain_get_all() {
+      $ch = $this->api_connect($this->url . "domain/get_all/");
+      $ch = $this->api_options($ch, "POST", []);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function domain_get($domain) {
+      $data = array(
+        'domain' => $domain
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "domain/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function domain_add($domain) {
+      $data = array(
+        'domain' => $domain
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'domain/add/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function domain_delete($domain) {
+      $data = array(
+        'domain' => $domain
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'domain');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    // Domain-Facilities functions
+    public function has_domain_get_all() {
+      $ch = $this->api_connect($this->url . "has_domain/get_all/");
+      $ch = $this->api_options($ch, "POST", []);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function has_domain_get($id_domain) {
+      $data = array(
+        'id_domain' => $id_domain
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "has_domain/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function has_domain_add($id_facility, $id_domain) {
+      $data = array(
+        'id_domain' => $id_domain,
+        'id_facility' => $id_facility
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'has_domain/add/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function has_domain_delete($id_facility, $id_domain) {
+      $data = array(
+        'id_domain' => $id_domain,
+        'id_facility' => $id_facility
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'has_domain');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }
