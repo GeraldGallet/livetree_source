@@ -22,6 +22,15 @@ class Facility {
     });
   }
 
+  // Gets a specified personal car
+  get_by_id(body, res) {
+    var query = "SELECT * FROM facility WHERE id_facility = \'" + body.id_facility + "\';";
+    res.locals.connection.query(query, function(error, results, fields) {
+      if(error) throw error;
+      res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+    });
+  }
+
   // Adds a new personal car to the specified user
   add(body, res) {
     res.locals.connection.query('INSERT INTO facility SET ?', body, function (error, results, fields) {

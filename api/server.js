@@ -124,6 +124,10 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
           facility.get(req.body, res);
           break;
 
+        case "get_by_id":
+          facility.get_by_id(req.body, res);
+          break;
+
         case "add":
           facility.add(req.body, res);
           break;

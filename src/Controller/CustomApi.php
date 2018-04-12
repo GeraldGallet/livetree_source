@@ -29,6 +29,7 @@
     // Facilities functions
     public function facility_get_all();
     public function facility_get($name);
+    public function facility_get_by_id($id_facility);
     public function facility_add($facility);
     public function facility_delete($name);
 
@@ -299,6 +300,20 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'facility/get/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    public function facility_get_by_id($id_facility) {
+      $data = array(
+        'id_facility' => $id_facility
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'facility/get_by_id/');
       $ch = $this->api_options($ch, "POST", $data);
       $result = curl_exec($ch);
 
