@@ -4,6 +4,7 @@
   use App\Controller\CustomApi;
   use App\Entity\PersonalCar;
   use App\Entity\Work;
+  use App\Entity\Access;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Response;
@@ -27,10 +28,13 @@
         $api = new CustomApi();
         $facilities = [];
         $facilities_choices = [];
-        $places = ["Parking P1", "Parking P2"];
+        $places = [];
+        $places_choices = [];
         $cars = [];
         $personal_car = new PersonalCar();
         $work = new Work();
+        $access = new Access();
+
 
         foreach(($api->personal_car_get_all(array('id_user' => $_SESSION['id_user']))) as $car)
         {
@@ -50,19 +54,31 @@
         {
           $temp_fac = array_search($temp_work['id_facility'], $facilities_choices);
           array_push($facilities, array(
-            'id_facility' => $temp_work['id_facility'],
             'name' => $temp_fac
           ));
           unset($facilities_choices[$temp_fac]);
+
+          foreach(($api->place_get($temp_work['id_facility'])) as $temp_place) {
+            $facilities_choices[$fac['name']] = $fac['id_facility'];
+            $places_choices[$temp_place['name']] = $temp_place['id_place'];
+          }
         }
 
+        foreach($api->has_access_get($_SESSION['id_user']) as $acc) {
+          $name_place = array_search($acc['id_place'], $places_choices);
+          unset($places_choices[$name_place]);
+          array_push($places, array(
+            'name' => $name_place,
+            'id_place' => $acc['id_place']
+          ));
+        }
 
-        $work_form = $this->createFormBuilder($work)
-            ->add('id_facility', ChoiceType::class, array(
-              'choices'  => $facilities_choices))
-            ->add('add_work', SubmitType::class, array('label' => 'J\'ai accès à cet établissement'))
+        $access_form = $this->createFormBuilder($access)
+            ->add('id_place', ChoiceType::class, array(
+              'choices'  => $places_choices))
+            ->add('add_access', SubmitType::class, array('label' => 'J\'ai accès à ce lieu'))
             ->getForm();
-        $work_form->handleRequest($request);
+        $access_form->handleRequest($request);
 
         $personal_car_form = $this->createFormBuilder($personal_car)
             ->add('name', TextType::class)
@@ -86,11 +102,10 @@
           return $this->redirectToRoute('profile');
         }
 
-        if ($work_form->isSubmitted() && $work_form->isValid()) {
-          $work = $work_form->getData();
+        if ($access_form->isSubmitted() && $access_form->isValid()) {
+          $access = $access_form->getData();
 
-          $api->work_add($_SESSION['id_user'], $work->getIdFacility());
-
+          $api->has_access_add($_SESSION['id_user'], $access->getIdPlace());
           return $this->redirectToRoute('profile');
         }
 
@@ -104,7 +119,7 @@
               'places' => $places,
               'personal_cars' => $cars,
               'personal_car_form' => $personal_car_form->createView(),
-              'work_form' => $work_form->createView()
+              'access_form' => $access_form->createView()
         ));
       } else
       {
@@ -129,6 +144,16 @@
       session_start();
       $api = new CustomApi();
       $api->work_delete($_SESSION['id_user'], $id_facility);
+      return $this->redirectToRoute('profile');
+    }
+
+    /**
+     * @Route("/profil/access/delete/{id_place}", name="delete_access")
+     */
+    public function delete_access($id_place) {
+      session_start();
+      $api = new CustomApi();
+      $api->has_access_delete($_SESSION['id_user'], $id_place);
       return $this->redirectToRoute('profile');
     }
   }

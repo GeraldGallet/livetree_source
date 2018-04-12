@@ -34,7 +34,7 @@
 
     // Places functions
     public function place_get_all();
-    public function place_get($name);
+    public function place_get($id_facility);
     public function place_add($place);
     public function place_delete($id_place);
 
@@ -73,6 +73,12 @@
     public function phone_indicative_get($indicative);
     public function phone_indicative_add($indicative, $country);
     public function phone_indicative_delete($indicative);
+
+    // Accesses functions
+    public function has_access_get_all();
+    public function has_access_get($id_user);
+    public function has_access_add($id_user, $id_place);
+    public function has_access_delete($id_user, $id_place);
   }
 
 
@@ -328,8 +334,18 @@
     }
 
     // Returns a specific place
-    public function place_get($name) {
+    public function place_get($id_facility) {
+      $data = array(
+        'id_facility' => $id_facility
+      );
+      $data = json_encode($data);
 
+      $ch = $this->api_connect($this->url . 'place/get/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
     }
 
     // Adds a new place to the DB
@@ -654,6 +670,56 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'phone_indicative');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    // Accesses functions
+    public function has_access_get_all() {
+      $ch = $this->api_connect($this->url . "has_access/get_all/");
+      $ch = $this->api_options($ch, "POST", []);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function has_access_get($id_user) {
+      $data = array(
+        'id_user' => $id_user
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "has_access/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function has_access_add($id_user, $id_place) {
+      $data = array(
+        'id_user' => $id_user,
+        'id_place' => $id_place
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'has_access/add/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function has_access_delete($id_user, $id_place) {
+      $data = array(
+        'id_user' => $id_user,
+        'id_place' => $id_place
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'has_access');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }

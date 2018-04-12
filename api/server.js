@@ -36,6 +36,8 @@ const HasDomain = require('./classes/hasDomain.js');
 const hasDomain = new HasDomain();
 const PhoneIndicative = require('./classes/phoneIndicative.js');
 const phoneIndicative = new PhoneIndicative();
+const HasAccess = require('./classes/hasAccess.js');
+const hasAccess = new HasAccess();
 
 // Connecting to DB
 app.use(function(req, res, next){
@@ -270,6 +272,26 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
       }
       break;
 
+    case "has_access":
+      switch(req.params.cmd) {
+        case "get_all":
+          hasAccess.getAll(res);
+          break;
+
+        case "get":
+          hasAccess.get(req.body, res);
+          break;
+
+        case "add":
+          hasAccess.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
     default:
       console.log("UNKNOWN TABLE POST /" + req.params.table + "/");
       break;
@@ -322,6 +344,10 @@ app.delete('/:table', jsonParser, function(req, res, next) {
 
     case "phone_indicative":
       phoneIndicative.delete(req.body, res);
+      break;
+
+    case "has_access":
+      hasAccess.delete(req.body, res);
       break;
 
     default:

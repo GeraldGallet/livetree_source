@@ -1,45 +1,44 @@
-/*********** FACILITY **********/
-/* Part that touches thefacilities */
+/*********** HAS_ACCESS **********/
+/* Part that touches the accesses of users to places */
 
-class Facility {
+class HasAccess {
   constructor() { }
 
-  // Gets all the personal car from a user
-  get_all(body, res) {
-    var query = "SELECT * FROM place;";
+  getAll(res) {
+    var query = 'SELECT * FROM has_access;';
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
       res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
     });
   }
 
-  // Gets a specified personal car
+  // Get the line of a specified user
   get(body, res) {
-    var query = "SELECT * FROM place WHERE id_facility = \'" + body.id_facility + "\';";
+    var query = 'SELECT * FROM has_access WHERE id_user = \'' + body.id_user + '\';';
+    var ret = '';
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
       res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
     });
   }
 
-  // Adds a new personal car to the specified user
+  // Adds a new user in the database
   add(body, res) {
-    res.locals.connection.query('INSERT INTO place SET ?', body, function (error, results, fields) {
+    res.locals.connection.query('INSERT INTO has_access SET ?', body, function (error, results, fields) {
       if (error) throw error;
       res.end(JSON.stringify(results));
     });
   }
 
-  // Removes a specified personal car
+  // Deletes a user of the database
   delete(body, res) {
-    var query = 'DELETE FROM place WHERE id_place = \'' + body.id_place + '\'';
+    var query = 'DELETE FROM has_access WHERE id_user = \'' + body.id_user + '\' AND id_place = \'' + body.id_place + '\';';
 
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
       res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
     });
   }
-
 }
 
-module.exports = Facility;
+module.exports = HasAccess;

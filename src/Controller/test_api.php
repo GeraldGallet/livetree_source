@@ -119,7 +119,11 @@
       //$result = $api_interface->phone_indicative_get_all();
       //$result = $api_interface->phone_indicative_get("+33");
       //$api_interface->phone_indicative_add("+34", "Allemagne");
-      $api_interface->phone_indicative_delete("+34");
+      //$api_interface->phone_indicative_delete("+34");
+
+      //$api_interface->has_access_add(3, 1);
+      //$result = $api_interface->has_access_get(3);
+      $api_interface->has_access_delete(3, 1);
 
       return $this->render('test.html.twig', array(
             'result' => $result,
