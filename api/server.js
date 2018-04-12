@@ -68,6 +68,10 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
             user.get(req.body, res);
             break;
 
+          case "get_by_id":
+            user.get_by_id(req.body, res);
+            break;
+
           case "add":
             user.add(req.body, res);
             break;
@@ -310,6 +314,14 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
 
         case "get":
           reservationBorne.get(req.body, res);
+          break;
+
+        case "get_by_place":
+          reservationBorne.get_by_place(req.body, res);
+          break;
+
+        case "get_by_id":
+          reservationBorne.get_by_id(req.body, res);
           break;
 
         case "add":

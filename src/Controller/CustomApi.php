@@ -16,6 +16,7 @@
 
     // User functions
     public function user_get($mail);
+    public function user_get_by_id($id_user);
     public function user_add($user);
     public function user_delete($mail);
     public function user_change_password($mail, $newpassword);
@@ -85,6 +86,8 @@
     // Resa bornes functions
     public function reservation_borne_get_all();
     public function reservation_borne_get($id_place, $date_resa);
+    public function reservation_borne_get_by_id($id_resa);
+    public function reservation_borne_get_by_place($id_place);
     public function reservation_borne_add($date_resa, $start_time, $end_time, $charge, $id_user, $id_place);
     public function reservation_borne_delete($id_resa);
   }
@@ -180,6 +183,24 @@
       // We encode the body to send the email
       $data = array(
         'email' => $mail
+      );
+      $data = json_encode($data);
+
+      // We use a POST request for security reason
+      $ch = $this->api_options($ch, "POST", $data);
+      $data = curl_exec($ch);
+
+      $data = json_decode($data, true);
+      return $data['response'][0];
+    }
+
+    public function user_get_by_id($id_user) {
+      $request = 'user/get_by_id/';
+
+      $ch = $this->api_connect($this->url . $request);
+      // We encode the body to send the email
+      $data = array(
+        'id_user' => $id_user
       );
       $data = json_encode($data);
 
@@ -786,6 +807,37 @@
       $result = json_decode($result, true);
       return $result['response'];
     }
+
+    public function reservation_borne_get_by_place($id_place) {
+      $data = array(
+        'id_place' => $id_place
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "reservation_borne/get_by_place/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function reservation_borne_get_by_id($id_resa) {
+      $data = array(
+        'id_resa' => $id_resa
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "reservation_borne/get_by_id/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
 
     public function reservation_borne_add($date_resa, $start_time, $end_time, $charge, $id_user, $id_place) {
       $data = array(
