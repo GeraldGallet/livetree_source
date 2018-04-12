@@ -282,4 +282,15 @@ INSERT INTO `place` (`id_place`, `name`, `address`, `id_facility`) VALUES (NULL,
 INSERT INTO `place` (`id_place`, `name`, `address`, `id_facility`) VALUES (NULL, 'Parking P1', '60 Boulevard Vauban, 59800 Lille', '2');
 
 INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+32', 'Angleterre');
-INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+33', 'France');  
+INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+33', 'France');
+
+INSERT INTO user(email,password,phone_number,first_name,last_name,activated,id_status,indicative)
+values ('aa@htt.fr','mypasswd',098762,'jc','sim',true,'Professeur','+33'),
+ ('aa@aaa.fr','mypasswd',0987122,'jc','sim',true,'Professeur','+33')
+;
+
+INSERT INTO resa_borne(date_resa, start_time, end_time, charge, id_user, id_place)
+VALUES ('20181212','14:59:59.99','14:59:59.99',33.2,1,1),
+('20181212','14:59:59.99','14:59:59.99',33.2,1,1),
+('20181212','14:59:59.99','15:59:59.99',33.2,1,1),
+('20181212','14:59:59.99','16:59:59.99',33.2,1,1);
