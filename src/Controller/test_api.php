@@ -95,9 +95,27 @@
       //$result = $api_interface->work_get_all();
       //$result = $api_interface->work_get(3);
       //$api_interface->work_add(3, 2);
-      $api_interface->work_delete(3, 3);
+      //$api_interface->work_delete(3, 3);
+
+      //$result = $api_interface->domain_get_all();
+      //$result = $api_interface->domain_get("hei.fr");
+      //$api_interface->domain_delete("hei.fr");
+
+      //$result = $api_interface->has_domain_get_all();
+      //$result = $api_interface->has_domain_get(2);
+      //$api_interface->has_domain_delete(1, 2);
+
+      $domain_name = substr(strrchr("gerald.gallet@yncrea.fr", "@"), 1);
+      $res = $api_interface->domain_get($domain_name);
+      $id_domain = $api_interface->domain_get($domain_name)[0]['id_domain'];
+
+      $id_facs = [];
+      foreach($api_interface->has_domain_get($res[0]['id_domain']) as $has_domain) {
+        array_push($id_facs, $has_domain['id_facility']);
+      }
+
       return $this->render('test.html.twig', array(
-            'result' => $result,
+            'result' => $id_facs,
       ));
     }
   }

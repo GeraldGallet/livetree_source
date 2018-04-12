@@ -34,6 +34,11 @@
      * @Assert\NotBlank()
      */
     protected $id_status;
+
+    /**
+     * @Assert\NotBlank()
+     */
+    protected $indicative;
     protected $activated;
 
     function getEmail() {
@@ -82,6 +87,14 @@
 
     function setIdStatus($id_status) {
       $this->id_status = $id_status;
+    }
+
+    function getIndicative() {
+      return $this->indicative;
+    }
+
+    function setIndicative($indicative) {
+      $this->indicative = $indicative;
     }
 
     function getActivated() {

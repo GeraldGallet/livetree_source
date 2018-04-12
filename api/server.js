@@ -30,6 +30,10 @@ const Borne = require('./classes/borne.js');
 const borne = new Borne();
 const Work = require('./classes/work.js');
 const work = new Work();
+const Domain = require('./classes/domain.js');
+const domain = new Domain();
+const HasDomain = require('./classes/hasDomain.js');
+const hasDomain = new HasDomain();
 
 // Connecting to DB
 app.use(function(req, res, next){
@@ -204,6 +208,46 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
       }
       break;
 
+    case "domain":
+      switch(req.params.cmd) {
+        case "get_all":
+          domain.getAll(res);
+          break;
+
+        case "get":
+          domain.get(req.body, res);
+          break;
+
+        case "add":
+          domain.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
+    case "has_domain":
+      switch(req.params.cmd) {
+        case "get_all":
+          hasDomain.getAll(res);
+          break;
+
+        case "get":
+          hasDomain.get(req.body, res);
+          break;
+
+        case "add":
+          hasDomain.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
     default:
       console.log("UNKNOWN TABLE POST /" + req.params.table + "/");
       break;
@@ -244,6 +288,14 @@ app.delete('/:table', jsonParser, function(req, res, next) {
 
     case "work":
       work.delete(req.body, res);
+      break;
+
+    case "domain":
+      domain.delete(req.body, res);
+      break;
+
+    case "has_domain":
+      hasDomain.delete(req.body, res);
       break;
 
     default:

@@ -38,6 +38,11 @@ class Inscription extends Controller
             'Salarié' => 'Salarié',
             'Professeur' => 'Professeur'
           )))
+        ->add('indicative', ChoiceType::class, array(
+          'choices'  => array(
+            'France' => "+33",
+            'Angleterre' => "+32",
+          )))
         ->add('phone_number', NumberType::class)
         ->add('subscribe', SubmitType::class, array('label' => 'Je m\'inscris'))
         ->getForm();
@@ -49,6 +54,19 @@ class Inscription extends Controller
         $user = $form->getData();
         $api = new CustomApi();
 
+        $domain_name = substr(strrchr($user->getEmail(), "@"), 1);
+        $res = $api->domain_get($domain_name);
+
+        if(sizeof($res) == 0)
+          return $this->render('forms/inscription.html.twig', array(
+              'form' => $form->createView(),
+          ));
+
+        $id_facs = [];
+        foreach($api->has_domain_get($res[0]['id_domain']) as $has_domain) {
+          array_push($id_facs, $has_domain['id_facility']);
+        }
+
         $new_user = NULL;
         $new_user = array(
           'email' => $user->getEmail(),
@@ -57,10 +75,14 @@ class Inscription extends Controller
           'password' => $user->getPassword(),
           'phone_number' => $user->getPhoneNumber(),
           'id_status' => $user->getIdStatus(),
-          'activated' => false
+          'activated' => false,
+          'indicative' => $user->getIndicative()
         );
-
         $api->user_add($new_user);
+        $user_id = $api->user_get($new_user['email'])['id_user'];
+        foreach($id_facs as $id) {
+          $api->work_add($user_id, $id);
+        }
         return $this->redirectToRoute('validation');
     }
 
