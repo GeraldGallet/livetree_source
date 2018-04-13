@@ -282,4 +282,7 @@ INSERT INTO `place` (`id_place`, `name`, `address`, `id_facility`) VALUES (NULL,
 INSERT INTO `place` (`id_place`, `name`, `address`, `id_facility`) VALUES (NULL, 'Parking P1', '60 Boulevard Vauban, 59800 Lille', '2');
 
 INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+32', 'Angleterre');
-INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+33', 'France');  
+INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+33', 'France');
+
+INSERT INTO `reason` (`id_reason`, `infos`) VALUES ('Visite', 'Visite chez un partenaire ou dans une entreprise');
+INSERT INTO `reason` (`id_reason`, `infos`) VALUES ('Représentation', 'Lorsqu\'on réserve un véhicule pour aller dans un salon ou autre pour représenter l\'établissement');

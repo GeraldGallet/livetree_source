@@ -44,6 +44,7 @@
     // Personal cars functions
     public function company_car_get_all($id_facility);
     public function company_car_get($id_facility, $name);
+    public function company_car_get_by_id($id_company_car);
     public function company_car_add($car);
     public function company_car_delete($id_company_car);
 
@@ -90,6 +91,19 @@
     public function reservation_borne_get_by_place($id_place);
     public function reservation_borne_add($date_resa, $start_time, $end_time, $charge, $id_user, $id_place);
     public function reservation_borne_delete($id_resa);
+
+    // Reasons functions
+    public function reason_get_all();
+    public function reason_get($id_reason);
+    public function reason_add($id_reason, $infos);
+    public function reason_delete($id_reason);
+
+    // Resa bornes functions
+    public function reservation_car_get_all();
+    public function reservation_car_get_by_id($id_resa);
+    public function reservation_car_get_by_user($id_user);
+    public function reservation_car_add($resa_car);
+    public function reservation_car_delete($id_resa);
   }
 
 
@@ -453,6 +467,22 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . "company_car/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    // Gets a specific personal car of the specified user
+    public function company_car_get_by_id($id_company_car) {
+      $data = array(
+        'id_company_car' => $id_company_car
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "company_car/get_by_id/");
       $ch = $this->api_options($ch, "POST", $data);
       $result = curl_exec($ch);
       curl_close($ch);
@@ -862,6 +892,114 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'reservation_borne');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function reason_get_all() {
+      $ch = $this->api_connect($this->url . "reason/get_all/");
+      $ch = $this->api_options($ch, "POST", []);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function reason_get($id_reason) {
+      $data = array(
+        'id_reason' => $id_reason
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "reason/get/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    public function reason_add($id_reason, $infos) {
+      $data = array(
+        'id_reason' => $id_reason,
+        'infos' => $infos
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'reason/add/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function reason_delete($id_reason) {
+      $data = array(
+        'id_reason' => $id_reason
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'reason');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    // Resa bornes functions
+    public function reservation_car_get_all() {
+      $ch = $this->api_connect($this->url . "reservation_car/get_all/");
+      $ch = $this->api_options($ch, "POST", []);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function reservation_car_get_by_id($id_resa) {
+      $data = array(
+        'id_resa' => $id_resa
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "reservation_car/get_by_id/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    public function reservation_car_get_by_user($id_user) {
+      $data = array(
+        'id_user' => $id_user
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "reservation_car/get_by_user/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function reservation_car_add($resa_car) {
+      $data = json_encode($resa_car);
+
+      $ch = $this->api_connect($this->url . 'reservation_car/add/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function reservation_car_delete($id_resa) {
+      $data = array(
+        'id_resa' => $id_resa
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'resa_car/');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }
