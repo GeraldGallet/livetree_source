@@ -5,7 +5,7 @@ class ReservationBorne {
   constructor() { }
 
   // Gets all the personal car from a user
-  get_all(body, res) {
+  get_all(res) {
     var query = "SELECT * FROM resa_borne;";
     //console.log(query)
     res.locals.connection.query(query, function(error, results, fields) {
@@ -17,6 +17,33 @@ class ReservationBorne {
   // Get a specified personal car
   get(body, res) {
     var query = "SELECT * FROM resa_borne WHERE id_place = \'" + body.id_place + "\' AND date_resa = \'" + body.date_resa + "\';";
+    res.locals.connection.query(query, function(error, results, fields) {
+      if(error) throw error;
+      res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+    });
+  }
+
+  // Get a specified personal car
+  get_by_place(body, res) {
+    var query = "SELECT * FROM resa_borne WHERE id_place = \'" + body.id_place + "\';";
+    res.locals.connection.query(query, function(error, results, fields) {
+      if(error) throw error;
+      res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+    });
+  }
+
+  // Get a specified personal car
+  get_by_id(body, res) {
+    var query = "SELECT * FROM resa_borne WHERE id_resa = \'" + body.id_resa + "\';";
+    res.locals.connection.query(query, function(error, results, fields) {
+      if(error) throw error;
+      res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+    });
+  }
+
+  // Get a specified personal car
+  get_by_user(body, res) {
+    var query = "SELECT * FROM resa_borne WHERE id_user = \'" + body.id_user + "\';";
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
       res.send(JSON.stringify({"status": 200, "error": null, "response": results}));

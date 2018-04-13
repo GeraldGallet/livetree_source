@@ -40,6 +40,12 @@ const HasAccess = require('./classes/hasAccess.js');
 const hasAccess = new HasAccess();
 const ReservationBorne = require('./classes/reservationBorne.js');
 const reservationBorne = new ReservationBorne();
+const Reason = require('./classes/reason.js');
+const reason = new Reason();
+const ReservationCar = require('./classes/reservationCar.js');
+const reservationCar = new ReservationCar();
+const State = require('./classes/state.js');
+const state = new State();
 
 // Connecting to DB
 app.use(function(req, res, next){
@@ -66,6 +72,10 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
       switch(req.params.cmd) {
           case "get":
             user.get(req.body, res);
+            break;
+
+          case "get_by_id":
+            user.get_by_id(req.body, res);
             break;
 
           case "add":
@@ -170,6 +180,10 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
 
         case "get":
           company_car.get(req.body, res);
+          break;
+
+        case "get_by_id":
+          company_car.get_by_id(req.body, res);
           break;
 
         case "add":
@@ -312,8 +326,90 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
           reservationBorne.get(req.body, res);
           break;
 
+        case "get_by_place":
+          reservationBorne.get_by_place(req.body, res);
+          break;
+
+        case "get_by_id":
+          reservationBorne.get_by_id(req.body, res);
+          break;
+
+        case "get_by_user":
+          reservationBorne.get_by_user(req.body, res);
+          break;
+
         case "add":
           reservationBorne.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
+    case "reason":
+      switch(req.params.cmd) {
+        case "get_all":
+          reason.getAll(res);
+          break;
+
+        case "get":
+          reason.get(req.body, res);
+          break;
+
+        case "add":
+          reason.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
+    case "reservation_car":
+      switch(req.params.cmd) {
+        case "get_all":
+          reservationCar.get_all(res);
+          break;
+
+        case "get_by_user":
+          reservationCar.get_by_user(req.body, res);
+          break;
+
+
+        case "get_by_id":
+          reservationCar.get_by_id(req.body, res);
+          break;
+
+        case "add":
+          reservationCar.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
+    case "state":
+      switch(req.params.cmd) {
+        case "get_all":
+          state.get_all(res);
+          break;
+
+        case "get_by_id":
+          state.get_by_id(req.body, res);
+          break;
+
+
+        case "get_by_resa":
+          state.get_by_resa(req.body, res);
+          break;
+
+        case "add":
+          state.add(req.body, res);
           break;
 
         default:
@@ -382,6 +478,18 @@ app.delete('/:table', jsonParser, function(req, res, next) {
 
     case "reservation_borne":
       reservationBorne.delete(req.body, res);
+      break;
+
+    case "reason":
+      reason.delete(req.body, res);
+      break;
+
+    case "reservation_car":
+      reservationCar.delete(req.body, res);
+      break;
+
+    case "state":
+      state.delete(req.body, res);
       break;
 
     default:

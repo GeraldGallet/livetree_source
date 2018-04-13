@@ -1,4 +1,22 @@
 {# templates/profile/bornes.html.twig #}
+{% extends "base.html.twig" %}
 
+{% block head %}
+{{ parent() }}
+<title>Profil</title>
+{% endblock %}
+
+{% block body %}
 <h1>Historique</h1>
-<h2>Hello {{ first_name }} {{ last_name }}</h2>
+<h2>Réservations de bornes</h2>
+{% for resa in resa_borne %}
+  <ul>
+    <li>Date: {{resa.date_resa}}</li>
+    <li>Heure d'arrivée: {{resa.start_time}}</li>
+    <li>Heure de départ: {{resa.end_time}}</li>
+    <li>Charge estimée en arrivant: {{resa.charge}}</li>
+    <li>Lieu: {{resa.place}}</li>
+  </ul>
+{% endfor %}
+<h2>Réservations de véhicules</h2>
+{% endblock %}

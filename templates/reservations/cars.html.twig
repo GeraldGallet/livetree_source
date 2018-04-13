@@ -1,4 +1,13 @@
 {# templates/reservations/cars.html.twig #}
+{% extends "base.html.twig" %}
 
-<h1>Voitures</h1>
-<h2>Hello {{ first_name }} {{ last_name }}</h2>
+{% block head %}
+{{ parent() }}
+{% endblock %}
+
+{% block body %}
+<h1>Réservation de voiture</h1>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(form) }}
+{{ form_end(form) }}
+{% endblock %}

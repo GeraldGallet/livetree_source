@@ -126,7 +126,7 @@ CREATE TABLE resa_car(
         id_user        Int NOT NULL ,
         id_company_car Int NOT NULL ,
         id_reason      Varchar (50) NOT NULL ,
-        id_state       Int NOT NULL ,
+        id_state       Int ,
         PRIMARY KEY (id_resa )
 )ENGINE=InnoDB;
 
@@ -182,11 +182,11 @@ CREATE TABLE phone_indicative(
 
 CREATE TABLE state(
         id_state   int (11) Auto_increment  NOT NULL ,
-        front      Bool NOT NULL ,
-        back       Bool NOT NULL ,
-        left_side  Bool NOT NULL ,
-        right_side Bool NOT NULL ,
-        inside     Bool NOT NULL ,
+        front      Bool ,
+        back       Bool ,
+        left_side  Bool ,
+        right_side Bool ,
+        inside     Bool ,
         commentary Varchar (280) ,
         id_resa    Int ,
         PRIMARY KEY (id_state )
@@ -282,4 +282,7 @@ INSERT INTO `place` (`id_place`, `name`, `address`, `id_facility`) VALUES (NULL,
 INSERT INTO `place` (`id_place`, `name`, `address`, `id_facility`) VALUES (NULL, 'Parking P1', '60 Boulevard Vauban, 59800 Lille', '2');
 
 INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+32', 'Angleterre');
-INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+33', 'France');  
+INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+33', 'France');
+
+INSERT INTO `reason` (`id_reason`, `infos`) VALUES ('Visite', 'Visite chez un partenaire ou dans une entreprise');
+INSERT INTO `reason` (`id_reason`, `infos`) VALUES ('Représentation', 'Lorsqu\'on réserve un véhicule pour aller dans un salon ou autre pour représenter l\'établissement');

@@ -1,12 +1,12 @@
-/*********** PERSONALCAR **********/
-/* Part that touches the personal cars of the users */
+/*********** STATE **********/
+/* Part that touches the bornes */
 
-class PersonalCar {
+class State {
   constructor() { }
 
   // Gets all the personal car from a user
   get_all(body, res) {
-    var query = "SELECT * FROM company_car WHERE id_facility = \'" + body.id_facility + "\';";
+    var query = "SELECT * FROM state;";
     //console.log(query)
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
@@ -15,8 +15,8 @@ class PersonalCar {
   }
 
   // Get a specified personal car
-  get(body, res) {
-    var query = "SELECT * FROM company_car WHERE id_facility = \'" + body.id_company + "\' AND name = \'" + body.name + "\';";
+  get_by_id(body, res) {
+    var query = "SELECT * FROM state WHERE id_state = \'" + body.id_state + "\';";
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
       res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
@@ -24,8 +24,8 @@ class PersonalCar {
   }
 
   // Get a specified personal car
-  get_by_id(body, res) {
-    var query = "SELECT * FROM company_car WHERE id_company_car = \'" + body.id_company_car + "\';";
+  get_by_resa(body, res) {
+    var query = "SELECT * FROM state WHERE id_resa = \'" + body.id_resa + "\';";
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
       res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
@@ -34,7 +34,7 @@ class PersonalCar {
 
   // Adds a new personal car to the specified user
   add(body, res) {
-    res.locals.connection.query('INSERT INTO company_car SET ?', body, function (error, results, fields) {
+    res.locals.connection.query('INSERT INTO state SET ?', body, function (error, results, fields) {
       if (error) throw error;
       res.end(JSON.stringify(results));
     });
@@ -42,7 +42,7 @@ class PersonalCar {
 
   // Removes a specified personal car
   delete(body, res) {
-    var query = 'DELETE FROM company_car WHERE id_company_car = \'' + body.id_company_car + '\'';
+    var query = 'DELETE FROM state WHERE id_state = \'' + body.id_state + '\'';
 
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
@@ -52,4 +52,4 @@ class PersonalCar {
 
 }
 
-module.exports = PersonalCar;
+module.exports = State;
