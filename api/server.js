@@ -334,6 +334,10 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
           reservationBorne.get_by_id(req.body, res);
           break;
 
+        case "get_by_user":
+          reservationBorne.get_by_user(req.body, res);
+          break;
+
         case "add":
           reservationBorne.add(req.body, res);
           break;

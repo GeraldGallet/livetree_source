@@ -89,6 +89,7 @@
     public function reservation_borne_get($id_place, $date_resa);
     public function reservation_borne_get_by_id($id_resa);
     public function reservation_borne_get_by_place($id_place);
+    public function reservation_borne_get_by_user($id_user);
     public function reservation_borne_add($date_resa, $start_time, $end_time, $charge, $id_user, $id_place);
     public function reservation_borne_delete($id_resa);
 
@@ -873,6 +874,21 @@
 
       $result = json_decode($result, true);
       return $result['response'][0];
+    }
+
+    public function reservation_borne_get_by_user($id_user) {
+      $data = array(
+        'id_user' => $id_user
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "reservation_borne/get_by_user/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
     }
 
 
