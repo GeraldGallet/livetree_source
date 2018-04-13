@@ -11,7 +11,7 @@ namespace App\Controller\Form;
 use App\Controller\jc\Pair;
 use Symfony\Component\Routing\Annotation;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use App\Controller\CustomApi;
 class AvailableTime
 {
     public static $listedesreservation;
@@ -21,6 +21,7 @@ class AvailableTime
      */
     function aa()
     {
+        $api_interface = new CustomApi();
 
         $listedesreservation[]= array('min'=>2,'max'=> 4);
         $listedesreservation[] = array('min'=>2,'max'=> 4);
@@ -29,7 +30,7 @@ class AvailableTime
         $listedesreservation[] = array('min'=>2,'max'=> 5);
         $listedesreservation[] = array('min'=>2,'max'=> 5);
         $listedesreservation[] = array('min'=>2,'max'=> 7);
-        $listedesreservation[] = array('min'=>2,'max'=> 8);
+        $listedesreservation[] = array('min'=>2,'max'=> 10);
 
 
         $array = array();
@@ -49,6 +50,8 @@ class AvailableTime
         }
         dump($array);
 
+        $bornes=$api_interface->reservation_borne_get_all();
+        dump($bornes);
         return new JsonResponse($array);
     }
 
