@@ -319,7 +319,7 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
     case "reservation_borne":
       switch(req.params.cmd) {
         case "get_all":
-          reservationBorne.getAll(res);
+          reservationBorne.get_all(res);
           break;
 
         case "get":
