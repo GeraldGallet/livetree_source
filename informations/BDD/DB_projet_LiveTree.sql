@@ -294,3 +294,5 @@ VALUES ('20181212','14:59:59.99','14:59:59.99',33.2,1,1),
 ('20181212','14:59:59.99','14:59:59.99',33.2,1,1),
 ('20181212','14:59:59.99','15:59:59.99',33.2,1,1),
 ('20181212','14:59:59.99','16:59:59.99',33.2,1,1);
+INSERT INTO `reason` (`id_reason`, `infos`) VALUES ('Visite', 'Visite chez un partenaire ou dans une entreprise');
+INSERT INTO `reason` (`id_reason`, `infos`) VALUES ('Représentation', 'Lorsqu\'on réserve un véhicule pour aller dans un salon ou autre pour représenter l\'établissement');

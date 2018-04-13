@@ -23,6 +23,15 @@ class PersonalCar {
     });
   }
 
+  // Get a specified personal car
+  get_by_id(body, res) {
+    var query = "SELECT * FROM company_car WHERE id_company_car = \'" + body.id_company_car + "\';";
+    res.locals.connection.query(query, function(error, results, fields) {
+      if(error) throw error;
+      res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+    });
+  }
+
   // Adds a new personal car to the specified user
   add(body, res) {
     res.locals.connection.query('INSERT INTO company_car SET ?', body, function (error, results, fields) {

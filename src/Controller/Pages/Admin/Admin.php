@@ -22,12 +22,16 @@
       * @Route("/admin", name="admin")
       */
     public function load_admin(Request $request) {
+      session_start();
 
       $facility = new Facility();
       $company_car = new CompanyCar();
       $place = new Place();
       $borne = new Borne();
       $api = new CustomApi();
+
+      $rights = 3;
+      $facility_form_view = NULL;
 
       $facilities = [];
       $choices_facilities = [];
@@ -36,18 +40,33 @@
       $cars = [];
       $bornes = [];
 
-      foreach($api->facility_get_all() as $temp_facility)
-      {
+      if($rights == 3) {
+        foreach($api->facility_get_all() as $temp_facility)
+        {
           array_push($facilities, array(
             'name' => $temp_facility['name'],
             'address' => $temp_facility['address'],
             'complementary' => $temp_facility['complementary']
           ));
           $choices_facilities[$temp_facility['name']] = $temp_facility['id_facility'];
+
+        }
+      } else {
+        foreach($api->work_get($_SESSION['id_user']) as $temp_work)
+        {
+          $temp_facility = $api->facility_get_by_id($temp_work['id_facility']);
+          array_push($facilities, array(
+            'name' => $temp_facility['name'],
+            'address' => $temp_facility['address'],
+            'complementary' => $temp_facility['complementary']
+          ));
+          $choices_facilities[$temp_facility['name']] = $temp_facility['id_facility'];
+        }
       }
 
-      foreach($api->place_get_all() as $temp_place)
+      foreach($choices_facilities as $id_fac)
       {
+        foreach($api->place_get($id_fac) as $temp_place) {
           array_push($places, array(
             'name' => $temp_place['name'],
             'address' => $temp_place['address'],
@@ -55,6 +74,7 @@
             'id_place' => $temp_place['id_place']
           ));
           $choices_places[$temp_place['name']] = $temp_place['id_place'];
+        }
       }
 
       foreach($choices_facilities as $id_fac) {
@@ -90,6 +110,18 @@
       ->add('add_facility', SubmitType::class, array('label' => 'Ajouter l\'établissement'))
       ->getForm();
       $facility_form->handleRequest($request);
+      $facility_form_view = $facility_form->createView();
+
+      if ($facility_form->isSubmitted() && $facility_form->isValid()) {
+        $facility = $facility_form->getData();
+        $api->facility_add(array(
+          'name' => $facility->getName(),
+          'address' => $facility->getAddress(),
+          'complementary' => $facility->getComplementary()
+        ));
+        return $this->redirectToRoute('admin');
+      }
+
 
       $place_form = $this->createFormBuilder($place)
       ->add('name', TextType::class)
@@ -119,15 +151,6 @@
       ->getForm();
       $borne_form->handleRequest($request);
 
-      if ($facility_form->isSubmitted() && $facility_form->isValid()) {
-        $facility = $facility_form->getData();
-        $api->facility_add(array(
-          'name' => $facility->getName(),
-          'address' => $facility->getAddress(),
-          'complementary' => $facility->getComplementary()
-        ));
-        return $this->redirectToRoute('admin');
-      }
 
       if ($place_form->isSubmitted() && $place_form->isValid()) {
         $place = $place_form->getData();
@@ -165,10 +188,11 @@
             'places' => $places,
             'cars' => $cars,
             'bornes' => $bornes,
-            'facility_form' => $facility_form->createView(),
+            'facility_form' => $facility_form_view,
             'place_form' => $place_form->createView(),
             'car_form' => $car_form->createView(),
             'borne_form' => $borne_form->createView(),
+            'rights' => $rights
       ));
     }
 

@@ -22,6 +22,15 @@ class User {
     });
   }
 
+  get_by_id(body, res) {
+    var query = 'SELECT * FROM user WHERE id_user = \'' + body.id_user + '\';';
+    var ret = '';
+    res.locals.connection.query(query, function(error, results, fields) {
+      if(error) throw error;
+      res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+    });
+  }
+
   // Adds a new user in the database
   add(body, res) {
     res.locals.connection.query('INSERT INTO user SET ?', body, function (error, results, fields) {
