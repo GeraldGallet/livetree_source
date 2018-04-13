@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "edc32382bb83c243ca6de7eff41f6f3d",
+    "content-hash": "1d202bf4b8f52dc2c5964401cda02ec0",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -852,6 +852,106 @@
                 "controllers"
             ],
             "time": "2018-02-14T08:40:54+00:00"
+        },
+        {
+            "name": "simondeeley/tuple",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/simondeeley/tuple.git",
+                "reference": "4785fc41bc8964d34c999caaea9475d997ddc859"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/simondeeley/tuple/zipball/4785fc41bc8964d34c999caaea9475d997ddc859",
+                "reference": "4785fc41bc8964d34c999caaea9475d997ddc859",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.1",
+                "simondeeley/type": "~1.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "simondeeley\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Simon Deeley",
+                    "email": "s.deeley@icloud.com",
+                    "homepage": "https://github.com/simondeeley",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An extendable, reusable PHP tuple objet",
+            "homepage": "https://github.com/simondeeley",
+            "keywords": [
+                "extendable",
+                "php",
+                "set",
+                "tuple"
+            ],
+            "time": "2017-12-04T16:20:19+00:00"
+        },
+        {
+            "name": "simondeeley/type",
+            "version": "1.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/simondeeley/type.git",
+                "reference": "fb9c35798e22b6bda4d245ef61ab1e07d38a7a33"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/simondeeley/type/zipball/fb9c35798e22b6bda4d245ef61ab1e07d38a7a33",
+                "reference": "fb9c35798e22b6bda4d245ef61ab1e07d38a7a33",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "simondeeley\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Simon Deeley",
+                    "email": "s.deeley@icloud.com",
+                    "homepage": "https://github.com/simondeeley",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Immuatble object behaviour for PHP",
+            "homepage": "https://github.com/simondeeley",
+            "keywords": [
+                "behaviour",
+                "immutable",
+                "php"
+            ],
+            "time": "2017-12-04T16:02:10+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

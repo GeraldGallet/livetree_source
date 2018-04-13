@@ -143,6 +143,12 @@
             "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
         }
     },
+    "simondeeley/tuple": {
+        "version": "v1.1.2"
+    },
+    "simondeeley/type": {
+        "version": "1.2.2"
+    },
     "swiftmailer/swiftmailer": {
         "version": "v6.0.2"
     },
