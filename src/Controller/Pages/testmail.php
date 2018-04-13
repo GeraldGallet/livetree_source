@@ -45,12 +45,12 @@
        $mail->AddReplyTo("sendmailer59270@gmail.com","Expediteur"); // adresse mail et nom du contact de retour
        $mail->IsHTML(true); // envoi du mail au format HTML
        $mail->Subject = "Sujet"; // sujet du mail
-       $mail->msgHTML(file_get_contents('C:\wamp64\www\livetree_source\src\Controller\Pages\mail.html')); // le corps de texte du mail en HTML
+       $mail->msgHTML(file_get_contents('C:\Users\geral\Desktop\Projets\Projet Live Tree\livetree_web\src\Controller\Pages\mail.html')); // le corps de texte du mail en HTML
        $mail->AltBody = "bonjour";
        if(!$mail->Send()) { // envoi du mail
            echo "Mailer Error: " . $mail->ErrorInfo; // affichage des erreurs, s’il y en a
        }
-       
+
        else {
           echo  "Le message a bien été envoyé !";
         }

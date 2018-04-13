@@ -4,7 +4,7 @@
 class Reason {
   constructor() { }
 
-  getAll(res) {
+  get_all(res) {
     var query = 'SELECT * FROM reason;';
     res.locals.connection.query(query, function(error, results, fields) {
       if(error) throw error;
