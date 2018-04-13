@@ -44,6 +44,8 @@ const Reason = require('./classes/reason.js');
 const reason = new Reason();
 const ReservationCar = require('./classes/reservationCar.js');
 const reservationCar = new ReservationCar();
+const State = require('./classes/state.js');
+const state = new State();
 
 // Connecting to DB
 app.use(function(req, res, next){
@@ -365,7 +367,7 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
     case "reservation_car":
       switch(req.params.cmd) {
         case "get_all":
-          reservationCar.getAll(res);
+          reservationCar.get_all(res);
           break;
 
         case "get_by_user":
@@ -379,6 +381,31 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
 
         case "add":
           reservationCar.add(req.body, res);
+          break;
+
+        default:
+          console.log("UNKNOWN POST COMMAND");
+          break;
+      }
+      break;
+
+    case "state":
+      switch(req.params.cmd) {
+        case "get_all":
+          state.get_all(res);
+          break;
+
+        case "get_by_id":
+          state.get_by_id(req.body, res);
+          break;
+
+
+        case "get_by_resa":
+          state.get_by_resa(req.body, res);
+          break;
+
+        case "add":
+          state.add(req.body, res);
           break;
 
         default:
@@ -455,6 +482,10 @@ app.delete('/:table', jsonParser, function(req, res, next) {
 
     case "reservation_car":
       reservationCar.delete(req.body, res);
+      break;
+
+    case "state":
+      state.delete(req.body, res);
       break;
 
     default:

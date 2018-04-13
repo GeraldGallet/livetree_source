@@ -104,6 +104,13 @@
     public function reservation_car_get_by_user($id_user);
     public function reservation_car_add($resa_car);
     public function reservation_car_delete($id_resa);
+
+    // State functions
+    public function state_get_all();
+    public function state_get_by_id($id_state);
+    public function state_get_by_resa($id_resa);
+    public function state_add($state);
+    public function state_delete($id_state);
   }
 
 
@@ -1000,6 +1007,65 @@
       $data = json_encode($data);
 
       $ch = $this->api_connect($this->url . 'resa_car/');
+      $ch = $this->api_options($ch, "DELETE", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function state_get_all() {
+      $ch = $this->api_connect($this->url . "state/get_all/");
+      $ch = $this->api_options($ch, "POST", []);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
+    }
+
+    public function state_get_by_id($id_state) {
+      $data = array(
+        'id_state' => $id_state
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "state/get_by_id/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    public function state_get_by_resa($id_resa) {
+      $data = array(
+        'id_resa' => $id_resa
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . "state/get_by_resa/");
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'][0];
+    }
+
+    public function state_add($state) {
+      $data = json_encode($resa_car);
+
+      $ch = $this->api_connect($this->url . 'state/add/');
+      $ch = $this->api_options($ch, "POST", $data);
+      $result = curl_exec($ch);
+    }
+
+    public function state_delete($id_state) {
+      $data = array(
+        'id_state' => $id_state
+      );
+      $data = json_encode($data);
+
+      $ch = $this->api_connect($this->url . 'state/');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }
