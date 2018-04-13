@@ -85,6 +85,18 @@
           'id_state' => NULL
         );
 
+        $new_state = array(
+          'front' => null,
+          'back' => null,
+          'left_size' => null,
+          'right_size' => null,
+          'inside' => null,
+          'commentary' => null,
+          'id_resa' => null
+        );
+
+        //$api->state_add($new_state);
+
         $api->reservation_car_add($new_resa);
       }
 

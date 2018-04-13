@@ -126,7 +126,7 @@ CREATE TABLE resa_car(
         id_user        Int NOT NULL ,
         id_company_car Int NOT NULL ,
         id_reason      Varchar (50) NOT NULL ,
-        id_state       Int NOT NULL ,
+        id_state       Int ,
         PRIMARY KEY (id_resa )
 )ENGINE=InnoDB;
 
@@ -182,11 +182,11 @@ CREATE TABLE phone_indicative(
 
 CREATE TABLE state(
         id_state   int (11) Auto_increment  NOT NULL ,
-        front      Bool NOT NULL ,
-        back       Bool NOT NULL ,
-        left_side  Bool NOT NULL ,
-        right_side Bool NOT NULL ,
-        inside     Bool NOT NULL ,
+        front      Bool ,
+        back       Bool ,
+        left_side  Bool ,
+        right_side Bool ,
+        inside     Bool ,
         commentary Varchar (280) ,
         id_resa    Int ,
         PRIMARY KEY (id_state )
