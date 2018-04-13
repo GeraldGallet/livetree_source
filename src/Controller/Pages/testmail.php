@@ -50,6 +50,7 @@
        if(!$mail->Send()) { // envoi du mail
            echo "Mailer Error: " . $mail->ErrorInfo; // affichage des erreurs, s’il y en a
        }
+       
        else {
           echo  "Le message a bien été envoyé !";
         }
