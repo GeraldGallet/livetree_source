@@ -18,6 +18,10 @@
     /**
      * @Assert\NotBlank()
      */
+    protected $password_confirmation;
+    /**
+     * @Assert\NotBlank()
+     */
     protected $phone_number;
 
     /**
@@ -55,6 +59,14 @@
 
     function setPassword($password) {
       $this->password = $password;
+    }
+
+    function getPasswordConfirmation() {
+      return $this->password_confirmation;
+    }
+
+    function setPasswordConfirmation($password_confirmation) {
+      return $this->password_confirmation = $password_confirmation;
     }
 
     function getPhoneNumber() {
