@@ -13,39 +13,7 @@ app.listen(port);
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 
-// Import our own classes
-const User = require('./classes/user.js');
-const user = new User();
-const Status = require('./classes/status.js');
-const status = new Status();
-const PersonalCar = require('./classes/personalcar.js');
-const personal_car = new PersonalCar();
-const Facility = require('./classes/facility.js');
-const facility = new Facility();
-const Place = require('./classes/place.js');
-const place = new Place();
-const CompanyCar = require('./classes/companycar.js');
-const company_car = new CompanyCar();
-const Borne = require('./classes/borne.js');
-const borne = new Borne();
-const Work = require('./classes/work.js');
-const work = new Work();
-const Domain = require('./classes/domain.js');
-const domain = new Domain();
-const HasDomain = require('./classes/hasDomain.js');
-const hasDomain = new HasDomain();
-const PhoneIndicative = require('./classes/phoneIndicative.js');
-const phoneIndicative = new PhoneIndicative();
-const HasAccess = require('./classes/hasAccess.js');
-const hasAccess = new HasAccess();
-const ReservationBorne = require('./classes/reservationBorne.js');
-const reservationBorne = new ReservationBorne();
-const Reason = require('./classes/reason.js');
-const reason = new Reason();
-const ReservationCar = require('./classes/reservationCar.js');
-const reservationCar = new ReservationCar();
-const State = require('./classes/state.js');
-const state = new State();
+var cmds = ["user", "status", "personal_car", "facility", "place", "company_car", "borne", "work", "domain", "has_domain", "phone_indicative", "has_access", "resa_borne", "reason", "resa_car", "state"];
 
 // Connecting to DB
 app.use(function(req, res, next){
@@ -63,438 +31,93 @@ app.get('/', function(req, res, next) {
   res.send('hello world :)');
 });
 
+function get_all(res, table) {
+  var query = 'SELECT * FROM ' + table + ';';
+  res.locals.connection.query(query, function(error, results, fields) {
+    if(error) throw error;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+}
+
+function get(body, res, table) {
+  var query = 'SELECT * FROM ' + table + ' WHERE ';
+  var placeholder = [];
+
+  for(var prop in body) {
+    placeholder.push(body[prop]);
+    query += prop + " = ? AND ";
+  }
+
+  query += '1;';
+  res.locals.connection.query(query, placeholder, function(error, results, fields) {
+    if(error) throw error;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+}
+
+function add(body, res, table) {
+  var query = "INSERT INTO " + table + " SET ?";
+  res.locals.connection.query(query, body, function (error, results, fields) {
+    if (error) throw error;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}))
+    res.end(JSON.stringify(results));
+  });
+}
+
+function delete_entry(body, res, table) {
+  var query = "DELETE FROM " + table + " WHERE ";
+  var placeholder = [];
+
+  for(var prop in body) {
+    placeholder.push(body[prop]);
+    query += prop + " = ? AND ";
+  }
+
+  query += '1;';
+  res.locals.connection.query(query, placeholder, function(error, results, fields) {
+    if(error) throw error;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+}
+
+
+
+
 // The commands that can be done on a table (get / add)
 app.post('/:table/:cmd', jsonParser, function(req, res, next) {
   console.log(req.params.table + "/" + req.params.cmd);
+  var passed = false;
 
-  switch(req.params.table) {
-    case "user":
-      switch(req.params.cmd) {
-          case "get":
-            user.get(req.body, res);
-            break;
-
-          case "get_by_id":
-            user.get_by_id(req.body, res);
-            break;
-
-          case "add":
-            user.add(req.body, res);
-            break;
-
-          default:
-            console.log("UNKNOWN POST COMMAND");
-            break;
-      }
-      break;
-
-    case "status":
-      switch(req.params.cmd) {
-        case "get":
-          status.get(req.body, res);
-          break;
-
-        case "add":
-          status.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "personal_car":
+  for(var i = 0; i < cmds.length; i++) {
+    if(req.params.table == cmds[i]) {
+      passed = true;
       switch(req.params.cmd) {
         case "get_all":
-          personal_car.get_all(req.body, res);
+          get_all(res, cmds[i]);
           break;
 
         case "get":
-          personal_car.get(req.body, res);
+          get(req.body, res, cmds[i]);
           break;
 
         case "add":
-          personal_car.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
+          add(req.body, res, cmds[i]);
           break;
       }
-      break;
-
-    case "facility":
-      switch(req.params.cmd) {
-        case "get_all":
-          facility.get_all(req.body, res);
-          break;
-
-        case "get":
-          facility.get(req.body, res);
-          break;
-
-        case "get_by_id":
-          facility.get_by_id(req.body, res);
-          break;
-
-        case "add":
-          facility.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "place":
-      switch(req.params.cmd) {
-        case "get_all":
-          place.get_all(req.body, res);
-          break;
-
-        case "get":
-          place.get(req.body, res);
-          break;
-
-        case "get_by_id":
-          place.get_by_id(req.body, res);
-          break;
-
-        case "add":
-          place.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "company_car":
-      switch(req.params.cmd) {
-        case "get_all":
-          company_car.get_all(req.body, res);
-          break;
-
-        case "get":
-          company_car.get(req.body, res);
-          break;
-
-        case "get_by_id":
-          company_car.get_by_id(req.body, res);
-          break;
-
-        case "add":
-          company_car.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "borne":
-      switch(req.params.cmd) {
-        case "get_all":
-          borne.get_all(req.body, res);
-          break;
-
-        case "get":
-          borne.get(req.body, res);
-          break;
-
-        case "add":
-          borne.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "work":
-      switch(req.params.cmd) {
-        case "get_all":
-          work.getAll(res);
-          break;
-
-        case "get":
-          work.get(req.body, res);
-          break;
-
-        case "add":
-          work.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "domain":
-      switch(req.params.cmd) {
-        case "get_all":
-          domain.getAll(res);
-          break;
-
-        case "get":
-          domain.get(req.body, res);
-          break;
-
-        case "add":
-          domain.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "has_domain":
-      switch(req.params.cmd) {
-        case "get_all":
-          hasDomain.getAll(res);
-          break;
-
-        case "get":
-          hasDomain.get(req.body, res);
-          break;
-
-        case "add":
-          hasDomain.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "phone_indicative":
-      switch(req.params.cmd) {
-        case "get_all":
-          phoneIndicative.getAll(res);
-          break;
-
-        case "get":
-          phoneIndicative.get(req.body, res);
-          break;
-
-        case "add":
-          phoneIndicative.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "has_access":
-      switch(req.params.cmd) {
-        case "get_all":
-          hasAccess.getAll(res);
-          break;
-
-        case "get":
-          hasAccess.get(req.body, res);
-          break;
-
-        case "add":
-          hasAccess.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "reservation_borne":
-      switch(req.params.cmd) {
-        case "get_all":
-          reservationBorne.getAll(res);
-          break;
-
-        case "get":
-          reservationBorne.get(req.body, res);
-          break;
-
-        case "get_by_place":
-          reservationBorne.get_by_place(req.body, res);
-          break;
-
-        case "get_by_id":
-          reservationBorne.get_by_id(req.body, res);
-          break;
-
-        case "get_by_user":
-          reservationBorne.get_by_user(req.body, res);
-          break;
-
-        case "add":
-          reservationBorne.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "reason":
-      switch(req.params.cmd) {
-        case "get_all":
-          reason.get_all(res);
-          break;
-
-        case "get":
-          reason.get(req.body, res);
-          break;
-
-        case "add":
-          reason.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "reservation_car":
-      switch(req.params.cmd) {
-        case "get_all":
-          reservationCar.get_all(res);
-          break;
-
-        case "get_by_user":
-          reservationCar.get_by_user(req.body, res);
-          break;
-
-
-        case "get_by_id":
-          reservationCar.get_by_id(req.body, res);
-          break;
-
-        case "add":
-          reservationCar.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    case "state":
-      switch(req.params.cmd) {
-        case "get_all":
-          state.get_all(res);
-          break;
-
-        case "get_by_id":
-          state.get_by_id(req.body, res);
-          break;
-
-
-        case "get_by_resa":
-          state.get_by_resa(req.body, res);
-          break;
-
-        case "add":
-          state.add(req.body, res);
-          break;
-
-        default:
-          console.log("UNKNOWN POST COMMAND");
-          break;
-      }
-      break;
-
-    default:
-      console.log("UNKNOWN TABLE POST /" + req.params.table + "/");
-      break;
+    }
   }
+
+  if(!passed)
+    res.send(JSON.stringify({"status": 404, "error": "Table not found", "response": null}));
 });
 
 app.delete('/:table', jsonParser, function(req, res, next) {
   console.log("delete /" + req.params.table);
 
-  switch(req.params.table) {
-    case "status":
-      status.delete(req.body, res);
-      break;
-
-    case "user":
-      user.delete(req.body, res);
-      break;
-
-    case "personal_car":
-      personal_car.delete(req.body, res);
-      break;
-
-    case "facility":
-      facility.delete(req.body, res);
-      break;
-
-    case "place":
-      place.delete(req.body, res);
-      break;
-
-    case "company_car":
-      company_car.delete(req.body, res);
-      break;
-
-    case "borne":
-      borne.delete(req.body, res);
-      break;
-
-    case "work":
-      work.delete(req.body, res);
-      break;
-
-    case "domain":
-      domain.delete(req.body, res);
-      break;
-
-    case "has_domain":
-      hasDomain.delete(req.body, res);
-      break;
-
-    case "phone_indicative":
-      phoneIndicative.delete(req.body, res);
-      break;
-
-    case "has_access":
-      hasAccess.delete(req.body, res);
-      break;
-
-    case "reservation_borne":
-      reservationBorne.delete(req.body, res);
-      break;
-
-    case "reason":
-      reason.delete(req.body, res);
-      break;
-
-    case "reservation_car":
-      reservationCar.delete(req.body, res);
-      break;
-
-    case "state":
-      state.delete(req.body, res);
-      break;
-
-    default:
-      console.log("UNKNOWN COMMAND DELETE /" + req.params.table);
-      break;
+  for(var i = 0; i < cmds.length; i++) {
+    if(req.params.table == cmds[i]) {
+      delete_entry(req.body, res, cmds[i]);
+    }
   }
 });
 

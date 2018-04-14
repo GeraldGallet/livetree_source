@@ -22,8 +22,9 @@
       * @Route("/admin", name="admin")
       */
     public function load_admin(Request $request) {
-      session_start();
-
+      if(!isset($_SESSION))
+        session_start();
+        
       $facility = new Facility();
       $company_car = new CompanyCar();
       $place = new Place();
@@ -32,6 +33,9 @@
 
       $rights = 3;
       $facility_form_view = NULL;
+      if($rights < 2) {
+        return $this->redirectToRoute('accueil');
+      }
 
       $facilities = [];
       $choices_facilities = [];
@@ -41,7 +45,7 @@
       $bornes = [];
 
       if($rights == 3) {
-        foreach($api->facility_get_all() as $temp_facility)
+        foreach($api->table_get_all("facility") as $temp_facility)
         {
           array_push($facilities, array(
             'name' => $temp_facility['name'],
@@ -52,9 +56,9 @@
 
         }
       } else {
-        foreach($api->work_get($_SESSION['id_user']) as $temp_work)
+        foreach($api->table_get("work", array('id_user' => $_SESSION['id_user'])) as $temp_work)
         {
-          $temp_facility = $api->facility_get_by_id($temp_work['id_facility']);
+          $temp_facility = $api->table_get("facility", array('id_facility' => $temp_work['id_facility']));
           array_push($facilities, array(
             'name' => $temp_facility['name'],
             'address' => $temp_facility['address'],
@@ -66,7 +70,7 @@
 
       foreach($choices_facilities as $id_fac)
       {
-        foreach($api->place_get($id_fac) as $temp_place) {
+        foreach($api->table_get("place", array('id_facility' => $id_fac)) as $temp_place) {
           array_push($places, array(
             'name' => $temp_place['name'],
             'address' => $temp_place['address'],
@@ -78,7 +82,7 @@
       }
 
       foreach($choices_facilities as $id_fac) {
-        foreach($api->company_car_get_all($id_fac) as $temp_car)
+        foreach($api->table_get("company_car", array("id_facility" => $id_fac)) as $temp_car)
         {
             array_push($cars, array(
               'name' => $temp_car['name'],
@@ -91,7 +95,7 @@
       }
 
       foreach($choices_places as $id_place) {
-        foreach($api->borne_get_all($id_place) as $temp_borne)
+        foreach($api->table_get("borne", array('id_place' => $id_place)) as $temp_borne)
         {
             array_push($bornes, array(
               'name' => $temp_borne['name'],
@@ -114,7 +118,7 @@
 
       if ($facility_form->isSubmitted() && $facility_form->isValid()) {
         $facility = $facility_form->getData();
-        $api->facility_add(array(
+        $api->table_add("facility", array(
           'name' => $facility->getName(),
           'address' => $facility->getAddress(),
           'complementary' => $facility->getComplementary()
@@ -154,7 +158,7 @@
 
       if ($place_form->isSubmitted() && $place_form->isValid()) {
         $place = $place_form->getData();
-        $api->place_add(array(
+        $api->table_add("place", array(
           'name' => $place->getName(),
           'address' => $place->getAddress(),
           'id_facility' => $place->getIdFacility(),
@@ -164,7 +168,7 @@
 
       if ($car_form->isSubmitted() && $car_form->isValid()) {
         $company_car = $car_form->getData();
-        $api->company_car_add(array(
+        $api->table_add("company_car", array(
           'name' => $company_car->getName(),
           'model' => $company_car->getModel(),
           'power' => $company_car->getPower(),
@@ -175,7 +179,7 @@
 
       if ($borne_form->isSubmitted() && $borne_form->isValid()) {
         $borne = $borne_form->getData();
-        $api->borne_add(array(
+        $api->table_add("borne", array(
           'name' => $borne->getName(),
           'place' => $borne->getPlace(),
           'id_place' => $borne->getIdPlace(),
@@ -200,9 +204,8 @@
      * @Route("/admin/facility/delete/{name}", name="delete_facility")
      */
      public function delete_facility($name) {
-      session_start();
       $api = new CustomApi();
-      $api->facility_delete($name);
+      $api->table_delete("facility", array('name' => $name));
       return $this->redirectToRoute('admin');
      }
 
@@ -210,9 +213,8 @@
     * @Route("/admin/place/delete/{id_place}", name="delete_place")
     */
     public function delete_place($id_place) {
-     session_start();
      $api = new CustomApi();
-     $api->place_delete($id_place);
+     $api->table_delete("place", array('id_place' => $id_place));
      return $this->redirectToRoute('admin');
     }
 
@@ -220,9 +222,8 @@
      * @Route("/admin/company_car/delete/{id_company_car}", name="delete_company_car")
      */
      public function delete_company_car($id_company_car) {
-      session_start();
       $api = new CustomApi();
-      $api->company_car_delete($id_company_car);
+      $api->table_delete("company_car", array('id_company_car' => $id_company_car));
       return $this->redirectToRoute('admin');
      }
 
@@ -230,9 +231,8 @@
       * @Route("/admin/borne/delete/{id_borne}", name="delete_borne")
       */
       public function delete_borne($id_borne) {
-       session_start();
        $api = new CustomApi();
-       $api->borne_delete($id_borne);
+       $api->table_delete("borne", array('id_borne' => $id_borne));
        return $this->redirectToRoute('admin');
       }
   }

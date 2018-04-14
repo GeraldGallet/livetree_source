@@ -43,16 +43,6 @@
       //$api_interface->status_delete("teacher");
       //var_dump($api_interface->status_get("guest"));
 
-      $car = array(
-        'model' => "Renault Kangoo",
-        'power' => 30,
-        'name' => "Voiture perso 2",
-        'id_user' => 1
-      );
-      $user = array(
-        'id_user' => 1,
-      );
-      //$api_interface->personal_car_add($car);
       //var_dump($api_interface->personal_car_get_all($user));
       //var_dump($api_interface->personal_car_get(1, "Voiture perso"));
       //$api_interface->personal_car_delete(1, "Voiture perso 2")
@@ -129,9 +119,23 @@
       //$date2 = new DateTime('2018-04-15 19:00:00');
       // /$api_interface->reservation_borne_add(date_format($date, 'Y-m-d'), date_format($date, 'H:i:s'), date_format($date2, 'H:i:s'), 50, 3, 1);
 
-      $result = $api_interface->reason_get("Visite");
+      //$result = $api_interface->reason_get("Visite");
       //$api_interface->reason_delete("Personnel");
-      $result = $api_interface->company_car_get_by_id(1);
+
+      $user = array(
+        'first_name' => "Gallet",
+        'email' => "gerald.gallet@yncrea.fr"
+      );
+      //$result = $api_interface->test_user_get($user);
+      $car = array(
+        'model' => "Renault Kangoo"
+      );
+      $user = array(
+        'id_user' => 1,
+      );
+      $result = $api_interface->table_get_all("reservation_car");
+
+      //$result = $api_interface->table_get("phone_indicative", array('country' => "France"));
       return $this->render('test.html.twig', array(
             'result' => $result,
       ));
