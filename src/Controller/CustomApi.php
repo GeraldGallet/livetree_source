@@ -1022,7 +1022,7 @@
       );
       $data = json_encode($data);
 
-      $ch = $this->api_connect($this->url . 'resa_car/');
+      $ch = $this->api_connect($this->url . 'reservation_car/');
       $ch = $this->api_options($ch, "DELETE", $data);
       $result = curl_exec($ch);
     }

@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class Inscription extends Controller
 {
 
@@ -33,11 +34,13 @@ class Inscription extends Controller
     }
 
     $form = $this->createFormBuilder($user)
-        ->add('last_name', TextType::class)
-        ->add('first_name', TextType::class)
-        ->add('email', EmailType::class)
-        ->add('password', PasswordType::class)
+        ->add('last_name', TextType::class, array('label' => 'Nom: '))
+        ->add('first_name', TextType::class, array('label' => 'Prenom: '))
+        ->add('email', EmailType::class, array('label' => 'Email: '))
+        ->add('password', PasswordType::class, array('label' => 'Mot de passe: '))
+        ->add('password_confirmation', PasswordType::class, array('label' => 'Confirmer votre mot de passe: '))
         ->add('id_status', ChoiceType::class, array(
+          'label' => 'Statut: ',
           'choices'  => array(
             'Visiteur' => "Visiteur",
             'Etudiant' => 'Etudiant',
@@ -46,17 +49,21 @@ class Inscription extends Controller
           )))
         ->add('indicative', ChoiceType::class, array(
           'choices'  => $indicative_choices))
-        ->add('phone_number', NumberType::class)
+        ->add('phone_number', NumberType::class, array('label' => 'Téléphone: '))
         ->add('subscribe', SubmitType::class, array('label' => 'Je m\'inscris'))
         ->getForm();
     $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
+    if ($form->isSubmitted() && $form->isValid())  {
         // $form->getData() holds the submitted values
         // but, the original `$task` variable has also been updated
         $user = $form->getData();
         $api = new CustomApi();
-
+        if ($user -> getPassword() != $user -> getPasswordConfirmation()){
+          echo "mdp doit être = mdpconfirmation";
+          return $this->render('forms/inscription.html.twig', array(
+              'form' => $form->createView()));
+        }
         $domain_name = substr(strrchr($user->getEmail(), "@"), 1);
         $res = $api->domain_get($domain_name);
         if(sizeof($res) == 0)
@@ -68,6 +75,9 @@ class Inscription extends Controller
         foreach($api->has_domain_get($res[0]['id_domain']) as $has_domain) {
           array_push($id_facs, $has_domain['id_facility']);
         }
+        $passwordInput= $user -> getPassword();
+        $user -> setPassword(password_hash($passwordInput,PASSWORD_DEFAULT));
+        // password_verify($passwordInput,aller dans la v cxc bdd retrouver le hash qui correspond au user);
 
         $new_user = NULL;
         $new_user = array(

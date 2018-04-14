@@ -16,7 +16,20 @@
     <li>Heure de départ: {{resa.end_time}}</li>
     <li>Charge estimée en arrivant: {{resa.charge}}</li>
     <li>Lieu: {{resa.place}}</li>
+    <li><a href="{{ path('delete_resa_borne', {'id_resa': resa.id_resa}) }}"><button>Annuler</button></a></li>
   </ul>
 {% endfor %}
 <h2>Réservations de véhicules</h2>
+{% for resa in resa_car %}
+  <ul>
+    <li>Début: {{resa.date_start}}  {{resa.start_time}}</li>
+    <li>Début: {{resa.date_end}}  {{resa.end_time}}</li>
+    <li>Kilométrage prévu: {{resa.km_planned}} kms</li>
+    <li>Heure de départ: {{resa.end_time}}</li>
+    <li>Etablissement: {{resa.facility}}</li>
+    <li>Raison: {{resa.id_reason}}</li>
+    <li>Voiture: {{resa.id_company_car}}</li>
+    <li><a href="{{ path('delete_resa_car', {'id_resa': resa.id_resa}) }}"><button>Annuler</button></a></li>
+  </ul>
+{% endfor %}
 {% endblock %}

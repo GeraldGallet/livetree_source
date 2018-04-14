@@ -351,7 +351,7 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
     case "reason":
       switch(req.params.cmd) {
         case "get_all":
-          reason.getAll(res);
+          reason.get_all(res);
           break;
 
         case "get":
