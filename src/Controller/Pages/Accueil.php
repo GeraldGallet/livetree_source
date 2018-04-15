@@ -39,11 +39,20 @@
         {
           $user = $connection_form->getData();
           $api = new CustomApi();
-          $db_user = $api->table_get("user", array('email' => $user->getEmail()))[0];
+          $db_user = $api->table_get("user", array('email' => $user->getEmail()));
+          if(sizeof($db_user) == 0) {
+            return $this->render('accueil.html.twig', array(
+              'connected' => $connected,
+              'connection_form' => $view,
+              'error' => 'La combinaison email/mot de passe n\'existe pas !',
+              'last_name' => $last_name,
+              'first_name' => $first_name
+            ));
+          } else
+            $db_user = $db_user[0];
 
           if($user->getPassword() == $db_user['password'])
           {
-            //session_start();
             $_SESSION['email'] = $db_user['email'];
             $_SESSION['id_user'] = $db_user['id_user'];
             $_SESSION['first_name'] = $db_user['first_name'];
@@ -85,7 +94,7 @@
     public function deconnect() {
       if(!isset($_SESSION))
         session_start();
-        
+
       session_destroy();
       return $this->redirectToRoute('accueil');
     }

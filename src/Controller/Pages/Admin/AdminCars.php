@@ -22,6 +22,8 @@
       * @Route("/admin/voitures", name="admin_cars")
       */
     public function load_admin_cars(Request $request) {
+      if(!isset($_SESSION))
+        session_start();
 
       $rights = 3;
       if($rights < 2)

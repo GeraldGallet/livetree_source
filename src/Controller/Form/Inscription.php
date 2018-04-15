@@ -29,7 +29,7 @@ class Inscription extends Controller
     $api = new CustomApi();
 
     $indicative_choices = [];
-    foreach($api->phone_indicative_get_all() as $pi) {
+    foreach($api->table_get_all("phone_indicative") as $pi) {
       $indicative_choices[$pi['country']] = $pi['indicative'];
     }
 
@@ -55,29 +55,31 @@ class Inscription extends Controller
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid())  {
-        // $form->getData() holds the submitted values
-        // but, the original `$task` variable has also been updated
         $user = $form->getData();
         $api = new CustomApi();
-        if ($user -> getPassword() != $user -> getPasswordConfirmation()){
-          echo "mdp doit être = mdpconfirmation";
-          return $this->render('forms/inscription.html.twig', array(
-              'form' => $form->createView()));
+        if ($user -> getPassword() != $user -> getPasswordConfirmation()) {
+            return $this->render('forms/inscription.html.twig', array(
+              'form' => $form->createView(),
+              'error' => "Les 2 mots de passe doivent être identiques !"
+            ));
         }
+
         $domain_name = substr(strrchr($user->getEmail(), "@"), 1);
-        $res = $api->domain_get($domain_name);
+        $res = $api->table_get("domain", array('domain' => $domain_name));
         if(sizeof($res) == 0)
           return $this->render('forms/inscription.html.twig', array(
               'form' => $form->createView(),
+              'error' => "Votre e-mail n'est pas enregistrée sur ce site"
           ));
 
         $id_facs = [];
-        foreach($api->has_domain_get($res[0]['id_domain']) as $has_domain) {
+        foreach($api->table_get("has_domain", array('id_domain' => $res[0]['id_domain'])) as $has_domain) {
           array_push($id_facs, $has_domain['id_facility']);
         }
+
+
         $passwordInput= $user -> getPassword();
         $user -> setPassword(password_hash($passwordInput,PASSWORD_DEFAULT));
-        // password_verify($passwordInput,aller dans la v cxc bdd retrouver le hash qui correspond au user);
 
         $new_user = NULL;
         $new_user = array(
@@ -90,16 +92,17 @@ class Inscription extends Controller
           'activated' => false,
           'indicative' => $user->getIndicative()
         );
-        $api->user_add($new_user);
-        $user_id = $api->user_get($new_user['email'])['id_user'];
+        $api->table_add("user", $new_user);
+        $user_id = $api->table_get("user", array('email' => $new_user['email']))['id_user'];
         foreach($id_facs as $id) {
-          $api->work_add($user_id, $id);
+          $api->table_add("work", array('id_user' => $user_id, 'id_facility' => $id));
         }
         return $this->redirectToRoute('validation');
     }
 
     return $this->render('forms/inscription.html.twig', array(
         'form' => $form->createView(),
+        'error' => NULL
     ));
   }
 }
