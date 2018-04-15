@@ -1,0 +1,13 @@
+{% extends "base.html.twig" %}
+
+
+{% block body %}
+    <h1>Afficher le nombre de bornes réservées par heure</h1>
+    {% for slots in updated_list_of_slot %}
+        {#<li>{{ user.username|e }}</li>#}
+        <p> {{    slots.date|date('d-m-Y H:i:s') }} Nombre de résevations pour ce créneau <span style="font-size:2em">{{ slots.numberOfDisponibility }}</span>  </p>
+    {% else %}
+        <li><em> Date note found (ask Admin biatch)</em></li>
+    {% endfor %}
+
+{% endblock %}

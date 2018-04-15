@@ -7,17 +7,17 @@
 	 /**
      * @Assert\NotBlank()
      */
-	 protected $date_time;
+	 protected $date_creation;
 
 	 /**
      * @Assert\NotBlank()
      */
-	 protected $start_time;
+	 protected $start_date;
 
 	 /**
      * @Assert\NotBlank()
      */
-	 protected $end_time;
+	 protected $end_date;
 
 	 /**
      * @Assert\NotBlank()
@@ -31,25 +31,25 @@
 	 protected $id_user;
 
 
-	 function getDateTime(){
-		 return $this->date_time;
+	 function getDateCreation(){
+		 return $this->date_creation;
 	 }
-	 function setDateTime($date_time){
-		 $this->date_time=$date_time;
-	 }
-
-	 function getStartTime(){
-		 return $this->start_time;
-	 }
-	 function setStartTime($start_time){
-		 $this->start_time=$start_time;
+	 function setDateCreation($date_creation){
+		 $this->date_creation=$date_creation;
 	 }
 
-	  function getEndTime(){
-		 return $this->end_time;
+	 function getStartDate(){
+		 return $this->start_date;
 	 }
-	 function setEndTime($end_time){
-		 $this->end_time=$end_time;
+	 function setStartDate($start_date){
+		 $this->start_date=$start_date;
+	 }
+
+	  function getEndDate(){
+		 return $this->end_date;
+	 }
+	 function setEndDate($end_date){
+		 $this->end_date=$end_date;
 	 }
 
 	  function getCharge(){
