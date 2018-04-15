@@ -12,4 +12,18 @@
 <a href='/admin/voitures'>Voitures</a>
 <a href='/admin/profils'>Profils</a>
 <h1>Administration des profils</h1>
+{% for profile in profiles %}
+  <ul>
+    <li>{{profile.first_name}} {{profile.last_name}} ({{profile.id_user}}) </li>
+    <li>{{profile.email}}</li>
+    <li>{{profile.id_status}}
+    {% if profile.id_status != "Admin" %}
+    <a href="{{ path('give_admin', {'id_user': profile.id_user}) }}"><button>Passer en administrateur</button></a>
+    {% endif %}
+    </li>
+    <li>{{profile.indicative}} {{profile.phone_number}}</li>
+    <li>{% if profile.activated %}Activé {% else %} Non - activé <a href="{{ path('activate_user_admin', {'id_user': profile.id_user}) }}"><button>Activer cet utilisateur</button></a>{% endif %}</li>
+    <a href="{{ path('delete_user_admin', {'id_user': profile.id_user}) }}"><button>Supprimer cet utilisateur</button></a>
+  </ul>
+{% endfor %}
 {% endblock %}

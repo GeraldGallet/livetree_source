@@ -24,19 +24,22 @@
     public function load_admin(Request $request) {
       if(!isset($_SESSION))
         session_start();
-        
+
+      if(!isset($_SESSION['id_user']))
+        return $this->redirectToRoute('accueil');
+
+      $rights = $_SESSION['rights'];
+      if($rights < 2) {
+        return $this->redirectToRoute('accueil');
+      }
+
       $facility = new Facility();
       $company_car = new CompanyCar();
       $place = new Place();
       $borne = new Borne();
       $api = new CustomApi();
 
-      $rights = 3;
       $facility_form_view = NULL;
-      if($rights < 2) {
-        return $this->redirectToRoute('accueil');
-      }
-
       $facilities = [];
       $choices_facilities = [];
       $choices_places = [];
@@ -58,7 +61,7 @@
       } else {
         foreach($api->table_get("work", array('id_user' => $_SESSION['id_user'])) as $temp_work)
         {
-          $temp_facility = $api->table_get("facility", array('id_facility' => $temp_work['id_facility']));
+          $temp_facility = $api->table_get("facility", array('id_facility' => $temp_work['id_facility']))[0];
           array_push($facilities, array(
             'name' => $temp_facility['name'],
             'address' => $temp_facility['address'],
@@ -74,7 +77,7 @@
           array_push($places, array(
             'name' => $temp_place['name'],
             'address' => $temp_place['address'],
-            'id_facility' => $temp_place['id_facility'],
+            'facility' => $api->table_get("facility", array('id_facility' => $temp_place['id_facility']))[0]['name'],
             'id_place' => $temp_place['id_place']
           ));
           $choices_places[$temp_place['name']] = $temp_place['id_place'];

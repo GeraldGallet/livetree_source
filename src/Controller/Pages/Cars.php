@@ -30,7 +30,7 @@
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
-      $rights = 1;
+      $rights = $_SESSION['rights'];
       if($rights < 1)
         return $this->redirectToRoute('accueil');
 
@@ -71,11 +71,29 @@
       {
     		date_default_timezone_set('Europe/Paris');
         $reservationCar = $car_form->getData();
+
+        $date_start = date_format($reservationCar->getDateStart(), 'Y-m-d');
+        $date_end = date_format($reservationCar->getDateEnd(), 'Y-m-d');
+        $start_time = $reservationCar->getStartTime()->format('H:i');
+        $end_time = $reservationCar->getEndTime()->format('H:i');
+
+        if($date_start > $date_end) {
+          return $this->render('reservations/cars.html.twig', array(
+                'form' => $car_form->createView()
+          ));
+        } else if($date_start == $date_end) {
+          if($start_time >= $end_time) {
+            return $this->render('reservations/cars.html.twig', array(
+                  'form' => $car_form->createView()
+            ));
+          }
+        }
+
         $new_resa = array(
-          'date_start' => date_format($reservationCar->getDateStart(), 'Y-m-d'),
-          'date_end' => date_format($reservationCar->getDateEnd(), 'Y-m-d'),
-          'start_time' => $reservationCar->getStartTime()->format('H:i'),
-          'end_time' => $reservationCar->getEndTime()->format('H:i'),
+          'date_start' => $date_start,
+          'date_end' => $date_end,
+          'start_time' => $start_time,
+          'end_time' => $end_time,
           'id_reason' => $reservationCar->getIdReason(),
           'reason_details' => $reservationCar->getReasonDetails(),
           'km_start' => NULL,
@@ -89,16 +107,17 @@
         $new_state = array(
           'front' => null,
           'back' => null,
-          'left_size' => null,
-          'right_size' => null,
+          'left_side' => null,
+          'right_side' => null,
           'inside' => null,
           'commentary' => null,
           'id_resa' => null
         );
 
-        //$api->state_add($new_state);
-
-        $api->table_add("resa_car", $new_resa);
+        $new_resa['id_state'] = $api->table_add("state", $new_state);
+        $id_resa_car = $api->table_add("resa_car", $new_resa);
+        $api->table_update("state", array('id_resa' => $id_resa_car), array('id_state' => $new_resa['id_state']));
+        return $this->redirectToRoute('history');
       }
 
       return $this->render('reservations/cars.html.twig', array(

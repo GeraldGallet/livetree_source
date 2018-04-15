@@ -80,6 +80,22 @@ function delete_entry(body, res, table) {
   });
 }
 
+function update_table(body, res, table) {
+  var query = "UPDATE " + table + " SET ? WHERE ";
+  placeholder = [body.set];
+
+  for(var prop in body.where) {
+    placeholder.push(body.where[prop]);
+    query += prop + " = ? AND ";
+  }
+  query += '1;';
+
+  res.locals.connection.query(query, placeholder, function(error, results, fields) {
+    if(error) throw error;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+}
+
 
 
 
@@ -121,14 +137,12 @@ app.delete('/:table', jsonParser, function(req, res, next) {
   }
 });
 
-app.patch('/user/:cmd', jsonParser, function(req, res) {
-  switch(req.params.cmd) {
-    case "password":
-      console.log("patch /user/password");
-      user.change_password(req.body, res);
-      break;
+app.patch('/:table', jsonParser, function(req, res) {
+  console.log("patch /" + req.params.table);
 
-    default:
-      console.log("UNKNOWN COMMAND PATCH /user/:cmd");
+  for(var i = 0; i < cmds.length; i++) {
+    if(req.params.table == cmds[i]) {
+      update_table(req.body, res, cmds[i]);
+    }
   }
 });

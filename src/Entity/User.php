@@ -44,6 +44,7 @@
      */
     protected $indicative;
     protected $activated;
+    protected $referent_email;
 
     function getEmail() {
       return $this->email;
@@ -115,6 +116,14 @@
 
     function setActivated($activated) {
       $this->activated = $activated;
+    }
+
+    function getReferentEmail() {
+      return $this->referent_email;
+    }
+
+    function setReferentEmail($referent_email) {
+      $this->referent_email = $referent_email;
     }
   }
 

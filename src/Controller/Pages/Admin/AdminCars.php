@@ -22,8 +22,13 @@
       * @Route("/admin/voitures", name="admin_cars")
       */
     public function load_admin_cars(Request $request) {
+      if(!isset($_SESSION))
+        session_start();
 
-      $rights = 3;
+      if(!isset($_SESSION['id_user']))
+        return $this->redirectToRoute('accueil');
+
+      $rights = $_SESSION['rights'];
       if($rights < 2)
         return $this->redirectToRoute('accueil');
 

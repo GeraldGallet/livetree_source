@@ -130,10 +130,12 @@
       $car = array(
         'model' => "Renault Kangoo"
       );
-      $user = array(
+      $where = array(
         'id_user' => 1,
       );
-      $result = $api_interface->table_get_all("reservation_car");
+
+      $set = array('password' => "yoyoyoHIHI");
+      $result = $api_interface->table_update("user", $set, $where);
 
       //$result = $api_interface->table_get("phone_indicative", array('country' => "France"));
       return $this->render('test.html.twig', array(

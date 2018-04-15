@@ -39,17 +39,36 @@
         {
           $user = $connection_form->getData();
           $api = new CustomApi();
-          $db_user = $api->table_get("user", array('email' => $user->getEmail()))[0];
+          $db_user = $api->table_get("user", array('email' => $user->getEmail()));
+          if(sizeof($db_user) == 0) {
+            return $this->render('accueil.html.twig', array(
+              'connected' => $connected,
+              'connection_form' => $view,
+              'error' => 'La combinaison email/mot de passe n\'existe pas !',
+              'last_name' => $last_name,
+              'first_name' => $first_name
+            ));
+          } else
+            $db_user = $db_user[0];
 
-          if($user->getPassword() == $db_user['password'])
+          if(!$db_user['activated']) {
+            return $this->render('accueil.html.twig', array(
+              'connected' => $connected,
+              'connection_form' => $view,
+              'error' => 'Ce compte n\'est pas activé !',
+              'last_name' => $last_name,
+              'first_name' => $first_name
+            ));
+          }
+          if(password_verify($user->getPassword(), $db_user['password']))
           {
-            //session_start();
             $_SESSION['email'] = $db_user['email'];
             $_SESSION['id_user'] = $db_user['id_user'];
             $_SESSION['first_name'] = $db_user['first_name'];
             $_SESSION['last_name'] = $db_user['last_name'];
             $_SESSION['id_status'] = $db_user['id_status'];
             $_SESSION['phone_number'] = $db_user['phone_number'];
+            $_SESSION['rights'] = $api->table_get("status", array('id_status' => $db_user['id_status']))[0]['rights'];
           } else
           {
             return $this->render('accueil.html.twig', array(
@@ -85,7 +104,7 @@
     public function deconnect() {
       if(!isset($_SESSION))
         session_start();
-        
+
       session_destroy();
       return $this->redirectToRoute('accueil');
     }

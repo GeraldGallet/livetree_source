@@ -24,11 +24,11 @@
     public function load_admin_bornes(Request $request) {
       if(!isset($_SESSION))
         session_start();
-        
+
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
-      $rights = 2;
+      $rights = $_SESSION['rights'];
       if($rights < 2)
         return $this->redirectToRoute('accueil');
 
