@@ -6,6 +6,8 @@ use App\Controller\CustomApi;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -13,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -24,6 +27,13 @@ class Inscription extends Controller
     */
   public function new(Request $request)
   {
+    if(!isset($_SESSION))
+      session_start();
+
+    if(isset($_SESSION['id_user']))
+      return $this->redirectToRoute('accueil');
+
+
     // Create a user
     $user = new User();
     $api = new CustomApi();
@@ -47,11 +57,20 @@ class Inscription extends Controller
             'Salarié' => 'Salarié',
             'Professeur' => 'Professeur'
           )))
+        ->add('referent_email', HiddenType::class)
         ->add('indicative', ChoiceType::class, array(
           'choices'  => $indicative_choices))
         ->add('phone_number', NumberType::class, array('label' => 'Téléphone: '))
         ->add('subscribe', SubmitType::class, array('label' => 'Je m\'inscris'))
-        ->getForm();
+        ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+          $user = $event->getData();
+          $form = $event->getForm();
+
+          if($user->getIdStatus() == "Visiteur") {
+            $form->add('referent_email', EmailType::class, array('label' => 'Email de votre contact: '));
+          }
+        });
+    $form = $form->getForm();
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid())  {
@@ -92,8 +111,8 @@ class Inscription extends Controller
           'activated' => false,
           'indicative' => $user->getIndicative()
         );
-        $api->table_add("user", $new_user);
-        $user_id = $api->table_get("user", array('email' => $new_user['email']))['id_user'];
+        $user_id = $api->table_add("user", $new_user);
+        //$user_id = $api->table_get("user", array('email' => $new_user['email']))[0]['id_user'];
         foreach($id_facs as $id) {
           $api->table_add("work", array('id_user' => $user_id, 'id_facility' => $id));
         }

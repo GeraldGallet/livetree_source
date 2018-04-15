@@ -16,7 +16,10 @@
       if(!isset($_SESSION))
         session_start();
 
-      $rights = 3;
+      if(!isset($_SESSION['id_user']))
+        return $this->redirectToRoute('accueil');
+
+      $rights = $_SESSION['rights'];
       if($rights < 2)
         return $this->redirectToRoute('accueil');
 
@@ -45,7 +48,32 @@
       * @Route("/admin/profils/give_admin/{id_user}", name="give_admin")
       */
     public function give_admin_rights($id_user) {
-      return $this->redirectToRoute('accueil');
+      if(!isset($_SESSION))
+        session_start();
+
+      $rights = $_SESSION['rights'];
+      if($rights < 2)
+        return $this->redirectToRoute('accueil');
+
+      $api = new CustomApi();
+      $api->table_update("user", array('id_status' => "Admin"), array('id_user' => $id_user));
+      return $this->redirectToRoute('admin_profiles');
+    }
+
+    /**
+      * @Route("/admin/profils/activer/{id_user}", name="activate_user_admin")
+      */
+    public function activate_user($id_user) {
+      if(!isset($_SESSION))
+        session_start();
+
+      $rights = $_SESSION['rights'];
+      if($rights < 2)
+        return $this->redirectToRoute('accueil');
+
+      $api = new CustomApi();
+      $api->table_update("user", array('activated' => true), array('id_user' => $id_user));
+      return $this->redirectToRoute('admin_profiles');
     }
 
     /**
@@ -55,7 +83,7 @@
       if(!isset($_SESSION))
         session_start();
 
-      $rights = 3;
+      $rights = $_SESSION['rights'];
       if($rights < 2)
         return $this->redirectToRoute('accueil');
 

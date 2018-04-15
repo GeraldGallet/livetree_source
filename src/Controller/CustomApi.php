@@ -14,6 +14,7 @@
     public function table_get($table, $body);
     public function table_add($table, $body);
     public function table_delete($table, $body);
+    public function table_update($table, $set, $where);
   }
 
 
@@ -45,6 +46,10 @@
           break;
 
         case "PATCH":
+          curl_setopt($connection, CURLOPT_POSTFIELDS, $data);
+          curl_setopt($connection, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+          curl_setopt($connection, CURLOPT_RETURNTRANSFER, TRUE);
+          curl_setopt($connection, CURLOPT_CUSTOMREQUEST, 'PATCH');
           break;
 
         default:
@@ -97,6 +102,21 @@
       $ch = $this->api_connect($this->url . $query);
       $ch = $this->api_options($ch, "DELETE", json_encode($body));
       $result = curl_exec($ch);
+    }
+
+    public function table_update($table, $set, $where) {
+      $query = $table . "/";
+      $body = array(
+        'set' => $set,
+        'where' => $where
+      );
+
+      $ch = $this->api_connect($this->url . $query);
+      $ch = $this->api_options($ch, "PATCH", json_encode($body));
+      $result = curl_exec($ch);
+
+      //$result = json_decode($result, true);
+      //return $result['response']['insertId'];
     }
   }
 ?>

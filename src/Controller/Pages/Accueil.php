@@ -51,7 +51,16 @@
           } else
             $db_user = $db_user[0];
 
-          if($user->getPassword() == $db_user['password'])
+          if(!$db_user['activated']) {
+            return $this->render('accueil.html.twig', array(
+              'connected' => $connected,
+              'connection_form' => $view,
+              'error' => 'Ce compte n\'est pas activé !',
+              'last_name' => $last_name,
+              'first_name' => $first_name
+            ));
+          }
+          if(password_verify($user->getPassword(), $db_user['password']))
           {
             $_SESSION['email'] = $db_user['email'];
             $_SESSION['id_user'] = $db_user['id_user'];
@@ -59,6 +68,7 @@
             $_SESSION['last_name'] = $db_user['last_name'];
             $_SESSION['id_status'] = $db_user['id_status'];
             $_SESSION['phone_number'] = $db_user['phone_number'];
+            $_SESSION['rights'] = $api->table_get("status", array('id_status' => $db_user['id_status']))[0]['rights'];
           } else
           {
             return $this->render('accueil.html.twig', array(

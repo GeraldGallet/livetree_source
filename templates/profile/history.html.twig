@@ -29,6 +29,23 @@
     <li>Etablissement: {{resa.facility}}</li>
     <li>Raison: {{resa.id_reason}}</li>
     <li>Voiture: {{resa.id_company_car}}</li>
+    <li>Etat des lieux:
+      {% if resa.state.done %}
+      <ul>
+        <li>Avant: {{resa.state.front}}</li>
+        <li>Arrière: {{resa.state.back}}</li>
+        <li>Droite: {{resa.state.right_side}}</li>
+        <li>Gauche: {{resa.state.left_side}}</li>
+        <li>Intérieur: {{resa.state.inside}}</li>
+        <li>Commentaire: {{resa.state.commentary}}</li>
+      <ul>
+      {% else %}
+      {{ form_start(resa.state.form, {'attr': {'novalidate': 'novalidate'}}) }}
+      {{ form_widget(resa.state.form) }}
+      {{ form_end(resa.state.form) }}
+      {% endif %}
+
+    </li>
     <li><a href="{{ path('delete_resa_car', {'id_resa': resa.id_resa}) }}"><button>Annuler</button></a></li>
   </ul>
 {% endfor %}

@@ -127,9 +127,7 @@
               'access_form' => $access_form->createView()
         ));
       } else
-      {
         return $this->redirectToRoute('accueil');
-      }
     }
 
     /**
