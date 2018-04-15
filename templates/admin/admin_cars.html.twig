@@ -12,4 +12,25 @@
 <a href='/admin/voitures'>Voitures</a>
 <a href='/admin/profils'>Profils</a>
 <h1>Administration des voitures</h1>
+<h2>Ajouter une réservation</h2>
+{{ form_start(car_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(car_form) }}
+{{ form_end(car_form) }}
+
+<h2>Réservations de voitures</h2>
+<ul>
+{% for resa in resa_car %}
+<ul>
+  <li>Début: {{resa.date_start}}  {{resa.start_time}}</li>
+  <li>Début: {{resa.date_end}}  {{resa.end_time}}</li>
+  <li>Kilométrage prévu: {{resa.km_planned}} kms</li>
+  <li>Heure de départ: {{resa.end_time}}</li>
+  <li>Etablissement: {{resa.facility}}</li>
+  <li>Raison: {{resa.id_reason}}</li>
+  <li>Voiture: {{resa.id_company_car}}</li>
+  <li><a href="{{ path('delete_resa_car_admin', {'id_resa': resa.id_resa}) }}"><button>Supprimer</button></a></li>
+</ul>
+<br/>
+{% endfor %}
+</ul>
 {% endblock %}

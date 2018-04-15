@@ -18,7 +18,8 @@
       * @Route("/", name="accueil")
       */
     public function load_accueil(Request $request) {
-      session_start();
+      if(!isset($_SESSION))
+        session_start();
 
       if(!isset($_SESSION['id_user'])) {
         $connected = false;
@@ -38,10 +39,11 @@
         {
           $user = $connection_form->getData();
           $api = new CustomApi();
-          $db_user = $api->user_get($user->getEmail());
+          $db_user = $api->table_get("user", array('email' => $user->getEmail()))[0];
 
           if($user->getPassword() == $db_user['password'])
           {
+            //session_start();
             $_SESSION['email'] = $db_user['email'];
             $_SESSION['id_user'] = $db_user['id_user'];
             $_SESSION['first_name'] = $db_user['first_name'];
@@ -81,7 +83,9 @@
       * @Route("/deconnexion", name="deconnect")
       */
     public function deconnect() {
-      session_start();
+      if(!isset($_SESSION))
+        session_start();
+        
       session_destroy();
       return $this->redirectToRoute('accueil');
     }
