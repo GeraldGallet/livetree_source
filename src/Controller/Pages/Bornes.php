@@ -60,10 +60,10 @@
                       "data-provide" => "slider",
                       "data-slider-ticks" => "[1, 2, 3, 4]",
                       "data-slider-ticks-labels" => '["short", "medium", "long", "xxl"]',
-                      "data-slider-min" => 1,
-                      "data-slider-max" => 100,
-                      "data-slider-step" => 1,
-                      "data-slider-value" => 100,
+                      "min" => 1,
+                      "max" => 100,
+                      "step" => 1,
+                      "value" => 100,
                    ]
                ]
          )
