@@ -4,6 +4,7 @@ namespace App\Controller\Form;
 use App\Entity\User;
 use App\Controller\CustomApi;
 
+use \DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormEvent;
@@ -61,15 +62,7 @@ class Inscription extends Controller
         ->add('indicative', ChoiceType::class, array(
           'choices'  => $indicative_choices))
         ->add('phone_number', NumberType::class, array('label' => 'Téléphone: '))
-        ->add('subscribe', SubmitType::class, array('label' => 'Je m\'inscris'))
-        ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-          $user = $event->getData();
-          $form = $event->getForm();
-
-          if($user->getIdStatus() == "Visiteur") {
-            $form->add('referent_email', EmailType::class, array('label' => 'Email de votre contact: '));
-          }
-        });
+        ->add('subscribe', SubmitType::class, array('label' => 'Je m\'inscris'));
     $form = $form->getForm();
     $form->handleRequest($request);
 
@@ -79,7 +72,8 @@ class Inscription extends Controller
         if ($user -> getPassword() != $user -> getPasswordConfirmation()) {
             return $this->render('forms/inscription.html.twig', array(
               'form' => $form->createView(),
-              'error' => "Les 2 mots de passe doivent être identiques !"
+              'error' => "Les 2 mots de passe doivent être identiques !",
+              'state' => "Subscribe"
             ));
         }
 
@@ -88,7 +82,8 @@ class Inscription extends Controller
         if(sizeof($res) == 0)
           return $this->render('forms/inscription.html.twig', array(
               'form' => $form->createView(),
-              'error' => "Votre e-mail n'est pas enregistrée sur ce site"
+              'error' => "Votre e-mail n'est pas enregistrée sur ce site",
+              'state' => "Subscribe"
           ));
 
         $id_facs = [];
@@ -96,9 +91,16 @@ class Inscription extends Controller
           array_push($id_facs, $has_domain['id_facility']);
         }
 
-
         $passwordInput= $user -> getPassword();
         $user -> setPassword(password_hash($passwordInput,PASSWORD_DEFAULT));
+
+        if($user->getIdStatus() == "Visiteur") {
+          $visiting = true;
+          $validation_email = $user->getReferentEmail();
+        } else {
+          $visiting = false;
+          $validation_email = $user->getEmail();
+        }
 
         $new_user = NULL;
         $new_user = array(
@@ -112,18 +114,37 @@ class Inscription extends Controller
           'indicative' => $user->getIndicative()
         );
         $user_id = $api->table_add("user", $new_user);
-        //$user_id = $api->table_get("user", array('email' => $new_user['email']))[0]['id_user'];
+
         foreach($id_facs as $id) {
           $api->table_add("work", array('id_user' => $user_id, 'id_facility' => $id));
         }
-        return $this->redirectToRoute('validation');
+
+        date_default_timezone_set('Europe/Paris');
+        $expirationDate = new DateTime("now");
+        //$expirationDate->modify("+1 hour");
+        $new_token = array(
+          'token' => substr(bin2hex(random_bytes(40)), 0, 10),
+          'email' => $validation_email,
+          'expiration_time' => date_format($expirationDate, 'Y-m-d H:i:s'),
+          'id_user' => $user_id
+        );
+
+        $api->table_add("email_validate", $new_token);
+        return $this->render('forms/inscription.html.twig', array(
+            'email' => $validation_email,
+            'visiting' => $visiting,
+            'state' => "Validation"
+        ));
     }
 
     return $this->render('forms/inscription.html.twig', array(
         'form' => $form->createView(),
-        'error' => NULL
+        'error' => NULL,
+        'state' => "Subscribe"
     ));
+
   }
+
 }
 
 ?>
