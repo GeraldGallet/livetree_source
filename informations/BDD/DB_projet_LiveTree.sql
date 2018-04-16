@@ -20,7 +20,6 @@ CREATE TABLE user(
         phone_number Int NOT NULL ,
         id_status    Varchar (50) NOT NULL ,
         indicative   Varchar (5) NOT NULL ,
-        token        Varchar (25) NOT NULL ,
         PRIMARY KEY (id_user ) ,
         UNIQUE (email )
 )ENGINE=InnoDB;
@@ -99,14 +98,13 @@ CREATE TABLE personal_car(
 #------------------------------------------------------------
 
 CREATE TABLE resa_borne(
-        id_resa                int (11) Auto_increment  NOT NULL ,
-        date_creation          Date NOT NULL ,
-        start_date             Datetime NOT NULL ,
-        end_date               Datetime NOT NULL ,
-        date_last_modification Date ,
-        charge                 Float NOT NULL ,
-        id_user                Int NOT NULL,
-        id_place               Int NOT NULL ,
+        id_resa    int (11) Auto_increment  NOT NULL ,
+        date_resa  Date NOT NULL ,
+        start_time Time NOT NULL ,
+        end_time   Time NOT NULL ,
+        charge     Float NOT NULL ,
+        id_user    Int NOT NULL ,
+        id_place   Int NOT NULL ,
         PRIMARY KEY (id_resa )
 )ENGINE=InnoDB;
 
@@ -200,24 +198,11 @@ CREATE TABLE state(
 #------------------------------------------------------------
 
 CREATE TABLE email_validate(
-        token           Varchar (25) NOT NULL ,
-        expiration_time Datetime ,
-        id_user         Int,
-        id_referer      Int,
+        token           Varchar (50) NOT NULL ,
+        expiration_time Datetime NOT NULL ,
+        id_user         Float NOT NULL ,
+        email           Varchar (25) NOT NULL ,
         PRIMARY KEY (token )
-)ENGINE=InnoDB;
-
-
-#------------------------------------------------------------
-# Table: referer
-#------------------------------------------------------------
-
-CREATE TABLE referer(
-        id_referer    int (11) Auto_increment  NOT NULL ,
-        has_activated Bool ,
-        id_user       Int NOT NULL ,
-        token         Varchar (25) NOT NULL ,
-        PRIMARY KEY (id_referer )
 )ENGINE=InnoDB;
 
 
@@ -255,7 +240,6 @@ CREATE TABLE work(
 
 ALTER TABLE user ADD CONSTRAINT FK_user_id_status FOREIGN KEY (id_status) REFERENCES status(id_status);
 ALTER TABLE user ADD CONSTRAINT FK_user_indicative FOREIGN KEY (indicative) REFERENCES phone_indicative(indicative);
-ALTER TABLE user ADD CONSTRAINT FK_user_token FOREIGN KEY (token) REFERENCES email_validate(token);
 ALTER TABLE borne ADD CONSTRAINT FK_borne_id_place FOREIGN KEY (id_place) REFERENCES place(id_place);
 ALTER TABLE company_car ADD CONSTRAINT FK_company_car_id_facility FOREIGN KEY (id_facility) REFERENCES facility(id_facility);
 ALTER TABLE place ADD CONSTRAINT FK_place_id_facility FOREIGN KEY (id_facility) REFERENCES facility(id_facility);
@@ -267,16 +251,12 @@ ALTER TABLE resa_car ADD CONSTRAINT FK_resa_car_id_company_car FOREIGN KEY (id_c
 ALTER TABLE resa_car ADD CONSTRAINT FK_resa_car_id_reason FOREIGN KEY (id_reason) REFERENCES reason(id_reason);
 ALTER TABLE resa_car ADD CONSTRAINT FK_resa_car_id_state FOREIGN KEY (id_state) REFERENCES state(id_state);
 ALTER TABLE state ADD CONSTRAINT FK_state_id_resa FOREIGN KEY (id_resa) REFERENCES resa_car(id_resa);
-ALTER TABLE email_validate ADD CONSTRAINT FK_email_validate_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
-ALTER TABLE email_validate ADD CONSTRAINT FK_email_validate_id_referer FOREIGN KEY (id_referer) REFERENCES referer(id_referer);
-ALTER TABLE referer ADD CONSTRAINT FK_referer_token FOREIGN KEY (token) REFERENCES email_validate(token);
 ALTER TABLE has_access ADD CONSTRAINT FK_has_access_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
 ALTER TABLE has_access ADD CONSTRAINT FK_has_access_id_place FOREIGN KEY (id_place) REFERENCES place(id_place);
 ALTER TABLE has_domain ADD CONSTRAINT FK_has_domain_id_facility FOREIGN KEY (id_facility) REFERENCES facility(id_facility);
 ALTER TABLE has_domain ADD CONSTRAINT FK_has_domain_id_domain FOREIGN KEY (id_domain) REFERENCES domain(id_domain);
 ALTER TABLE work ADD CONSTRAINT FK_work_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
 ALTER TABLE work ADD CONSTRAINT FK_work_id_facility FOREIGN KEY (id_facility) REFERENCES facility(id_facility);
-
 
 
 INSERT INTO `status` (`id_status`, `rights`) VALUES ('Visiteur', '0');
@@ -304,24 +284,6 @@ INSERT INTO `place` (`id_place`, `name`, `address`, `id_facility`) VALUES (NULL,
 
 INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+32', 'Angleterre');
 INSERT INTO `phone_indicative` (`indicative`, `country`) VALUES ('+33', 'France');
-
-INSERT INTO email_validate(token, expiration_time)
-VALUES ('token1','20181212'), ('token2','20181212');
-
-INSERT INTO user(email,password,phone_number,first_name,last_name,activated,id_status,indicative,token)
-values ('aa@htt.fr','mypasswd',098762,'jc','sim',true,'Professeur','+33','token1'),
- ('aa@aaa.fr','mypasswd',0987122,'jc','sim',true,'Professeur','+33','token2')
-;
-
-
-INSERT INTO resa_borne(date_creation, start_date, end_date, charge, id_user, id_place)
-VALUES ('20181212','2018-12-12 14:59:59.99','2018-12-12 14:59:59.99',33.2,1,1),
-('20181212','2018-12-12 14:59:59.99','2018-12-12 14:59:59.99',33.2,1,1),
-('20181212','2018-12-12 14:59:59.99','2018-12-12 15:59:59.99',33.2,1,1),
-('20181212','2018-12-12 14:59:59.99','2018-12-12 16:59:59.99',33.2,1,1),
-('20181212','2018-12-12 14:59:59.99','2018-12-12 17:59:59.99',33.2,1,1),
-('20181212','2018-12-12 14:59:59.99','2018-12-12 20:59:59.99',33.2,1,1),
-('20181212','2018-12-12 14:59:59.99','2018-12-12 23:59:59.99',33.2,1,1);
 
 INSERT INTO `reason` (`id_reason`, `infos`) VALUES ('Visite', 'Visite chez un partenaire ou dans une entreprise');
 INSERT INTO `reason` (`id_reason`, `infos`) VALUES ('Représentation', 'Lorsqu\'on réserve un véhicule pour aller dans un salon ou autre pour représenter l\'établissement');

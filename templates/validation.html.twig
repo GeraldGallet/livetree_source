@@ -1,4 +1,16 @@
 {# templates/validation.html.twig #}
+{% extends "base.html.twig" %}
 
-<h1>Validation</h1>
-<h2>Un e-mail a été envoyé à l'adresse {{email}}</h2>
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+<h1>Activation du compte</h1>
+{% if success %}
+  <p>Le compte a l'adresse {{email}} a bien été activé !</p>
+{% else %}
+<a href="{{ path('send_new_email', {'id_user': id_user, 'email': email}) }}">
+  <p>Ce lien a expiré. Vous pouvez en renvoyer un autre en cliquant <a href="{{ path('send_new_email', {'id_user': id_user, 'email': email}) }}">ici</a></p>
+{% endif %}
+{% endblock %}
