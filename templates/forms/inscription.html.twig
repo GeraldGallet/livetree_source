@@ -8,10 +8,23 @@
 {% endblock %}
 
 {% block body %}
-    <h1><a class="inscription red">Inscription </a> <span class="inscription-number"> 0</span></h1>
+    <h1>Inscription</h1>
     <h2>{{error}}</h2>
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-{{ form_widget(form) }}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_row(form.last_name) }}
+{{ form_row(form.first_name) }}
+{{ form_row(form.email) }}
+{{ form_row(form.password) }}
+{{ form_row(form.password_confirmation) }}
+{{ form_row(form.id_status) }}
+<div id="referent_email_label">
+{{ form_label(form.referent_email) }}
+</div>
+{{ form_widget(form.referent_email) }}
+{{ form_row(form.indicative) }}
+{{ form_row(form.phone_number) }}
+{{ form_row(form.subscribe) }}
+
 {{ form_end(form) }}
 {% endblock %}
 
@@ -20,4 +33,20 @@
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src={{ asset('JS/my_js_file.js') }}></script>
 
+<script>
+document.getElementById('form_referent_email').style.display = "none";
+document.getElementById('referent_email_label').style.display = "none";
+document.getElementById('form_id_status').onchange = function() {
+    var newvalue = this.value;
+    console.log(newvalue);
+
+    if(newvalue == "Visiteur") {
+      document.getElementById('form_referent_email').style.display = "block";
+      document.getElementById('referent_email_label').style.display = "block";
+    } else {
+      document.getElementById('form_referent_email').style.display = "none";
+      document.getElementById('referent_email_label').style.display = "none";
+    }
+};
+</script>
 {% endblock %}

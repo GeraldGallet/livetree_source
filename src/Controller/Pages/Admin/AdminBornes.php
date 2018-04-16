@@ -2,6 +2,7 @@
   namespace App\Controller\Pages\Admin;
 
   use App\Entity\ReservationBorne;
+  use App\Entity\FiltreReservationBorne;
   use App\Controller\CustomApi;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -46,23 +47,9 @@
         }
       }
 
-      foreach($place_choices as $id_place) {
-        foreach($api->table_get("resa_borne", array('id_place' => $id_place)) as $resa) {
-          array_push($resas, array(
-            'id_resa' => $resa['id_resa'],
-            'date_time' => substr($resa['date_resa'], 0, 10),
-            'start_time' => $resa['start_time'],
-            'end_time' => $resa['end_time'],
-            'charge' => $resa['charge'],
-            'id_place' => array_search($id_place, $place_choices),
-            'id_user' => $api->table_get("user", array('id_user' => $resa['id_user']))[0]['email']
-          ));
-        }
-      }
-
       $resa_borne = new ReservationBorne();
       $resa_form = $this->createFormBuilder($resa_borne)
-      ->add('date_time', DateType::class)
+      ->add('date_time', DateType::class, array('widget' => 'single_text'))
       ->add('start_time', TimeType::class)
       ->add('end_time', TimeType::class)
       ->add('charge', NumberType::class)
@@ -72,6 +59,72 @@
       ->add('add_resa', SubmitType::class, array('label' => 'Créer la réservation'))
       ->getForm();
       $resa_form->handleRequest($request);
+
+      $filter = new FiltreReservationBorne();
+      $filter_form = $this->createFormBuilder($filter)
+      ->add('date_time', DateType::class, array('widget' => 'single_text'))
+      ->add('start_time', TimeType::class)
+      ->add('end_time', TimeType::class)
+      ->add('charge', NumberType::class)
+      ->add('id_user', NumberType::class)
+      ->add('id_place', ChoiceType::class, array(
+        'choices'  => $place_choices))
+      ->add('filter_resa', SubmitType::class, array('label' => 'Filtrer'))
+      ->getForm();
+      $filter_form->handleRequest($request);
+
+      if($filter_form->isSubmitted() && $filter_form->isValid()) {
+        $filter = $filter_form->getData();
+        if($filter->getDateTime() == NULL)
+          $date = NULL;
+        else
+          $date = date_format($filter->getDateTime(), 'Y-m-d');
+
+        if($filter->getStartTime() == NULL)
+          $start = NULL;
+        else
+          $start = $filter->getStartTime()->format('H:i');
+
+        if($filter->getEndTime() == NULL)
+          $end = NULL;
+        else
+          $end = $filter->getEndTime()->format('H:i');
+
+        $filter_options = array(
+          'id_place' => $filter->getIdPlace(),
+          'date_resa' => $date,
+          'start_time' => $start,
+          'end_time' => $end,
+          'charge' => $filter->getCharge(),
+          'id_user' => $filter->getIdUser(),
+        );
+
+        foreach($filter_options as $key => $value) {
+          if($value == NULL)
+            unset($filter_options[$key]);
+        }
+        $resas = $api->table_get("resa_borne", $filter_options);
+        return $this->render('admin/admin_bornes.html.twig', array(
+              'resa_bornes' => $resas,
+              'resa_form' => $resa_form->createView(),
+              'filter_form' => $filter_form->createView()
+        ));
+
+      } else {
+        foreach($place_choices as $id_place) {
+          foreach($api->table_get("resa_borne", array('id_place' => $id_place)) as $resa) {
+            array_push($resas, array(
+              'id_resa' => $resa['id_resa'],
+              'date_time' => substr($resa['date_resa'], 0, 10),
+              'start_time' => $resa['start_time'],
+              'end_time' => $resa['end_time'],
+              'charge' => $resa['charge'],
+              'id_place' => array_search($id_place, $place_choices),
+              'id_user' => $api->table_get("user", array('id_user' => $resa['id_user']))[0]['email']
+            ));
+          }
+        }
+      }
 
       if($resa_form->isSubmitted() && $resa_form->isValid()) {
           $resa_borne = $resa_form->getData();
@@ -90,7 +143,8 @@
 
       return $this->render('admin/admin_bornes.html.twig', array(
             'resa_bornes' => $resas,
-            'resa_form' => $resa_form->createView()
+            'resa_form' => $resa_form->createView(),
+            'filter_form' => $filter_form->createView()
       ));
     }
 

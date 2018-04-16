@@ -18,6 +18,11 @@
 {{ form_end(resa_form) }}
 
 <h2>Réservations de bornes</h2>
+<h3>Options de filtrage</h3>
+{{ form_start(filter_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(filter_form) }}
+{{ form_end(filter_form) }}
+<h3>Résultat</h3>
 <ul>
 {% for resa in resa_bornes %}
 <li><ul>

@@ -52,12 +52,12 @@ class Inscription extends Controller
         ->add('id_status', ChoiceType::class, array(
           'label' => 'Statut: ',
           'choices'  => array(
-            'Visiteur' => "Visiteur",
             'Etudiant' => 'Etudiant',
             'Salarié' => 'Salarié',
-            'Professeur' => 'Professeur'
+            'Professeur' => 'Professeur',
+            'Visiteur' => "Visiteur"
           )))
-        ->add('referent_email', HiddenType::class)
+        ->add('referent_email', TextType::class, array('label' => "Email de votre contact"))
         ->add('indicative', ChoiceType::class, array(
           'choices'  => $indicative_choices))
         ->add('phone_number', NumberType::class, array('label' => 'Téléphone: '))
