@@ -21,7 +21,6 @@
       echo "Hello TEST API ;)\n";
       // GET EXAMPLE
       ///*
-      $api_interface = new CustomApi();
       //var_dump($api_interface->user_get($mail));
       //$api_interface->user_delete($mail);
       $user = array(
@@ -136,6 +135,22 @@
 
       $set = array('password' => "yoyoyoHIHI");
       $result = $api_interface->table_update("user", $set, $where);
+
+
+
+
+      $criteres = array(
+        'id_place' => X,
+        'date_resa' => Y
+      );
+      $result = $api_interface->table_get("resa_borne", $criteres);
+
+
+
+      $api_interface = new CustomApi();
+      $result = $api_interface->table_get_all("user");
+
+
 
       //$result = $api_interface->table_get("phone_indicative", array('country' => "France"));
       return $this->render('test.html.twig', array(
