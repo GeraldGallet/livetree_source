@@ -98,13 +98,14 @@ CREATE TABLE personal_car(
 #------------------------------------------------------------
 
 CREATE TABLE resa_borne(
-        id_resa    int (11) Auto_increment  NOT NULL ,
-        date_resa  Date NOT NULL ,
-        start_time Time NOT NULL ,
-        end_time   Time NOT NULL ,
-        charge     Float NOT NULL ,
-        id_user    Int NOT NULL ,
-        id_place   Int NOT NULL ,
+        id_resa                int (11) Auto_increment  NOT NULL ,
+        date_creation          Date NOT NULL ,
+        start_date             Datetime NOT NULL ,
+        end_date               Datetime NOT NULL ,
+        date_last_modification Date ,
+        charge                 Float NOT NULL ,
+        id_user                Int NOT NULL ,
+        id_place               Int NOT NULL ,
         PRIMARY KEY (id_resa )
 )ENGINE=InnoDB;
 
@@ -199,9 +200,9 @@ CREATE TABLE state(
 
 CREATE TABLE email_validate(
         token           Varchar (50) NOT NULL ,
-        expiration_time Datetime NOT NULL ,
-        id_user         Float NOT NULL ,
-        email           Varchar (25) NOT NULL ,
+        expiration_time Datetime ,
+        email           Varchar (30) ,
+        id_user         Int ,
         PRIMARY KEY (token )
 )ENGINE=InnoDB;
 
@@ -273,7 +274,9 @@ INSERT INTO `facility` (`id_facility`, `name`, `address`, `complementary`) VALUE
 INSERT INTO `domain` (`id_domain`, `domain`) VALUES (NULL, 'yncrea.fr');
 INSERT INTO `domain` (`id_domain`, `domain`) VALUES (NULL, 'ieseg.fr');
 INSERT INTO `domain` (`id_domain`, `domain`) VALUES (NULL, 'univ-catholille.fr');
+INSERT INTO `domain` (`id_domain`, `domain`) VALUES (NULL, 'isen.yncrea.fr');
 
+INSERT INTO `has_domain` (`id_facility`, `id_domain`) VALUES ('1', '4');
 INSERT INTO `has_domain` (`id_facility`, `id_domain`) VALUES ('1', '1');
 INSERT INTO `has_domain` (`id_facility`, `id_domain`) VALUES ('2', '3');
 INSERT INTO `has_domain` (`id_facility`, `id_domain`) VALUES ('3', '2');
