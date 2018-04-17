@@ -13,7 +13,7 @@
   use Symfony\Component\Form\Extension\Core\Type\TimeType;
   use Symfony\Component\Form\Extension\Core\Type\TextType;
   use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-  use Symfony\Component\Form\Extension\Core\Type\DateType;
+  use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
   use Symfony\Component\Form\Extension\Core\Type\NumberType;
   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
@@ -45,15 +45,13 @@
           'choices' => $places_choice,
           'label' => "Lieu"
         ))
-  	    ->add('date_time',DateType::class, array(
-        	'widget' => 'single_text',
-        	'label' =>'Date: ',
-          ))
-  	    ->add('start_time', TimeType::class,array(
+  	    ->add('start_date', DateTimeType::class,array(
     		  'label' => "Heure d'arrivée: ",
+           'date_widget' => 'single_text'
     		  ))
-    		->add('end_time', TimeType::class,array(
+    		->add('end_date', DateTimeType::class,array(
     		  'label' => "Heure de départ: ",
+          'date_widget' => 'single_text'
     		  ))
         ->add('charge', RangeType::class, [
                    'attr' => [
@@ -76,12 +74,13 @@
     		date_default_timezone_set('Europe/Paris');
         $reservationBorne = $form->getData();
 
-    		$inputDate = $reservationBorne->getDateTime();
+    		$inputDate = $reservationBorne->getStartDate();
     		$currentDate = new DateTime("now");
         $currentDate = $currentDate->format('Y:m:d');
 
     		if ($inputDate >= $currentDate) {
-    			$inputStartTime = ($reservationBorne->getStartTime())->format('H:i');
+
+    			$inputStartTime = ($reservationBorne->getStartDate())->format('H:i');
           if($inputDate == $currentDate) {
             if($inputStartTime < (new DateTime("now"))->format('H:i')) {
               return $this->redirectToRoute('bornes');
@@ -89,12 +88,12 @@
           }
 
     			$currentDate = (new DateTime("now"))->format('H:i');
-    			$inputEndTime = ($reservationBorne->getEndTime())->format('H:i');
+    			$inputEndTime = ($reservationBorne->getEndDate())->format('H:i');
   				if($inputEndTime >= $inputStartTime) {
             $resa_borne = array(
               'date_resa' => date_format($inputDate, 'Y-m-d'),
-              'start_time' => $inputStartTime,
-              'end_time' => $inputEndTime,
+              'start_date' => $inputStartTime,
+              'end_date_' => $inputEndTime,
               'charge' => $reservationBorne->getCharge(),
               'id_user' => $_SESSION['id_user'],
               'id_place' => $reservationBorne->getIdPlace()
