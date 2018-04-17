@@ -132,8 +132,15 @@ class Inscription extends Controller
         );
 
         $link = "http://localhost:8000/validation/" . $token;
+        $mail_body = array(
+          'email' => $validation_email,
+          'subject' => "Validation de votre compte",
+          'html' => "<p>Vous pouvez valider votre compte Live Tree en cliquant sur <u><a href=\"" . $link . "\">ce lien</a></u></p>"
+        );
+
 
         $api->table_add("email_validate", $new_token);
+        $api->send_mail($mail_body);
         return $this->render('forms/inscription.html.twig', array(
             'email' => $validation_email,
             'visiting' => $visiting,

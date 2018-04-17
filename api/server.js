@@ -15,6 +15,18 @@ var jsonParser = bodyParser.json();
 
 var cmds = ["user", "status", "personal_car", "facility", "place", "company_car", "borne", "work", "domain", "has_domain", "phone_indicative", "has_access", "resa_borne", "reason", "resa_car", "state", "email_validate"];
 
+// Partie envoi de mail avec Nodemailer et le SMTP de Google
+'use strict';
+const nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+ service: 'gmail',
+ auth: {
+   user: 'coelablivetree@gmail.com',
+   pass: 'livetree@yncrea'
+    }
+});
+
 // Connecting to DB
 app.use(function(req, res, next){
 	res.locals.connection = mysql.createConnection({
@@ -96,13 +108,37 @@ function update_table(body, res, table) {
   });
 }
 
+function send_mail(body, res) {
+  //console.log(body);
+  let mailOptions = {
+    from: 'Live Tree Web <coelablivetree@gmail.com>', // sender address
+    to: body.email, // list of receivers
+    subject: body.subject, // Subject line
+    html: body.html // html body
+  };
 
+  transporter.sendMail(mailOptions, function (err, info) {
+    if(err) {
+      console.log(err)
+      res.send(JSON.stringify({"status": 404, "error": "Mail could not be sent", "response": null}));
+    } else {
+      console.log(info);
+      res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+    }
+  });
+
+  return;
+}
 
 
 // The commands that can be done on a table (get / add)
 app.post('/:table/:cmd', jsonParser, function(req, res, next) {
   console.log(req.params.table + "/" + req.params.cmd);
   var passed = false;
+  if(req.params.table == "mail") {
+    send_mail(req.body, res);
+    return;
+  }
 
   for(var i = 0; i < cmds.length; i++) {
     if(req.params.table == cmds[i]) {

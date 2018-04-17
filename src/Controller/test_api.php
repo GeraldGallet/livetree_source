@@ -134,23 +134,24 @@
       );
 
       $set = array('password' => "yoyoyoHIHI");
-      $result = $api_interface->table_update("user", $set, $where);
+      //$result = $api_interface->table_update("user", $set, $where);
 
 
 
-
-      $criteres = array(
-        'id_place' => X,
-        'date_resa' => Y
-      );
-      $result = $api_interface->table_get("resa_borne", $criteres);
+      //$result = $api_interface->table_get("resa_borne", $criteres);
 
 
 
       $api_interface = new CustomApi();
-      $result = $api_interface->table_get_all("user");
+      //$result = $api_interface->table_get_all("user");
 
 
+      $mail_body = array(
+        'email' => 'gerald.gallet@isen.yncrea.fr',
+        'subject' => "Validation de votre compte",
+        'html' => "<p>Vous pouvez valider votre compte Live Tree en cliquant sur ce lien</p>"
+      );
+      $api_interface->send_mail($mail_body);
 
       //$result = $api_interface->table_get("phone_indicative", array('country' => "France"));
       return $this->render('test.html.twig', array(

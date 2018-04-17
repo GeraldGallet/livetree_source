@@ -15,6 +15,7 @@
     public function table_add($table, $body);
     public function table_delete($table, $body);
     public function table_update($table, $set, $where);
+    public function send_mail($body);
   }
 
 
@@ -96,6 +97,7 @@
       return $result['response']['insertId'];
     }
 
+
     public function table_delete($table, $body) {
       $query = $table . "/";
 
@@ -117,6 +119,15 @@
 
       //$result = json_decode($result, true);
       //return $result['response']['insertId'];
+
     }
+
+    public function send_mail($body) {
+      $ch = $this->api_connect($this->url . "mail/send");
+      $ch = $this->api_options($ch, "POST", json_encode($body));
+      $result = curl_exec($ch);
+      var_dump($result);
+    }
+
   }
 ?>
