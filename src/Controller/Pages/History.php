@@ -39,8 +39,8 @@
         array_push($resa_borne, array(
           'id_resa' => $resa['id_resa'],
           'date_resa' => substr($resa['date_resa'], 0, 10),
-          'start_time' => substr($resa['start_time'], 0, 5),
-          'end_time' => substr($resa['end_time'], 0, 5),
+          'start_date' => substr($resa['start_date'], 0, 5),
+          'end_date' => substr($resa['end_date'], 0, 5),
           'charge' => $resa['charge'],
           'place' => $api->table_get("place", array('id_place' => $resa['id_place']))[0]['name'],
         ));

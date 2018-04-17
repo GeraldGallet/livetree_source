@@ -4,9 +4,6 @@
   use Symfony\Component\Validator\Constraints as Assert;
   class ReservationBorne
   {
-	 /**
-     * @Assert\NotBlank()
-     */
 	 protected $date_creation;
 
 	 /**
