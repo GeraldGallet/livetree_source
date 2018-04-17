@@ -75,9 +75,7 @@
         $reservationBorne = $form->getData();
 
     		$inputDate = $reservationBorne->getStartDate();
-
     		$currentDate = new DateTime("now");
-
         $currentDate = $currentDate->format('Y:m:d');
         $resa_borne = array('date_creation' => $currentDate);
 
@@ -93,10 +91,14 @@
     			$currentDate = (new DateTime("now"))->format('H:i');
     			$inputEndTime = ($reservationBorne->getEndDate())->format('H:i');
   				if($inputEndTime >= $inputStartTime) {
+            $currentDate = new DateTime("now");
+            $currentDate = $currentDate->format('Y:m:d');
+
             $resa_borne = array(
-              'date_resa' => date_format($inputDate, 'Y-m-d'),
-              'start_date' => $inputStartTime,
-              'end_date_' => $inputEndTime,
+              'date_creation' => $currentDate,
+              'start_date' => date_format($reservationBorne->getStartDate(), 'Y-m-d H:i:s'),
+              'end_date' => date_format($reservationBorne->getEndDate(), 'Y-m-d H:i:s'),
+              'date_last_modification' => $currentDate,
               'charge' => $reservationBorne->getCharge(),
               'id_user' => $_SESSION['id_user'],
               'id_place' => $reservationBorne->getIdPlace()

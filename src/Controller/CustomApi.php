@@ -126,7 +126,6 @@
       $ch = $this->api_connect($this->url . "mail/send");
       $ch = $this->api_options($ch, "POST", json_encode($body));
       $result = curl_exec($ch);
-      var_dump($result);
     }
 
   }
