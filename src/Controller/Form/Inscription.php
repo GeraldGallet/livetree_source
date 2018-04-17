@@ -121,13 +121,17 @@ class Inscription extends Controller
 
         date_default_timezone_set('Europe/Paris');
         $expirationDate = new DateTime("now");
-        //$expirationDate->modify("+1 hour");
+        $expirationDate->modify("+1 hour");
+        $token =  substr(bin2hex(random_bytes(40)), 0, 10);
+
         $new_token = array(
-          'token' => substr(bin2hex(random_bytes(40)), 0, 10),
+          'token' => $token,
           'email' => $validation_email,
           'expiration_time' => date_format($expirationDate, 'Y-m-d H:i:s'),
           'id_user' => $user_id
         );
+
+        $link = "http://localhost:8000/validation/" . $token;
 
         $api->table_add("email_validate", $new_token);
         return $this->render('forms/inscription.html.twig', array(

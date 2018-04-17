@@ -66,7 +66,7 @@
 		 $this->id_place=$id_place;
 	 }
 
-	   function getIdUser(){
+   function getIdUser(){
 		 return $this->id_user;
 	 }
 	 function setIdUser($id_user){
