@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <!-- Bootstrap core CSS -->
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="carousel.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="Accueil.css" />
+    <title>Voitures</title>
+    <script src="modernizr.js"></script>
+  <!-- Webforms2 -->
+  <script src="webforms2/webforms2-p.js"></script>  
+  <!-- jQuery  -->
+  <script src="js/jquery-1.4.3.min.js"></script>
+  <script src="js/jquery-ui-1.8.5.min.js"></script>
+  <!-- Feuille de style -->
+  <link rel="stylesheet" href="styleFormulaire.css">
+  <!-- jQuery Numeric Spinner -->
+  <script src="spinner.js"></script>  
+  
+  <!-- jQuery Placehol 
+    <script src="jquery.placehold-0.2.min.js"></script>  -->
+
+  <!-- Demo page layout  
+  <link rel="stylesheet" href="html5forms.layout.css">  -->
+  <script src="html5forms.js"></script>
+  <script src="html5forms.fallback.js"></script>
+    </head>
+
+    <body>
+      <!-- Script DATE  -->
+  <script>
+  var initDatepicker = function() {  
+    $('input[type=date]').each(function() {  
+        var $input = $(this);  
+        $input.datepicker({  
+            minDate: $input.attr('min'),  
+            maxDate: $input.attr('max'),  
+            dateFormat: 'yy-mm-dd'  
+        });  
+    });  
+};  
+  
+if(!Modernizr.inputtypes.date){  
+    $(document).ready(initDatepicker);  
+};  
+  </script>
+    <p>
+    <br />
+    <img src="universitecatholille.png" width="100" height="70" alt="Universite Catholique de Lille" />
+    <img src="LOGO-LIVE-TREE.jpg" width="100" height="70" alt="Logo Live Tree" />
+	   </p>
+     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="Accueil.html">Accueil</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="Bornes.html">Bornes<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="Voitures.html">Voitures</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="Profil.html">Profil</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <h2>
+      Réserver une voiture
+      </h2>
+      <ul id="info3" >
+    <h3>
+      Disponibilités
+    </h3>
+    <div style="padding:4px; border:4px solid #e0e0e0;">
+    <div style="padding:3px; background-color:DarkSeaGreen;">
+    <div>
+      Yncréa #1
+    </div>
+    <div>
+      Citroen Zoé
+    </div>
+    <div>
+      AJ-267-HT
+    </div>
+    </div>
+    </div>
+    <div style="padding:4px; border:4px solid #e0e0e0;">
+    <div style="padding:3px; background-color:Salmon;">
+    <div>
+      Yncréa #3
+    </div>
+    <div>
+      Citroen Zoé
+    </div>
+    <div>
+      AJ-269-HT
+    </div>
+    </div>
+    </div>
+    <div style="padding:4px; border:4px solid #e0e0e0;">
+    <div style="padding:3px; background-color:DarkSeaGreen;">
+    <div>
+      Yncréa #5
+    </div>
+    <div>
+      Renault Kangoo
+    </div>
+    <div>
+      AJ-271-HT
+    </div>
+    </div>
+    </div>
+    </ul>
+    <ul id="info4" >
+    <div style="padding:4px; border:4px solid #e0e0e0;">
+    <div style="padding:3px; background-color:DarkSeaGreen;">
+    <div>
+      Yncréa #2
+    </div>
+    <div>
+      Citroen Zoé
+    </div>
+    <div>
+      AJ-268-HT
+    </div>
+    </div>
+    </div>
+    <div style="padding:4px; border:4px solid #e0e0e0;">
+    <div style="padding:3px; background-color:DarkSeaGreen;">
+    <div>
+      Yncréa #4
+    </div>
+    <div>
+      Citroen Zoé
+    </div>
+    <div>
+      AJ-270-HT
+    </div>
+    </div>
+    </div>
+    <div style="padding:4px; border:4px solid #e0e0e0;">
+    <div style="padding:3px; background-color:Salmon;">
+    <div>
+      Yncréa #6
+    </div>
+    <div>
+      Renault Kangoo
+    </div>
+    <div>
+      AJ-272-HT
+    </div>
+    </div>
+    </div>
+    </ul>
+      <h3>
+      Votre réservation
+    </h3>
+    <h4>
+      Date de retrait
+    </h4>
+    <label for="date"></label>
+    <input type="date" name="date" id="date" value="2018-04-13">
+    <datalist id="elements">
+    <select>
+    <option value="avec label" label="01h00"></option>
+    <option value="avec label" label="02h00"></option>
+    <option value="avec label" label="03h00"></option>
+    <option value="avec label" label="04h00"></option>
+    <option value="avec label" label="05h00"></option>
+    <option value="avec label" label="06h00"></option>
+    <option value="avec label" label="07h00"></option>
+    <option value="avec label" label="08h00"></option>
+    <option value="avec label" label="09h00"></option>
+    <option value="avec label" label="10h00"></option>
+    <option value="avec label" label="11h00"></option>
+    <option value="avec label" label="12h00"></option>
+    <option value="avec label" label="13h00"></option>
+    <option value="avec label" label="14h00"></option>
+    <option value="avec label" label="15h00"></option>
+    <option value="avec label" label="16h00"></option>
+    <option value="avec label" label="17h00"></option>
+    <option value="avec label" label="18h00"></option>
+    <option value="avec label" label="19h00"></option>
+    <option value="avec label" label="20h00"></option>
+    <option value="avec label" label="21h00"></option>
+    <option value="avec label" label="22h00"></option>
+    <option value="avec label" label="23h00"></option>
+    <option value="avec label" label="24h00"></option>
+    </select>
+    </datalist>
+    <br>
+    <br>
+    <h4>
+      Durée de l'emprunt
+    </h4>
+    <datalist id="elements">
+    <select>
+    <option value="avec label" label="1"></option>
+    <option value="avec label" label="2"></option>
+    <option value="avec label" label="3"></option>
+    <option value="avec label" label="4"></option>
+    <option value="avec label" label="5"></option>
+    <option value="avec label" label="6"></option>
+    <option value="avec label" label="7"></option>
+    <option value="avec label" label="8"></option>
+    <option value="avec label" label="9"></option>
+    <option value="avec label" label="10"></option>
+    <option value="avec label" label="11"></option>
+    <option value="avec label" label="12"></option>
+    <option value="avec label" label="13"></option>
+    <option value="avec label" label="14"></option>
+    <option value="avec label" label="15"></option>
+    <option value="avec label" label="16"></option>
+    <option value="avec label" label="17"></option>
+    <option value="avec label" label="18"></option>
+    <option value="avec label" label="19"></option>
+    <option value="avec label" label="20"></option>
+    <option value="avec label" label="21"></option>
+    <option value="avec label" label="22"></option>
+    <option value="avec label" label="23"></option>
+    <option value="avec label" label="24"></option>
+    <option value="avec label" label="25"></option>
+    <option value="avec label" label="26"></option>
+    <option value="avec label" label="27"></option>
+    <option value="avec label" label="28"></option>
+    <option value="avec label" label="29"></option>
+    <option value="avec label" label="30"></option>
+    <option value="avec label" label="31"></option>
+    <option value="avec label" label="32"></option>
+    <option value="avec label" label="33"></option>
+    <option value="avec label" label="34"></option>
+    <option value="avec label" label="35"></option>
+    <option value="avec label" label="36"></option>
+    <option value="avec label" label="37"></option>
+    <option value="avec label" label="38"></option>
+    <option value="avec label" label="39"></option>
+    <option value="avec label" label="40"></option>
+    <option value="avec label" label="41"></option>
+    <option value="avec label" label="42"></option>
+    <option value="avec label" label="43"></option>
+    <option value="avec label" label="44"></option>
+    <option value="avec label" label="45"></option>
+    <option value="avec label" label="46"></option>
+    <option value="avec label" label="47"></option>
+    <option value="avec label" label="48"></option>
+    <option value="avec label" label="49"></option>
+    <option value="avec label" label="50"></option>
+    <option value="avec label" label="51"></option>
+    <option value="avec label" label="52"></option>
+    <option value="avec label" label="53"></option>
+    <option value="avec label" label="54"></option>
+    <option value="avec label" label="55"></option>
+    <option value="avec label" label="56"></option>
+    <option value="avec label" label="57"></option>
+    <option value="avec label" label="58"></option>
+    <option value="avec label" label="59"></option>
+    <option value="avec label" label="60"></option>
+    </select>
+    </datalist>
+    <datalist id="elements">
+    <select>
+    <option value="avec label" label="Heure(s)"></option>
+    <option value="avec label" label="Minute(s)"></option>
+    <option value="avec label" label="Seconde(s)"></option>
+    </select>
+    </datalist>
+    <br>
+    <br>
+    <h4>
+      Raison
+    </h4>
+    <datalist id="elements">
+    <select>
+    <option value="avec label" label="Autre ..."></option>
+    <option value="avec label" label="Salon étudiant"></option>
+    </select>
+    </datalist>
+    <br>
+    <br>
+    <p>
+    <input list="raisonemprunt" type="text" size="50" style="height:80px;" id=« raison_emprunt" value="Expliquez la raison de cette emprunt">
+    </p>
+    </body>
+</html>
