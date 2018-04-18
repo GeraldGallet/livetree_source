@@ -124,6 +124,9 @@ class Inscription extends Controller
         'error' => NULL
     ));
   }
+
+
+
 }
 
 ?>
