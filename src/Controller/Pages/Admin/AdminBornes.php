@@ -15,6 +15,7 @@
   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
   use Symfony\Component\Form\Extension\Core\Type\TimeType;
   use Symfony\Component\Form\Extension\Core\Type\DateType;
+  use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 
   class AdminBornes extends Controller
@@ -49,9 +50,8 @@
 
       $resa_borne = new ReservationBorne();
       $resa_form = $this->createFormBuilder($resa_borne)
-      ->add('date_time', DateType::class, array('widget' => 'single_text'))
-      ->add('start_time', TimeType::class)
-      ->add('end_time', TimeType::class)
+      ->add('start_date', DateTimeType::class, array('widget' => 'single_text'))
+      ->add('end_date', DateTimeType::class, array('widget' => 'single_text'))
       ->add('charge', NumberType::class)
       ->add('id_user', NumberType::class)
       ->add('id_place', ChoiceType::class, array(
@@ -62,9 +62,9 @@
 
       $filter = new FiltreReservationBorne();
       $filter_form = $this->createFormBuilder($filter)
-      ->add('date_time', DateType::class, array('widget' => 'single_text'))
-      ->add('start_time', TimeType::class)
-      ->add('end_time', TimeType::class)
+      ->add('date_time', DateType::class,array('widget' => 'single_text'))
+      ->add('start_time', TimeType::class, array('widget' => 'single_text'))
+      ->add('end_time', TimeType::class, array('widget' => 'single_text'))
       ->add('charge', NumberType::class)
       ->add('id_user', NumberType::class)
       ->add('id_place', ChoiceType::class, array(
@@ -78,7 +78,7 @@
         if($filter->getDateTime() == NULL)
           $date = NULL;
         else
-          $date = date_format($filter->getDateTime(), 'Y-m-d');
+          $date = date_format($filter->getDateTime(), 'Y-m-d-H-i');
 
         if($filter->getStartTime() == NULL)
           $start = NULL;
@@ -88,11 +88,11 @@
         if($filter->getEndTime() == NULL)
           $end = NULL;
         else
-          $end = $filter->getEndTime()->format('H:i');
+          $end = $filter->getEndtime()->format('H:i');
 
         $filter_options = array(
           'id_place' => $filter->getIdPlace(),
-          'date_resa' => $date,
+          'date_time' => $date,
           'start_time' => $start,
           'end_time' => $end,
           'charge' => $filter->getCharge(),
@@ -115,9 +115,9 @@
           foreach($api->table_get("resa_borne", array('id_place' => $id_place)) as $resa) {
             array_push($resas, array(
               'id_resa' => $resa['id_resa'],
-              'date_time' => substr($resa['date_resa'], 0, 10),
-              'start_time' => $resa['start_time'],
-              'end_time' => $resa['end_time'],
+              'date_time' => substr($resa['date_creation'], 0, 10),
+              'start_time' => $resa['start_date'],
+              'end_time' => $resa['end_date'],
               'charge' => $resa['charge'],
               'id_place' => array_search($id_place, $place_choices),
               'id_user' => $api->table_get("user", array('id_user' => $resa['id_user']))[0]['email']
@@ -130,9 +130,9 @@
           $resa_borne = $resa_form->getData();
 
           $api->table_add("resa_borne", array(
-            'date_resa' => date_format($resa_borne->getDateTime(), 'Y-m-d'),
-            'start_time' => $resa_borne->getStartTime()->format('H:i'),
-            'end_time' => $resa_borne->getEndTime()->format('H:i'),
+            'date_creation' => date_format($resa_borne->getDateCreation(), 'Y-m-d'),
+            'start_date' => $resa_borne->getStartDate()->format( 'Y-m-d H:i:s'),
+            'end_date' => $resa_borne->getEndDate()->format( 'Y-m-d H:i:s'),
             'charge' => $resa_borne->getCharge(),
             'id_user' => $resa_borne->getIdUser(),
             'id_place' => $resa_borne->getIdPlace()

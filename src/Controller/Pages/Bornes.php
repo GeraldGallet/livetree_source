@@ -77,7 +77,7 @@
     		$inputDate = $reservationBorne->getStartDate();
     		$currentDate = new DateTime("now");
         $currentDate = $currentDate->format('Y:m:d');
-        $resa_borne = array('date_creation' => $currentDate);
+
 
     		if ($inputDate >= $currentDate) {
 
@@ -92,7 +92,7 @@
     			$inputEndTime = ($reservationBorne->getEndDate())->format('H:i');
   				if($inputEndTime >= $inputStartTime) {
             $currentDate = new DateTime("now");
-            $currentDate = $currentDate->format('Y:m:d');
+            $currentDate = date_format($currentDate,'Y:m:d');
 
             $resa_borne = array(
               'date_creation' => $currentDate,
