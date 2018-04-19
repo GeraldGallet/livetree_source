@@ -3,11 +3,18 @@
 
 {% block body %}
     <h1>Afficher le nombre de bornes réservées par heure</h1>
-    {% for slots in updated_list_of_slot %}
-        {#<li>{{ user.username|e }}</li>#}
+    {% for updated_list_of_slot  in array_of_updated_list_of_slot%}
+        {% for slots in updated_list_of_slot %}
+
         <p> {{    slots.date|date('d-m-Y H:i:s') }} Nombre de résevations pour ce créneau <span style="font-size:2em">{{ slots.numberOfDisponibility }}</span>  </p>
+        {% else %}
+        <li><em> Date note found (ask Admin)</em></li>
+        {% endfor %}
     {% else %}
-        <li><em> Date note found (ask Admin biatch)</em></li>
+        <li><em> <b>Not available or Reservation note found (ask Admin).</b>
+                check :private static $numberMaxOfReservtion = array('numberMax' => 6);
+                {{ php_errormsg }}
+            </em></li>
     {% endfor %}
 
 {% endblock %}
