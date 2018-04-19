@@ -10,7 +10,11 @@
         {% else %}
         <li><em> Date note found (ask Admin)</em></li>
         {% endfor %}
-
+    {% else %}
+        <li><em> <b>Not available or Reservation note found (ask Admin).</b>
+                check :private static $numberMaxOfReservtion = array('numberMax' => 6);
+                {{ php_errormsg }}
+            </em></li>
     {% endfor %}
 
 {% endblock %}
