@@ -1,7 +1,7 @@
 <?php
   namespace App\Controller\Pages\Admin;
 
-  use App\Entity\ReservationBorne;
+  use App\Entity\AdminReservationBorne;
   use App\Entity\FiltreReservationBorne;
   use App\Controller\CustomApi;
 
@@ -16,6 +16,7 @@
   use Symfony\Component\Form\Extension\Core\Type\TimeType;
   use Symfony\Component\Form\Extension\Core\Type\DateType;
   use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+    use Symfony\Component\Form\Extension\Core\Type\RangeType;
 
 
   class AdminBornes extends Controller
@@ -48,11 +49,22 @@
         }
       }
 
-      $resa_borne = new ReservationBorne();
+      $resa_borne = new AdminReservationBorne();
       $resa_form = $this->createFormBuilder($resa_borne)
-      ->add('start_date', DateTimeType::class, array('widget' => 'single_text'))
-      ->add('end_date', DateTimeType::class, array('widget' => 'single_text'))
-      ->add('charge', NumberType::class)
+      ->add('start_date', DateTimeType::class, array('date_widget' => 'single_text'))
+      ->add('end_date', DateTimeType::class, array('date_widget' => 'single_text'))
+      ->add('charge', RangeType::class, [
+                 'attr' => [
+                    "data-provide" => "slider",
+                    "data-slider-ticks" => "[1, 2, 3, 4]",
+                    "data-slider-ticks-labels" => '["short", "medium", "long", "xxl"]',
+                    "min" => 1,
+                    "max" => 100,
+                    "step" => 1,
+                    "value" => 100,
+                 ]
+             ]
+       )
       ->add('id_user', NumberType::class)
       ->add('id_place', ChoiceType::class, array(
         'choices'  => $place_choices))
@@ -65,7 +77,18 @@
       ->add('date_time', DateType::class,array('widget' => 'single_text'))
       ->add('start_time', TimeType::class, array('widget' => 'single_text'))
       ->add('end_time', TimeType::class, array('widget' => 'single_text'))
-      ->add('charge', NumberType::class)
+      ->add('charge', RangeType::class, [
+                 'attr' => [
+                    "data-provide" => "slider",
+                    "data-slider-ticks" => "[1, 2, 3, 4]",
+                    "data-slider-ticks-labels" => '["short", "medium", "long", "xxl"]',
+                    "min" => 1,
+                    "max" => 100,
+                    "step" => 1,
+                    "value" => 100,
+                 ]
+             ]
+       )
       ->add('id_user', NumberType::class)
       ->add('id_place', ChoiceType::class, array(
         'choices'  => $place_choices))
