@@ -2,7 +2,7 @@
   namespace App\Controller\Pages\Admin;
 
   use App\Controller\CustomApi;
-  use App\Entity\ReservationCar;
+  use App\Entity\AdminReservationCar;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Response;
@@ -66,7 +66,7 @@
         }
       }
 
-      $reservationCar = new ReservationCar();
+      $reservationCar = new AdminReservationCar();
       $car_form = NULL;
       $car_form = $this->createFormBuilder($reservationCar)
         ->add('id_company_car', ChoiceType::class, array('choices' => $company_car_choices, 'label' => "Voiture"))
