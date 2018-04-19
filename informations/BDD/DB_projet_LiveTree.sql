@@ -106,6 +106,7 @@ CREATE TABLE resa_borne(
         charge                 Float NOT NULL ,
         id_user                Int NOT NULL ,
         id_place               Int NOT NULL ,
+        id_personal_car        Int NOT NULL ,
         PRIMARY KEY (id_resa )
 )ENGINE=InnoDB;
 
@@ -247,6 +248,7 @@ ALTER TABLE place ADD CONSTRAINT FK_place_id_facility FOREIGN KEY (id_facility) 
 ALTER TABLE personal_car ADD CONSTRAINT FK_personal_car_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
 ALTER TABLE resa_borne ADD CONSTRAINT FK_resa_borne_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
 ALTER TABLE resa_borne ADD CONSTRAINT FK_resa_borne_id_place FOREIGN KEY (id_place) REFERENCES place(id_place);
+ALTER TABLE resa_borne ADD CONSTRAINT FK_resa_borne_id_personal_car FOREIGN KEY (id_personal_car) REFERENCES personal_car(id_personal_car);
 ALTER TABLE resa_car ADD CONSTRAINT FK_resa_car_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
 ALTER TABLE resa_car ADD CONSTRAINT FK_resa_car_id_company_car FOREIGN KEY (id_company_car) REFERENCES company_car(id_company_car);
 ALTER TABLE resa_car ADD CONSTRAINT FK_resa_car_id_reason FOREIGN KEY (id_reason) REFERENCES reason(id_reason);
@@ -258,6 +260,7 @@ ALTER TABLE has_domain ADD CONSTRAINT FK_has_domain_id_facility FOREIGN KEY (id_
 ALTER TABLE has_domain ADD CONSTRAINT FK_has_domain_id_domain FOREIGN KEY (id_domain) REFERENCES domain(id_domain);
 ALTER TABLE work ADD CONSTRAINT FK_work_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
 ALTER TABLE work ADD CONSTRAINT FK_work_id_facility FOREIGN KEY (id_facility) REFERENCES facility(id_facility);
+
 
 
 INSERT INTO `status` (`id_status`, `rights`) VALUES ('Visiteur', '0');
