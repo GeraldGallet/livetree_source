@@ -8,7 +8,11 @@
 
 {% block body %}
 <h1>Réservation de bornes</h1>
+{% if success %}
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(form) }}
 {{ form_end(form) }}
+{% else %}
+  <p>{{ error }}</p>
+{% endif %}
 {% endblock %}

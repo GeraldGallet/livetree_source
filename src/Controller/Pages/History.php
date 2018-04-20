@@ -30,6 +30,7 @@
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
+      date_default_timezone_set('Europe/Paris');
       $resa_borne = [];
       $resa_car = [];
       $api = new CustomApi();

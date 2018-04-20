@@ -209,6 +209,18 @@ CREATE TABLE email_validate(
 
 
 #------------------------------------------------------------
+# Table: password_recovery
+#------------------------------------------------------------
+
+CREATE TABLE password_recovery(
+        token           Varchar (50) NOT NULL ,
+        expiration_time Datetime NOT NULL ,
+        id_user         Int NOT NULL ,
+        PRIMARY KEY (token )
+)ENGINE=InnoDB;
+
+
+#------------------------------------------------------------
 # Table: has_access
 #------------------------------------------------------------
 
@@ -260,7 +272,6 @@ ALTER TABLE has_domain ADD CONSTRAINT FK_has_domain_id_facility FOREIGN KEY (id_
 ALTER TABLE has_domain ADD CONSTRAINT FK_has_domain_id_domain FOREIGN KEY (id_domain) REFERENCES domain(id_domain);
 ALTER TABLE work ADD CONSTRAINT FK_work_id_user FOREIGN KEY (id_user) REFERENCES user(id_user);
 ALTER TABLE work ADD CONSTRAINT FK_work_id_facility FOREIGN KEY (id_facility) REFERENCES facility(id_facility);
-
 
 
 INSERT INTO `status` (`id_status`, `rights`) VALUES ('Visiteur', '0');
