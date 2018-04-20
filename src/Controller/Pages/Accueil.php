@@ -89,7 +89,7 @@
         $first_name = $_SESSION['first_name'];
       }
 
-      return $this->render('accueil.html.twig', array(
+      return $this->render('home.html.twig', array(
             'connected' => $connected,
             'connection_form' => $view,
             'error' => NULL,
@@ -101,7 +101,7 @@
     /**
       * @Route("/deconnexion", name="deconnect")
       */
-    public function deconnect() {
+    public function deconnect(Request $request) {
       if(!isset($_SESSION))
         session_start();
 
