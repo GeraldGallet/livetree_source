@@ -3,12 +3,40 @@
 
 {% block head %}
 {{ parent() }}
+{% block title %}Profil{% endblock %}
 {% endblock %}
 
 {% block body %}
-<br/>
-<a href='#'>Mon compte</a>
-<a href='/profil/historique'>Mes réservations</a>
+<header>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+<a class="navbar-brand" href="Accueil.html">Accueil</a>
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navbarCollapse">
+<ul class="navbar-nav mr-auto">
+<li class="nav-item active">
+<a class="nav-link" href="Bornes.html">Bornes<span class="sr-only">(current)</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="Voitures.html">Voitures</a>
+</li>
+<li class="nav-item">
+<a class="nav-link disabled" href="Profil.html">Profil</a>
+</li>
+</ul>
+</div>
+</nav>
+</header>
+<ul id="sousmenu" >
+<p>
+<br />
+<img src="universitecatholille.png" width="100" height="70" alt="Universite Catholique de Lille" />
+<img src="LOGO-LIVE-TREE.jpg" width="100" height="70" alt="Logo Live Tree" />
+</p>
+<li><a href='#'>Mon compte</a></li>
+<li><a href='/profil/historique'>Mes réservations</a></li>
+</ul>
 
 <h1>{{ first_name }} {{ last_name }}</h1>
 <h2>Mon compte</h2>
