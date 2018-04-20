@@ -10,7 +10,13 @@
 <h1>Réservation de bornes</h1>
 {% if success %}
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-{{ form_widget(form) }}
+{{ form_row(form.id_place) }}
+{{ form_row(form.start_date) }}
+{{ form_row(form.end_date) }}
+{{ form_row(form.charge) }}
+{{ form_row(form.id_personal_car) }}
+{{ form_row(form.subscribe) }}
+
 {{ form_end(form) }}
 {% else %}
   <p>{{ error }}</p>
