@@ -184,11 +184,11 @@ CREATE TABLE phone_indicative(
 
 CREATE TABLE state(
         id_state   int (11) Auto_increment  NOT NULL ,
-        front      Bool NOT NULL ,
-        back       Bool NOT NULL ,
-        left_side  Bool NOT NULL ,
-        right_side Bool NOT NULL ,
-        inside     Bool NOT NULL ,
+        front      Bool ,
+        back       Bool ,
+        left_side  Bool ,
+        right_side Bool ,
+        inside     Bool ,
         commentary Varchar (280) ,
         id_resa    Int ,
         PRIMARY KEY (id_state )

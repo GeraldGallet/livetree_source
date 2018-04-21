@@ -30,7 +30,7 @@
 {% block body %}
 <header>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-  <a class="navbar-brand" href="/">Accueil<span class="sr-only">(current)</span></a>
+  <a class="navbar-brand" href="/">Accueil</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -59,7 +59,7 @@
 </nav>
 </header>
 <br/>
-<h1>Réservation de bornes</h1>
+<h1>Réserver une borne</h1>
 {% if success %}
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_row(form.id_place) }}
@@ -70,6 +70,10 @@
 {{ form_row(form.subscribe) }}
 
 {{ form_end(form) }}
+<h2>Voir le planning</h2>
+{{ form_start(form_planning, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(form_planning) }}
+{{ form_end(form_planning) }}
 {% else %}
   <p>{{ error }}</p>
 {% endif %}
