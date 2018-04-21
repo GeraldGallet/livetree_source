@@ -38,11 +38,13 @@ class AvailableTime
      */
     function main()
     {
-        $reservation = array('end_date' => new DateTime('2018-12-12T15:00:00'), 'start_date' => new DateTime('2018-12-12T16:00:00'));
+        $reservation = array('end_date' => new DateTime('2018-12-21T00:00:00'), 'start_date' => new DateTime('2018-12-22T00:00:00'));
         $updated = null;
         $php_errormsg = null;
         try {
             $updated = AvailableTime::get_timeslots_with_placeId(1, $reservation);
+            dump($updated);
+
         } catch (\Exception $exception) {
             $php_errormsg = $exception->getMessage();
         }
@@ -61,7 +63,8 @@ class AvailableTime
      */
     static function init_tab($intTimeDivision, $startDate)
     {
-        $tmpStartingTimeOfTheDay = $startDate;
+
+        $tmpStartingTimeOfTheDay = clone $startDate;
         switch ($intTimeDivision) {
             case AvailableTime::TIMEDIVISION_HOURS:
                 $intervalToAdd = AvailableTime::TIMEDIVISION_str_hours;
@@ -76,15 +79,17 @@ class AvailableTime
                 $intervalToAdd = AvailableTime::TIMEDIVISION_str_minutes;
                 break;
             default:
-                $intervalToAdd = AvailableTime::TIMEDIVISION_str_hours;
+//                $intervalToAdd = AvailableTime::TIMEDIVISION_str_hours;
+                throw new \Exception("init_tab-> intTimeDivision is not from the list");
         }
         $slotAllocation = array();
+
         for ($i = 1; $i <= $intTimeDivision; $i++) {
             $tmp = clone $tmpStartingTimeOfTheDay;
             $slotAllocation[] = array('date' => $tmp, 'numberOfDisponibility' => 0);
-            //add
             $tmpStartingTimeOfTheDay->add(new DateInterval($intervalToAdd));
         }
+
         return $slotAllocation;
     }
 
@@ -172,6 +177,9 @@ class AvailableTime
     {
         $rouded = clone $reservationEnQuestion;
         $rouded->setTime(0, 0, 0);
+//        dump("yo",$rouded);
+
+
         return $rouded;
     }
 
@@ -182,8 +190,12 @@ class AvailableTime
      */
     static function get_number_of_days($rounded_start, $rounded_end)
     {
+//        dump($rounded_start,$rounded_end);
         $tmp = ($rounded_start->diff($rounded_end));
-        return $tmp->format('%d');
+//        dump($tmp);
+        $tmp =$tmp->format('%d');
+//        dump($tmp);
+        return $tmp;
     }
 
     /**
@@ -195,14 +207,19 @@ class AvailableTime
     {
         $max = ($reservationEnQuestion['end_date']);
         $min = ($reservationEnQuestion['start_date']);
+        if($max<$min){
+            throw new \Exception("end_date is before start_date");
+        }
         $roundedMax = self::round_dates($max);
+
         $roundedMin = self::round_dates($min);
         $number = intval(self::get_number_of_days($roundedMin, $roundedMax));
-
+//        dump($max,$min,$number);
         $arrayOfSlotAllocation = array();
         for ($i = 1; $i <= $number + 1; $i++) {
-            $arrayOfSlotAllocation[] = self::init_tab(self::TIMEDIVISION_HOURS, $roundedMin);
+            $arrayOfSlotAllocation[] = self::init_tab(self::TIMEDIVISION_QUARTER_OF_HOUR, $roundedMin);
             $roundedMin->add(new DateInterval(self::TIMEDIVISION_str_day));
+//            dump($roundedMin);
         }
 
         return $arrayOfSlotAllocation;
@@ -244,6 +261,10 @@ class AvailableTime
             }
         }
         return null;
+    }
+
+    static function check_correct_order_of_date($reservationEnQuestion)
+    {
 
     }
 
