@@ -74,13 +74,27 @@
           ));
         }
 
-        $access_form = $this->createFormBuilder($access)
-            ->add('id_place', ChoiceType::class, array(
-              'choices'  => $places_choices,
-              'label' => 'Nouveau lieu : '))
-            ->add('add_access', SubmitType::class, array('label' => 'J\'ai accès à ce lieu'))
-            ->getForm();
-        $access_form->handleRequest($request);
+        if(sizeof($places_choices) > 0) {
+          $access_form = $this->createFormBuilder($access)
+              ->add('id_place', ChoiceType::class, array(
+                'choices'  => $places_choices,
+                'label' => 'Nouveau lieu : '))
+              ->add('add_access', SubmitType::class, array('label' => 'J\'ai accès à ce lieu'))
+              ->getForm();
+          $access_form->handleRequest($request);
+          $access_form_view = $access_form->createView();
+          if ($access_form->isSubmitted() && $access_form->isValid()) {
+            $access = $access_form->getData();
+
+            $api->table_add("has_access", array(
+              'id_user' => $_SESSION['id_user'],
+              'id_place' => $access->getIdPlace()
+            ));
+            return $this->redirectToRoute('profile');
+          }
+        } else {
+          $access_form_view = null;
+        }
 
         $personal_car_form = $this->createFormBuilder($personal_car)
             ->add('name', TextType::class, array('label' => "Nom "))
@@ -104,16 +118,6 @@
           return $this->redirectToRoute('profile');
         }
 
-        if ($access_form->isSubmitted() && $access_form->isValid()) {
-          $access = $access_form->getData();
-
-          $api->table_add("has_access", array(
-            'id_user' => $_SESSION['id_user'],
-            'id_place' => $access->getIdPlace()
-          ));
-          return $this->redirectToRoute('profile');
-        }
-
         return $this->render('profile/profile.html.twig', array(
               'first_name' => $_SESSION['first_name'],
               'last_name' => $_SESSION['last_name'],
@@ -124,7 +128,7 @@
               'places' => $places,
               'personal_cars' => $cars,
               'personal_car_form' => $personal_car_form->createView(),
-              'access_form' => $access_form->createView(),
+              'access_form' => $access_form_view,
               'rights' => $_SESSION['rights']
         ));
       } else

@@ -4,20 +4,22 @@
   use Symfony\Component\Validator\Constraints as Assert;
   class FiltreReservationBorne
   {
-
-	 protected $date_time;
-	 protected $start_time;
+	 protected $date_start;
 	 protected $end_time;
 	 protected $charge;
 	 protected $id_place;
 	 protected $id_user;
 
+   public function __construct()
+   {
+     $this->date = new \DateTime("now");
+   }
 
-	 function getDateTime(){
-		 return $this->date_time;
+	 function getDateStart(){
+		 return $this->date_start;
 	 }
-	 function setDateTime($date_time){
-		 $this->date_time=$date_time;
+	 function setDateStart($date_start){
+		 $this->date_start=$date_start;
 	 }
 
 	 function getStartTime(){

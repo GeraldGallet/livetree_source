@@ -59,11 +59,16 @@
 </nav>
 </header>
 <br/>
-<h1>Réservation de voiture</h1>
+<h1>Réserver un véhicule</h1>
 {% if success %}
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(form) }}
 {{ form_end(form) }}
+<h2>Consulter le planning</h2>
+{{ form_start(planning_form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(planning_form) }}
+{{ form_end(planning_form) }}
+
 {% else %}
   <p>{{error}}</p>
 {% endif %}

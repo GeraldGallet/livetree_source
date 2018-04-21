@@ -69,11 +69,13 @@
   	    ->add('start_date', DateTimeType::class,array(
     		  'label' => "Date et heure d'arrivée: ",
           'date_widget' => 'single_text',
-          'widget' => 'choice'
+          'widget' => 'choice',
+          'minutes' => [0, 15, 30, 45]
     		))
     		->add('end_date', TimeType::class,array(
     		  'label' => "Heure de départ: ",
-          'widget' => 'single_text'
+          'widget' => 'choice',
+          'minutes' => [0, 15, 30, 45]
     		))
         ->add('charge', RangeType::class, [
                    'attr' => [

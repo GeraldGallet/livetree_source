@@ -47,7 +47,7 @@
       }
 
       $resa_borne = new AdminReservationBorne();
-      $resa_form = $this->createFormBuilder($resa_borne)
+      $resa_form = $this->get("form.factory")->createNamedBuilder('adding_form', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType', $resa_borne, array())
       ->add('start_date', DateTimeType::class, array('date_widget' => 'single_text'))
       ->add('end_date', DateTimeType::class, array('date_widget' => 'single_text'))
       ->add('charge', RangeType::class, [
@@ -67,12 +67,10 @@
         'choices'  => $place_choices))
       ->add('add_resa', SubmitType::class, array('label' => 'Créer la réservation'))
       ->getForm();
-      $resa_form->handleRequest($request);
 
       $filter = new FiltreReservationBorne();
-      $filter_form = $this->createFormBuilder($filter)
-      ->add('date_time', DateType::class,array('widget' => 'single_text'))
-      ->add('start_time', TimeType::class, array('widget' => 'single_text'))
+      $filter_form = $this->get("form.factory")->createNamedBuilder('filter_form', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType', $filter, array())
+      ->add('date_start', DateTimeType::class,array('date_widget' => 'single_text', 'widget' => 'choice'))
       ->add('end_time', TimeType::class, array('widget' => 'single_text'))
       ->add('charge', RangeType::class, [
                  'attr' => [
@@ -91,63 +89,12 @@
         'choices'  => $place_choices))
       ->add('filter_resa', SubmitType::class, array('label' => 'Filtrer'))
       ->getForm();
-      $filter_form->handleRequest($request);
 
-      if($filter_form->isSubmitted() && $filter_form->isValid()) {
-        $filter = $filter_form->getData();
-        if($filter->getDateTime() == NULL)
-          $date = NULL;
-        else
-          $date = date_format($filter->getDateTime(), 'Y-m-d-H-i');
+      if('POST' === $request->getMethod()) {
+        $resa_form->handleRequest($request);
+        $filter_form->handleRequest($request);
 
-        if($filter->getStartTime() == NULL)
-          $start = NULL;
-        else
-          $start = $filter->getStartTime()->format('H:i');
-
-        if($filter->getEndTime() == NULL)
-          $end = NULL;
-        else
-          $end = $filter->getEndtime()->format('H:i');
-
-        $filter_options = array(
-          'id_place' => $filter->getIdPlace(),
-          'date_time' => $date,
-          'start_time' => $start,
-          'end_time' => $end,
-          'charge' => $filter->getCharge(),
-          'id_user' => $filter->getIdUser(),
-        );
-
-        foreach($filter_options as $key => $value) {
-          if($value == NULL)
-            unset($filter_options[$key]);
-        }
-        $resas = $api->table_get("resa_borne", $filter_options);
-        return $this->render('admin/admin_bornes.html.twig', array(
-              'resa_bornes' => $resas,
-              'resa_form' => $resa_form->createView(),
-              'filter_form' => $filter_form->createView(),
-              'rights' => $_SESSION['rights']
-        ));
-
-      } else {
-        foreach($place_choices as $id_place) {
-          foreach($api->table_get("resa_borne", array('id_place' => $id_place)) as $resa) {
-            array_push($resas, array(
-              'id_resa' => $resa['id_resa'],
-              'date_time' => substr($resa['date_creation'], 0, 10),
-              'start_time' => $resa['start_date'],
-              'end_time' => $resa['end_date'],
-              'charge' => $resa['charge'],
-              'id_place' => array_search($id_place, $place_choices),
-              'id_user' => $api->table_get("user", array('id_user' => $resa['id_user']))[0]['email']
-            ));
-          }
-        }
-      }
-
-      if($resa_form->isSubmitted() && $resa_form->isValid()) {
+        if($request->request->has('adding_form') && $resa_form->isValid()) {
           $resa_borne = $resa_form->getData();
 
           $api->table_add("resa_borne", array(
@@ -160,6 +107,40 @@
           ));
 
           return $this->redirectToRoute('admin_bornes');
+        }
+
+        if($request->request->has('filter_form') && $filter_form->isValid()) {
+          $filter = $filter_form->getData();
+          if($filter->getDateTime() == NULL)
+            $date = NULL;
+          else
+            $date = date_format($filter->getDateTime(), 'Y-m-d-H-i');
+
+          if($filter->getEndTime() == NULL)
+            $end = NULL;
+          else
+            $end = $filter->getEndtime()->format('H:i');
+
+          $filter_options = array(
+            'id_place' => $filter->getIdPlace(),
+            'start_date' => $date,
+            'end_time' => $end,
+            'charge' => $filter->getCharge(),
+            'id_user' => $filter->getIdUser(),
+          );
+
+          foreach($filter_options as $key => $value) {
+            if($value == NULL)
+            unset($filter_options[$key]);
+          }
+          $resas = $api->table_get("resa_borne", $filter_options);
+          return $this->render('admin/admin_bornes.html.twig', array(
+            'resa_bornes' => $resas,
+            'resa_form' => $resa_form->createView(),
+            'filter_form' => $filter_form->createView(),
+            'rights' => $_SESSION['rights']
+          ));
+        }
       }
 
       return $this->render('admin/admin_bornes.html.twig', array(

@@ -66,11 +66,13 @@
       {% for place in places %}
         <li>{{ place.name }} <a href="{{ path('delete_access', {'id_place': place.id_place}) }}"><button>Je n'ai pas accès à ce lieu</button></a></li>
       {% endfor %}
+      {% if access_form != NULL %}
       <li>
         {{ form_start(access_form, {'attr': {'novalidate': 'novalidate'}}) }}
         {{ form_widget(access_form) }}
         {{ form_end(access_form) }}
       </li>
+      {% endif %}
     </ul>
   </li>
 </ul>

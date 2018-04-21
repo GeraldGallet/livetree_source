@@ -51,8 +51,8 @@
 <h2>Réservations de bornes</h2>
 {% for resa in resa_borne %}
   <ul>
-    <li>Début: {{resa.start_date}}</li>
-    <li>Fin: {{resa.end_date}}</li>
+    <li>Début: {{resa.start_date|date('Y-m-d H:i:s')}}</li>
+    <li>Fin: {{resa.end_date|date('H:i:s')}}</li>
     <li>Charge estimée en arrivant: {{resa.charge}}</li>
     <li>Lieu: {{resa.place}}</li>
     <li><a href="{{ path('delete_resa_borne', {'id_resa': resa.id_resa}) }}"><button>Annuler</button></a></li>
@@ -61,8 +61,8 @@
 <h2>Réservations de véhicules</h2>
 {% for resa in resa_car %}
   <ul>
-    <li>Début: {{resa.date_start}}  {{resa.start_time}}</li>
-    <li>Fin: {{resa.date_end}}  {{resa.end_time}}</li>
+    <li>Début: {{resa.date_start|date('Y-m-d')}}  {{resa.start_time|date('H:i:s')}}</li>
+    <li>Fin: {{resa.date_end|date('Y-m-d')}}  {{resa.end_time|date('H:i:s')}}</li>
     <li>Kilométrage prévu: {{resa.km_planned}} kms</li>
     <li>Heure de départ: {{resa.end_time}}</li>
     <li>Etablissement: {{resa.facility}}</li>
