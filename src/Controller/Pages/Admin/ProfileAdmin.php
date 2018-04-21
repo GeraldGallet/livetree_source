@@ -7,7 +7,7 @@
   use Symfony\Component\HttpFoundation\Response;
   use Symfony\Component\Routing\Annotation\Route;
 
-  class AdminProfiles extends Controller
+  class ProfileAdmin extends Controller
   {
     /**
       * @Route("/admin/profils", name="admin_profiles")
@@ -49,9 +49,6 @@
       * @Route("/admin/profils/give_admin/{id_user}", name="give_admin")
       */
     public function give_admin_rights($id_user) {
-      if(!isset($_SESSION))
-        session_start();
-
       $rights = $_SESSION['rights'];
       if($rights < 2)
         return $this->redirectToRoute('accueil');
@@ -65,9 +62,6 @@
       * @Route("/admin/profils/activer/{id_user}", name="activate_user_admin")
       */
     public function activate_user($id_user) {
-      if(!isset($_SESSION))
-        session_start();
-
       $rights = $_SESSION['rights'];
       if($rights < 2)
         return $this->redirectToRoute('accueil');
@@ -81,9 +75,6 @@
       * @Route("/admin/profils/delete/{id_user}", name="delete_user_admin")
       */
     public function delete_user($id_user) {
-      if(!isset($_SESSION))
-        session_start();
-
       $rights = $_SESSION['rights'];
       if($rights < 2)
         return $this->redirectToRoute('accueil');

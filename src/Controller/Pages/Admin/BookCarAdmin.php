@@ -16,7 +16,7 @@
   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
   use Symfony\Component\Routing\Annotation\Route;
 
-  class AdminCars extends Controller
+  class BookCarAdmin extends Controller
   {
     /**
       * @Route("/admin/voitures", name="admin_cars")

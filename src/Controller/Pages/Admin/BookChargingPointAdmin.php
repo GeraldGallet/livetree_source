@@ -19,7 +19,7 @@
     use Symfony\Component\Form\Extension\Core\Type\RangeType;
 
 
-  class AdminBornes extends Controller
+  class BookChargingPointAdmin extends Controller
   {
     /**
       * @Route("/admin/bornes", name="admin_bornes")

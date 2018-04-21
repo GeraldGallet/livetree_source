@@ -16,7 +16,7 @@
   use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-  class Admin extends Controller
+  class GlobalAdmin extends Controller
   {
     /**
       * @Route("/admin", name="admin")

@@ -1,5 +1,5 @@
 <?php
-  namespace App\Controller\Pages;
+  namespace App\Controller\Pages\Profile;
 
   use App\Controller\CustomApi;
   use App\Entity\PersonalCar;
@@ -21,9 +21,6 @@
       * @Route("/profil", name="profile")
       */
     public function load_profile(Request $request) {
-      if(!isset($_SESSION))
-        session_start();
-
       if(isset($_SESSION['id_user']))
       {
         $api = new CustomApi();
@@ -123,7 +120,7 @@
               'last_name' => $_SESSION['last_name'],
               'id_status' => $_SESSION['id_status'],
               'email' => $_SESSION['email'],
-              'phone_number' => $_SESSION['phone_number'],
+              'phone_number' => $_SESSION['indicative'] . " " . $_SESSION['phone_number'],
               'facilities' => $facilities,
               'places' => $places,
               'personal_cars' => $cars,
@@ -139,8 +136,6 @@
      * @Route("/profil/personal_car/delete/{car_name}", name="delete_personal_car")
      */
     public function delete_personal_car($car_name) {
-      if(!isset($_SESSION))
-        session_start();
       $api = new CustomApi();
       $api->table_delete("personal_car", array(
         'id_user' => $_SESSION['id_user'],
@@ -153,8 +148,6 @@
      * @Route("/profil/work/delete/{id_facility}", name="delete_work")
      */
     public function delete_work($id_facility) {
-      if(!isset($_SESSION))
-        session_start();
       $api = new CustomApi();
       $api->table_delete("work", array(
         'id_user' => $_SESSION['id_user'],
@@ -167,14 +160,43 @@
      * @Route("/profil/access/delete/{id_place}", name="delete_access")
      */
     public function delete_access($id_place) {
-      if(!isset($_SESSION))
-        session_start();
       $api = new CustomApi();
       $api->table_delete("has_access", array(
         'id_user' => $_SESSION['id_user'],
         'id_place' => $id_place
       ));
       return $this->redirectToRoute('profile');
+    }
+
+    /**
+     * @Route("/suppression", name="delete_account")
+     */
+    public function delete_account() {
+      if(!isset($_SESSION['id_user']))
+        return $this->redirectToRoute('accueil');
+      return $this->render('profile/delete.html.twig', array(
+        'rights' => $_SESSION['rights'],
+        'email' => $_SESSION['email']
+      ));
+    }
+
+    /**
+     * @Route("/suppression_valider", name="delete_account_sure")
+     */
+    public function delete_account_sure() {
+      if(!isset($_SESSION['id_user']))
+        return $this->redirectToRoute('accueil');
+
+      $id_user = $_SESSION['id_user'];
+      $api = new CustomApi();
+      $api->table_delete("resa_borne", array('id_user' => $id_user));
+      $api->table_delete("resa_car", array('id_user' => $id_user));
+      $api->table_delete("personal_car", array('id_user' => $id_user));
+      $api->table_delete("has_access", array('id_user' => $id_user));
+      $api->table_delete("work", array('id_user' => $id_user));
+      $api->table_delete("user", array('id_user' => $id_user));
+
+      return $this->redirectToRoute('deconnect');
     }
   }
 

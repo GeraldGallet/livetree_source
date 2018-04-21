@@ -1,5 +1,5 @@
 <?php
-  namespace App\Controller\Pages;
+  namespace App\Controller\Pages\Profile;
 
   use App\Controller\CustomApi;
 
@@ -8,7 +8,7 @@
   use Symfony\Component\HttpFoundation\Response;
   use Symfony\Component\Routing\Annotation\Route;
 
-  class Validation extends Controller
+  class AccountValidation extends Controller
   {
     /**
       * @Route("/validation/{token}", name="validation")

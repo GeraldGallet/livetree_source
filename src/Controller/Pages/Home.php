@@ -12,7 +12,7 @@
   use Symfony\Component\Form\Extension\Core\Type\PasswordType;
   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-  class Accueil extends Controller
+  class Home extends Controller
   {
     /**
       * @Route("/", name="accueil")
@@ -67,6 +67,7 @@
             $_SESSION['last_name'] = $db_user['last_name'];
             $_SESSION['id_status'] = $db_user['id_status'];
             $_SESSION['phone_number'] = $db_user['phone_number'];
+            $_SESSION['indicative'] = $db_user['indicative'];
             $_SESSION['rights'] = $api->table_get("status", array('id_status' => $db_user['id_status']))[0]['rights'];
           } else
           {

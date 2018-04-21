@@ -9,17 +9,17 @@
 {% block body %}
 <header>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-  <a class="navbar-brand" href="/">Accueil<span class="sr-only">(current)</span></a>
+  <a class="navbar-brand" href="/">Accueil</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarCollapse">
     <ul class="navbar-nav mr-auto">
       {% if rights >= 0 %}
-      <li class="nav-item">
-        <a class="nav-link disabled" href="/profil">Profil</a>
-      </li>
       <li class="nav-item active">
+        <a class="nav-link" href="/profil">Profil</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="/bornes">Bornes</a>
       </li>
       {% endif %}
@@ -48,7 +48,7 @@
 <li><a href='/profil/historique'>Mes réservations</a></li>
 </ul>
 
-<h1>{{ first_name }} {{ last_name }}</h1>
+<h1>{{ first_name }} {{ last_name }}</h1><a href="/suppression"><button>Supprimer mon compte</button></a>
 <h2>Mon compte</h2>
 <ul>
   <li><u>Email</u>: {{ email }}</li>

@@ -1,8 +1,9 @@
-{# templates/admin/admin_bornes.html.twig #}
+{# templates/profile/profile.html.twig #}
 {% extends "base.html.twig" %}
 
 {% block head %}
 {{ parent() }}
+{% block title %}Profil{% endblock %}
 {% endblock %}
 
 {% block body %}
@@ -18,7 +19,7 @@
       <li class="nav-item">
         <a class="nav-link" href="/profil">Profil</a>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="/bornes">Bornes</a>
       </li>
       {% endif %}
@@ -28,7 +29,7 @@
       </li>
       {% endif %}
       {% if rights >= 2 %}
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="/admin">Administration</a>
       </li>
       {% endif %}
@@ -37,34 +38,8 @@
 </nav>
 </header>
 <br/>
-<br/>
-<a href='/admin'>Général</a>
-<a href='/admin/bornes'>Bornes</a>
-<a href='/admin/voitures'>Voitures</a>
-<a href='/admin/profils'>Profils</a>
-<h1>Administration des bornes</h1>
-<h2>Ajouter une réservation</h2>
-{{ form_start(resa_form, {'attr': {'novalidate': 'novalidate'}}) }}
-{{ form_widget(resa_form) }}
-{{ form_end(resa_form) }}
-
-<h2>Réservations de bornes</h2>
-<h3>Options de filtrage</h3>
-{{ form_start(filter_form, {'attr': {'novalidate': 'novalidate'}}) }}
-{{ form_widget(filter_form) }}
-{{ form_end(filter_form) }}
-<h3>Résultat</h3>
-<ul>
-{% for resa in resa_bornes %}
-<li><ul>
-  <li>{{resa.date_time}}</li>
-  <li>{{resa.start_time}}</li>
-  <li>{{resa.end_time}}</li>
-  <li>{{resa.charge}}</li>
-  <li>{{resa.id_place}}</li>
-  <li>{{resa.id_user}}</li>
-  <li><a href="{{ path('delete_resa_borne_admin', {'id_resa': resa.id_resa}) }}"><button>Supprimer</button></a></li>
-</ul></li>
-{% endfor %}
-</ul>
+<h1>Suppression du compte</a></h1>
+<p>Etes-vous sûr de vouloir supprimer le compte à l'adresse {{email}} ?</p>
+<p>Cette action est irréversible !</p>
+<a href="/suppression_valider"><button>Oui</button></a><a href="/profil"><button>Non</button></a>
 {% endblock %}

@@ -1,5 +1,5 @@
 <?php
-  namespace App\Controller\Pages;
+  namespace App\Controller\Pages\Profile;
 
   use App\Controller\CustomApi;
   use App\Entity\State;
