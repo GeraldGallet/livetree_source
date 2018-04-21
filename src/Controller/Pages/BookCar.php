@@ -36,15 +36,24 @@
       $company_car_choices = [];
       $first = true;
 
-      foreach($api->table_get_all("reason") as $reason) {
-        $reason_choices[$reason['id_reason']] = $reason['id_reason'];
-      }
-
       foreach($api->table_get("work", array('id_user' => $_SESSION['id_user'])) as $work) {
         foreach($api->table_get("company_car", array('id_facility' => $work['id_facility'])) as $temp_car) {
           $company_car_choices[$temp_car['name']] = $temp_car['id_company_car'];
         }
       }
+
+      if(sizeof($company_car_choices) == 0) {
+        return $this->render('reservations/cars.html.twig', array(
+              'form' => $car_form->createView(),
+              'error' => "Le(s) établissement(s) au(x)quel(s) vous êtes affilié ne dispose pas de véhicules !",
+              'success' => false
+        ));
+      }
+
+      foreach($api->table_get_all("reason") as $reason) {
+        $reason_choices[$reason['id_reason']] = $reason['id_reason'];
+      }
+
 
       $reservationCar = new BookCarEntity();
       $car_form = NULL;
@@ -76,13 +85,15 @@
         if($date_start > $date_end) {
           return $this->render('reservations/cars.html.twig', array(
                 'form' => $car_form->createView(),
-                'rights' => $_SESSION['rights']
+                'rights' => $_SESSION['rights'],
+                'success' => true
           ));
         } else if($date_start == $date_end) {
           if($start_time >= $end_time) {
             return $this->render('reservations/cars.html.twig', array(
                   'form' => $car_form->createView(),
-                  'rights' => $_SESSION['rights']
+                  'rights' => $_SESSION['rights'],
+                  'success' => true
             ));
           }
         }
@@ -120,7 +131,8 @@
 
       return $this->render('reservations/cars.html.twig', array(
             'form' => $car_form->createView(),
-            'rights' => $_SESSION['rights']
+            'rights' => $_SESSION['rights'],
+            'success' => true
       ));
     }
   }

@@ -5,6 +5,7 @@
   use App\Controller\CustomApi;
   use App\Entity\BookChargingPointEntity;
   use App\Entity\ShowPlanningEntity;
+  use App\Controller\Form\AvailableTime;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Request;
@@ -119,16 +120,23 @@
 
           $start_date = $obj_planning->getDateStart();
           $end_date = $obj_planning->getDateEnd();
-          $temp_end_date = $end_date->modify("-7 day");
+          $temp_end_date = clone $end_date;
+          $temp_end_date->modify("-7 day");
 
-          if($start_date->format('Y:m:d') > $end_date->format('Y:m:d') && $temp_end_date->format('Y:m:d') <= $start_date->format('Y:m:d')) {
+          if($start_date->format('Y:m:d') < $end_date->format('Y:m:d') && $temp_end_date->format('Y:m:d') <= $start_date->format('Y:m:d')) {
             $planning_start = new DateTime();
             $planning_start->setDate($start_date->format('Y'), $start_date->format('m'), $start_date->format('d'));
             $planning_start->setTime(0, 0, 0);
 
             $planning_end = new DateTime();
-            $planning_end->setDate($end_date->format('Y'), $end_date->format('m'), $end_date->modify("+1 day")->format('d'));
+            $planning_end->setDate($end_date->format('Y'), $end_date->format('m'), $end_date->format('d'));
             $planning_end->setTime(0, 0, 0);
+
+            $plan = new AvailableTime();
+            $res = $plan->get_timeslots_with_placeId($res->getIdPlacePlanning(), array('end_date' => $planning_end, 'start_date' => $planning_start));
+            dump($planning_start);
+            dump($end_date);
+            dump($res);
           }
         }
 

@@ -60,7 +60,11 @@
 </header>
 <br/>
 <h1>Réservation de voiture</h1>
+{% if success %}
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(form) }}
 {{ form_end(form) }}
+{% else %}
+  <p>{{error}}</p>
+{% endif %}
 {% endblock %}
