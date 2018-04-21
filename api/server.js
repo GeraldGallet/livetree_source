@@ -108,6 +108,13 @@ function update_table(body, res, table) {
   });
 }
 
+function custom(body, res) {
+  res.locals.connection.query(body.query, function(error, results, fields) {
+    if(error) throw error;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+}
+
 function send_mail(body, res) {
   //console.log(body);
   let mailOptions = {
@@ -137,6 +144,11 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
   var passed = false;
   if(req.params.table == "mail") {
     send_mail(req.body, res);
+    return;
+  }
+  
+  if(req.params.table == "custom") {
+    custom(req.body, res);
     return;
   }
 
