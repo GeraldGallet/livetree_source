@@ -18,13 +18,11 @@
       * @Route("/", name="accueil")
       */
     public function load_accueil(Request $request) {
-      if(!isset($_SESSION))
-        session_start();
-
       if(!isset($_SESSION['id_user'])) {
         $connected = false;
         $last_name = NULL;
         $first_name = NULL;
+        $rights = -1;
         $user = new Connection();
 
         $connection_form = $this->createFormBuilder($user)
@@ -52,12 +50,13 @@
             $db_user = $db_user[0];
 
           if(!$db_user['activated']) {
-            return $this->render('accueil.html.twig', array(
+            return $this->render('home.html.twig', array(
               'connected' => $connected,
               'connection_form' => $view,
               'error' => 'Ce compte n\'est pas activé !',
               'last_name' => $last_name,
-              'first_name' => $first_name
+              'first_name' => $first_name,
+              'rights' => 0
             ));
           }
           if(password_verify($user->getPassword(), $db_user['password']))
@@ -71,12 +70,13 @@
             $_SESSION['rights'] = $api->table_get("status", array('id_status' => $db_user['id_status']))[0]['rights'];
           } else
           {
-            return $this->render('accueil.html.twig', array(
+            return $this->render('home.html.twig', array(
               'connected' => $connected,
               'connection_form' => $view,
               'error' => 'La combinaison email/mot de passe n\'existe pas !',
               'last_name' => $last_name,
-              'first_name' => $first_name
+              'first_name' => $first_name,
+              'rights' => 0
             ));
           }
 
@@ -87,6 +87,7 @@
         $view = NULL;
         $last_name = $_SESSION['last_name'];
         $first_name = $_SESSION['first_name'];
+        $rights = $_SESSION['rights'];
       }
 
       return $this->render('home.html.twig', array(
@@ -94,7 +95,8 @@
             'connection_form' => $view,
             'error' => NULL,
             'last_name' => $last_name,
-            'first_name' => $first_name
+            'first_name' => $first_name,
+            'rights' => $rights
       ));
     }
 

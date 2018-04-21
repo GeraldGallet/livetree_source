@@ -22,9 +22,6 @@
       * @Route("/admin", name="admin")
       */
     public function load_admin(Request $request) {
-      if(!isset($_SESSION))
-        session_start();
-
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 

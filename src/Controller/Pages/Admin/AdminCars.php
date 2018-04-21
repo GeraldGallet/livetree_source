@@ -22,9 +22,6 @@
       * @Route("/admin/voitures", name="admin_cars")
       */
     public function load_admin_cars(Request $request) {
-      if(!isset($_SESSION))
-        session_start();
-
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
@@ -106,7 +103,8 @@
 
       return $this->render('admin/admin_cars.html.twig', array(
         'resa_car' => $resa_car,
-        'car_form' => $car_form->createView()
+        'car_form' => $car_form->createView(),
+        'rights' => $_SESSION['rights']
       ));
     }
 

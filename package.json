@@ -1,0 +1,26 @@
+{
+  "name": "livetree_web",
+  "version": "1.0.0",
+  "description": "- Jean-Charles Simonnet\r - Robin Poiret\r - Alexis Fardel\r - Nicolas Hennequin\r - Gérald Gallet",
+  "main": "webpack.config.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeraldGallet/livetree_source.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GeraldGallet/livetree_source/issues"
+  },
+  "homepage": "https://github.com/GeraldGallet/livetree_source#readme",
+  "devDependencies": {
+    "@symfony/webpack-encore": "^0.20.1",
+    "webpack-notifier": "^1.6.0"
+  }
+}

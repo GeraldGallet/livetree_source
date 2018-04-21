@@ -24,9 +24,6 @@
       * @Route("/voitures")
       */
     public function load_cars(Request $request) {
-      if(!isset($_SESSION))
-        session_start();
-
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
@@ -79,12 +76,14 @@
 
         if($date_start > $date_end) {
           return $this->render('reservations/cars.html.twig', array(
-                'form' => $car_form->createView()
+                'form' => $car_form->createView(),
+                'rights' => $_SESSION['rights']
           ));
         } else if($date_start == $date_end) {
           if($start_time >= $end_time) {
             return $this->render('reservations/cars.html.twig', array(
-                  'form' => $car_form->createView()
+                  'form' => $car_form->createView(),
+                  'rights' => $_SESSION['rights']
             ));
           }
         }
@@ -121,7 +120,8 @@
       }
 
       return $this->render('reservations/cars.html.twig', array(
-            'form' => $car_form->createView()
+            'form' => $car_form->createView(),
+            'rights' => $_SESSION['rights']
       ));
     }
   }

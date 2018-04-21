@@ -124,7 +124,8 @@
               'places' => $places,
               'personal_cars' => $cars,
               'personal_car_form' => $personal_car_form->createView(),
-              'access_form' => $access_form->createView()
+              'access_form' => $access_form->createView(),
+              'rights' => $_SESSION['rights']
         ));
       } else
         return $this->redirectToRoute('accueil');

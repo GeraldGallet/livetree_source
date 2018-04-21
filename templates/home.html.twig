@@ -12,21 +12,30 @@
 {% block body %}
       <header>
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="Accueil.html">Accueil</a>
+        <a class="navbar-brand" href="/">Accueil<span class="sr-only">(current)</span></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="/bornes">Bornes<span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/voitures">Voitures</a>
-            </li>
+            {% if rights >= 0 %}
             <li class="nav-item">
               <a class="nav-link disabled" href="/profil">Profil</a>
             </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="/bornes">Bornes</a>
+            </li>
+            {% endif %}
+            {% if rights >= 1 %}
+            <li class="nav-item">
+              <a class="nav-link" href="/voitures">Voitures</a>
+            </li>
+            {% endif %}
+            {% if rights >= 2 %}
+            <li class="nav-item">
+              <a class="nav-link" href="/admin">Administration</a>
+            </li>
+            {% endif %}
           </ul>
         </div>
       </nav>
@@ -36,7 +45,16 @@
     <img src="{{ asset('img/universitecatholille.png') }}" width="100" height="70" alt="Universite Catholique de Lille" />
     <img src="{{ asset('/templates/Nico/LIVETRESSITE/LOGO-LIVE-TREE.jpg') }}" width="100" height="70" alt="Logo Live Tree" />
   </p>
-    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+  {% if connected %}
+    <a href=/deconnexion>{{first_name}} {{last_name}} (Déconnexion)</a>
+  {% else %}
+    <a href='/inscription'><button>S'inscrire</button></a>
+    <p>{{ error }}</p>
+    {{ form_start(connection_form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_widget(connection_form) }}
+    {{ form_end(connection_form) }}
+  {% endif %}
+  <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
     <div class="carousel-item active">
       <a href="https://livetree.fr"><img class="d-block w-100" src="actualitelivetree2.jpg" alt="Premiereactualite"></a>

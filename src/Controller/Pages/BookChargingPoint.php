@@ -23,9 +23,6 @@
       * @Route("/bornes",name="bornes")
       */
     public function new(Request $request) {
-      if(!isset($_SESSION))
-        session_start();
-
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
@@ -35,7 +32,8 @@
       if(sizeof($res) == 0) {
         return $this->render('reservations/bornes.html.twig', array(
           'success' => false,
-          'error' => "Vous n'avez accès à aucun lieu ! Rendez-vous dans la section profil pour renseigner les lieux auquels vous avez accès. Si vous n'avez aucun accès, demandez à votre établissement comment en obtenir"
+          'error' => "Vous n'avez accès à aucun lieu ! Rendez-vous dans la section profil pour renseigner les lieux auquels vous avez accès. Si vous n'avez aucun accès, demandez à votre établissement comment en obtenir",
+          'rights' => $_SESSION['rights']
         ));
       } else {
         $place_choices = [];
@@ -49,7 +47,8 @@
       if(sizeof($res) == 0) {
         return $this->render('reservations/bornes.html.twig', array(
           'success' => false,
-          'error' => "Vous n'avez aucune voiture enregistrée ! Rendez-vous dans la section profil pour enregistrer une voiture afin de pouvoir réserver une borne de recharge !"
+          'error' => "Vous n'avez aucune voiture enregistrée ! Rendez-vous dans la section profil pour enregistrer une voiture afin de pouvoir réserver une borne de recharge !",
+          'rights' => $_SESSION['rights']
         ));
       } else {
         $personal_car_choices = [];
@@ -130,7 +129,8 @@
 
     return $this->render('reservations/bornes.html.twig', array(
       'success' => true,
-      'form' => $form->createView()
+      'form' => $form->createView(),
+      'rights' => $_SESSION['rights']
     ));
 
   }

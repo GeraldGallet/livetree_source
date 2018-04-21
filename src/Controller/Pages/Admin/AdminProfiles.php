@@ -40,7 +40,8 @@
       }
 
       return $this->render('admin/admin_profiles.html.twig', array(
-            'profiles' => $profiles
+            'profiles' => $profiles,
+            'rights' => $_SESSION['rights']
       ));
     }
 

@@ -24,9 +24,6 @@
       * @Route("/profil/historique", name="history")
       */
     public function load_history(Request $request) {
-      if(!isset($_SESSION))
-        session_start();
-
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
@@ -119,7 +116,8 @@
 
       return $this->render('profile/history.html.twig', array(
             'resa_borne' => $resa_borne,
-            'resa_car' => $resa_car
+            'resa_car' => $resa_car,
+            'rights' => $_SESSION['rights']
       ));
     }
 

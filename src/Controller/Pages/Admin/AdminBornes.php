@@ -25,9 +25,6 @@
       * @Route("/admin/bornes", name="admin_bornes")
       */
     public function load_admin_bornes(Request $request) {
-      if(!isset($_SESSION))
-        session_start();
-
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
@@ -130,7 +127,8 @@
         return $this->render('admin/admin_bornes.html.twig', array(
               'resa_bornes' => $resas,
               'resa_form' => $resa_form->createView(),
-              'filter_form' => $filter_form->createView()
+              'filter_form' => $filter_form->createView(),
+              'rights' => $_SESSION['rights']
         ));
 
       } else {
@@ -167,7 +165,8 @@
       return $this->render('admin/admin_bornes.html.twig', array(
             'resa_bornes' => $resas,
             'resa_form' => $resa_form->createView(),
-            'filter_form' => $filter_form->createView()
+            'filter_form' => $filter_form->createView(),
+            'rights' => $_SESSION['rights']
       ));
     }
 
