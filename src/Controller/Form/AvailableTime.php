@@ -31,7 +31,7 @@ class AvailableTime
     private const TIMEDIVISION_str_minutes = 'P0Y0DT1H1M';
 
     public static $listedesreservation;
-    private static $numberMaxOfReservtion = array('numberMax' => 6);
+    private static $numberMaxOfReservtion = null ;
 
     /**
      * @Annotation\Route("/available")
@@ -39,17 +39,17 @@ class AvailableTime
     function main()
     {
         $reservation = array('end_date' => new DateTime('2018-12-12T15:00:00'), 'start_date' => new DateTime('2018-12-12T16:00:00'));
-        $updated=null;
-        $php_errormsg=null;
+        $updated = null;
+        $php_errormsg = null;
         try {
             $updated = AvailableTime::get_timeslots_with_placeId(1, $reservation);
         } catch (\Exception $exception) {
-            $php_errormsg=$exception->getMessage();
+            $php_errormsg = $exception->getMessage();
         }
         return $this->render('reservations/reservation_bornes_tab.html.twig', array(
             'array_of_updated_list_of_slot' => $updated,
-             'php_errormsg'=>$php_errormsg
-                ));
+            'php_errormsg' => $php_errormsg
+        ));
     }
 
 
@@ -104,10 +104,9 @@ class AvailableTime
                 //is inside?
                 if ($min <= $timeNdisp['date'] && $max >= $timeNdisp['date']) {
                     $timeNdisp['numberOfDisponibility'] += 1;
-                    if (!is_null($numberMaxtriggerexception)
-                        && isset($numberMaxtriggerexception['numberMax'])
-                        && $timeNdisp['numberOfDisponibility'] > $numberMaxtriggerexception['numberMax']) {
-                        throw new Exception("borne complète compare_disp,number is not good");
+                    if (!isset($numberMaxtriggerexception['numberMax'])
+                        || $timeNdisp['numberOfDisponibility'] > $numberMaxtriggerexception['numberMax']) {
+                        throw new Exception("Borne complète: nombre voulu(avec réservation)->(" . $timeNdisp['numberOfDisponibility'] . ") nombre disponible->(" . $numberMaxtriggerexception['numberMax'] . ")");
                     }
 //                    dump($timeNdisp['numberOfDisponibility']);
                 }
@@ -128,8 +127,8 @@ class AvailableTime
         foreach ($arrayOfSlotAllocation as &$slotAllocation) {
             try {
                 self::compare_disponibilities($dockReservationList, $slotAllocation, AvailableTime::$numberMaxOfReservtion);
-            } catch (Exception $e) {
-                throw new \Exception("array_compaire", null, e);
+            } catch (Exception $exception) {
+                throw $exception;
 
             }
         }
@@ -149,20 +148,11 @@ class AvailableTime
         try {
             $updated = AvailableTime::array_compare_disponibilities($dockReservationList, $arrayOfSlotAllocation);
         } catch (\Exception $exception) {
-            throw new \Exception("get_disponibilities_with_resa_N_targetedResa", null, $exception);
+            throw $exception;
         }
         return $updated;
     }
 
-    /**
-     * permet de vérifier si pour un emplacement une réservation est faisable.
-     * @param $dockReservationList
-     * @param $slotAllocation
-     */
-    static function verifier_dispo($id_place, $reservationEnQestion)
-    {
-        return null;
-    }
 
     /**
      * @param $id_place
@@ -225,20 +215,36 @@ class AvailableTime
      */
     static function get_timeslots_with_placeId($id_place, $bookingDates)
     {
-
-        $api_interface = new CustomApi();
-        $bornes = $api_interface->table_get(
-            'resa_borne',
-            array(
-                'id_place' => strval($id_place)
-            )
-        );
         try {
+            AvailableTime::$numberMaxOfReservtion['numberMax'] = self::get_number_of_docks($id_place);
+            $api_interface = new CustomApi();
+            $bornes = $api_interface->table_get(
+                'resa_borne',
+                array('id_place' => strval($id_place)
+                ));
             $updated = AvailableTime::get_disponibilities_with_resa_N_targetedResa($bornes, $bookingDates);
         } catch (\Exception $exception) {
-            throw new \Exception("get_disponibilities_with_resa_N_targetedResa", null, $exception);
+            throw $exception;
+        }finally {
+            AvailableTime::$numberMaxOfReservtion = null;
         }
         return $updated;
+    }
+
+    static function get_number_of_docks($id_place)
+    {
+        if (isset($id_place)) {
+            $api_interface = new CustomApi();
+            $result = $api_interface->table_get("borne", array('id_place' => $id_place));
+//            dump($result);
+            if (!isset($result)  ||  empty($result) ) {
+                throw new \Exception("Le nombre de places disponibles est inaccessible");
+            } else {
+                return sizeof($result);
+            }
+        }
+        return null;
+
     }
 
 }
