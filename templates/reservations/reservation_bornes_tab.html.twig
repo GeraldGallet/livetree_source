@@ -4,6 +4,7 @@
 {% block body %}
     <h1>Afficher le nombre de bornes réservées par heure</h1>
     {% for updated_list_of_slot in array_of_updated_list_of_slot.updatedListeOfBooking %}
+        <p>  </p>
         {% for slots in updated_list_of_slot %}
 
         <p> {{    slots.date|date('d-m-Y H:i:s') }} Nombre de résevations pour cet instant <span style="font-size:2em">{{ slots.numberOfDisponibility }}</span>

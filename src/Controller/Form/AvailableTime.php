@@ -32,6 +32,7 @@ class AvailableTime
 
     public static $listedesreservation;
     private static $numberMaxOfReservtion = null;
+    private static $reservationAllowed = false;
 
     /**
      * @Annotation\Route("/available")
@@ -58,6 +59,8 @@ class AvailableTime
 
 
     /**
+     * Initiates a table with customisable time division and a startDate
+     *
      * @param startDate
      * @param $intTimeDivision
      * @return  initiatedTab
@@ -96,6 +99,7 @@ class AvailableTime
     }
 
     /**
+     * Compares all the lists
      * @throws \Exception
      * @param $dockReservationList "List charging dockReservationList reservation"
      * @param $slotAllocation "time and number"
@@ -104,22 +108,28 @@ class AvailableTime
      */
     static function compare_disponibilities($dockReservationList, &$slotAllocation, $numberMaxtriggerexception = null)
     {
-        if (isset($dockReservationList)){
-        foreach ($dockReservationList as $tuple) {
-            $max = new DateTime($tuple['end_date']);
-            $min = new DateTime($tuple['start_date']);
-            foreach ($slotAllocation as &$timeNdisp) {
-                //is inside?
-                if ($min <= $timeNdisp['date'] && $max >= $timeNdisp['date']) {
-                    $timeNdisp['numberOfDisponibility'] += 1;
-                    if (!isset($numberMaxtriggerexception['numberMax'])
-                        || $timeNdisp['numberOfDisponibility'] > $numberMaxtriggerexception['numberMax']) {
-                        throw new Exception("Borne complète: nombre voulu(avec réservation)->(" . $timeNdisp['numberOfDisponibility'] . ") nombre disponible->(" . $numberMaxtriggerexception['numberMax'] . ")");
-                    }
+        if (isset($dockReservationList)) {
+            foreach ($dockReservationList as $tuple) {
+                $max = new DateTime($tuple['end_date']);
+                $min = new DateTime($tuple['start_date']);
+                foreach ($slotAllocation as &$timeNdisp) {
+                    //is inside?
+                    if ($min <= $timeNdisp['date'] && $max >= $timeNdisp['date']) {
+                        $timeNdisp['numberOfDisponibility'] += 1;
+                        AvailableTime::$reservationAllowed = true;
+                        if (!isset($numberMaxtriggerexception['numberMax'])
+                            || $timeNdisp['numberOfDisponibility'] = $numberMaxtriggerexception['numberMax']) {
+                            AvailableTime::$reservationAllowed = false;
+                        }
+                        if (!isset($numberMaxtriggerexception['numberMax'])
+                            || $timeNdisp['numberOfDisponibility'] > $numberMaxtriggerexception['numberMax']) {
+                            throw new Exception("Borne complète: nombre actuel ->(" . $timeNdisp['numberOfDisponibility'] . ") nombre disponible->(" . $numberMaxtriggerexception['numberMax'] . ")");
+                        }
 //                    dump($timeNdisp['numberOfDisponibility']);
+                    }
                 }
             }
-        }}else {
+        } else {
             throw new \Exception("DockReservationList isn't set. Check node app");
         }
         return $slotAllocation;
@@ -163,17 +173,6 @@ class AvailableTime
         return $updated;
     }
 
-
-    /**
-     * @param $id_place
-     * @return int
-     */
-    static function get_reservation_by_placeId($id_place)
-    {
-        $listeDesReservation = 0;
-        return $listeDesReservation;
-    }
-
     /**
      * @param $reservationEnQuestion
      * @return mixed
@@ -182,9 +181,6 @@ class AvailableTime
     {
         $rouded = clone $reservationEnQuestion;
         $rouded->setTime(0, 0, 0);
-//        dump("yo",$rouded);
-
-
         return $rouded;
     }
 
@@ -235,9 +231,10 @@ class AvailableTime
      * @param $bookingDates
      * @return mixed
      */
-    static function get_timeslots_with_placeId($id_place, $bookingDates)
+    static function get_timeslots_with_placeId($id_place, $bookingDates, $reservationAllowed = null)
     {
         $updated = null;
+        $updated['reservationAllowed'] = false;
         try {
             $updated = array('numberMaxOfBookingPerParking' => null, 'updatedListeOfBooking' => null);
             AvailableTime::$numberMaxOfReservtion['numberMax'] = self::get_number_of_docks($id_place);
@@ -249,6 +246,10 @@ class AvailableTime
                 ));
 
             $updated['updatedListeOfBooking'] = AvailableTime::get_disponibilities_with_resa_N_targetedResa($bornes, $bookingDates);
+            $updated['reservationAllowed'] = AvailableTime::$reservationAllowed;
+            if (isset($reservationAllowed) && $reservationAllowed == true) {
+                throw new \Exception("Borne complète");
+            }
         } catch (\Exception $exception) {
             throw $exception;
         } finally {
@@ -273,58 +274,6 @@ class AvailableTime
     }
 
     //===Affichage
-    static function humanize_arrays_copy($updated)
-    {
-        $dayIndex = 0;
-        $humanize = array('numberMaxOfBookingPerParking' => null, 'updatedListeOfBooking' => null);
-        $max = sizeof($updated['updatedListeOfBooking'][$dayIndex]);
-        //dump($updated);
-        dump("max", $max);
-
-        if (isset($updated['numberMaxOfBookingPerParking'])
-            && isset($updated['updatedListeOfBooking'])
-            && isset($updated['updatedListeOfBooking'][$dayIndex][0])) {
-            // init maxreached
-            $numberMaxOfBookingPerParking = $updated['numberMaxOfBookingPerParking'];
-            $numberOfDisponibility = $updated['updatedListeOfBooking'][$dayIndex][0]['numberOfDisponibility'];
-            $maxReached = ($numberOfDisponibility >= $numberMaxOfBookingPerParking) ? true : false;
-            $tmpMaxReached = $maxReached;
-            //init tmp
-//            $tmpUpdatedArray = $updated['updatedListeOfBooking'][$dayIndex][0];
-            $humanize['updatedListeOfBooking'][$dayIndex][] = $updated['updatedListeOfBooking'][$dayIndex][0];// On initialise le tableau
-            $i = 1;
-            while ($i < $max) {
-                $numberOfDisponibility = $updated['updatedListeOfBooking'][$dayIndex][$i]['numberOfDisponibility'];
-                $maxReached = ($numberOfDisponibility >= $numberMaxOfBookingPerParking) ? true : false;
-
-                if (!($maxReached == $tmpMaxReached)) {
-//On écoute les variations des disponibilités
-                    $tmpMaxReached = !$tmpMaxReached;
-//                    $humanize['updatedListeOfBooking'][$dayIndex][] = $tmpUpdatedArray;
-                    $humanize['updatedListeOfBooking'][$dayIndex][] = $updated['updatedListeOfBooking'][$dayIndex][$i - 1];//etat X
-                    $humanize['updatedListeOfBooking'][$dayIndex][] = $updated['updatedListeOfBooking'][$dayIndex][$i];//etat non X
-                    dump($humanize);
-                }
-                $tmpUpdatedArray = $updated['updatedListeOfBooking'][$dayIndex][$i];
-                $i++;
-            }
-            $humanize['updatedListeOfBooking'][$dayIndex][] = $updated['updatedListeOfBooking'][$dayIndex][$i - 1];// On cloture le tableau
-
-        } else {
-            dump("yo");
-            if (!isset($updated['numberMaxOfBookingPerParking'])) {
-                throw new \Exception("number of maxBonking per parking isn't set 1");
-            } elseif (!isset($updated['updatedListeOfBooking'][0])) {
-                throw new \Exception("First Day of reservation isn't set");
-            } elseif (!isset($updated['updatedListeOfBooking'][0][0])) {
-                throw new \Exception("First time slot of first day isnt set");
-            } else {
-                throw new \Exception("isnt set at all");
-            }
-
-        }
-        return $humanize;
-    }
 
     static function humanize_arrays_by_day($updated, $dayIndex, &$humanize)
     {
@@ -336,7 +285,7 @@ class AvailableTime
             && isset($updated['updatedListeOfBooking'])
             && isset($updated['updatedListeOfBooking'][$dayIndex][0])) {
             //init humanize
-            $humanize['numberMaxOfBookingPerParking']= $updated['numberMaxOfBookingPerParking'];
+            $humanize['numberMaxOfBookingPerParking'] = $updated['numberMaxOfBookingPerParking'];
 
 
             // init maxReached
@@ -356,7 +305,7 @@ class AvailableTime
                     $tmpMaxReached = !$tmpMaxReached;
                     $humanize['updatedListeOfBooking'][$dayIndex][] = $updated['updatedListeOfBooking'][$dayIndex][$i - 1];//etat X
                     $humanize['updatedListeOfBooking'][$dayIndex][] = $updated['updatedListeOfBooking'][$dayIndex][$i];//etat non X
-                    dump($humanize);
+                    //      dump($humanize);
                 }
                 $i++;
             }
@@ -373,26 +322,22 @@ class AvailableTime
             } else {
                 throw new \Exception("isnt set at all");
             }
-
         }
-
     }
 
     static function humanize_arrays($updated)
     {
         $humanize = array('numberMaxOfBookingPerParking' => null, 'updatedListeOfBooking' => null);
-        $numberOfDay= sizeof($updated['updatedListeOfBooking']);
-        $dayIndex=0;
+        $numberOfDay = sizeof($updated['updatedListeOfBooking']);
+        $dayIndex = 0;
         try {
             while ($dayIndex < $numberOfDay) {
                 self::humanize_arrays_by_day($updated, $dayIndex, $humanize);
                 $dayIndex++;
             }
-        } catch (\Exception $exception){
+        } catch (\Exception $exception) {
             throw $exception;
         }
         return $humanize;
-
     }
-
 }
