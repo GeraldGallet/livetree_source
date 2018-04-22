@@ -91,11 +91,19 @@ function delete_entry(body, res, table) {
   var placeholder = [];
 
   for(var prop in body) {
-    placeholder.push(body[prop]);
-    query += prop + " = ? AND ";
+    if(prop != 'options') {
+      placeholder.push(body[prop]);
+      query += prop + " = ? AND ";
+    }
+  }
+  query += '1 ';
+
+  if(body.options != null) {
+    for(var option in body.options)
+      query += body.options[option];
   }
 
-  query += '1;';
+  query += ";";
   res.locals.connection.query(query, placeholder, function(error, results, fields) {
     if(error) throw error;
     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));

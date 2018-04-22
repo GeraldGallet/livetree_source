@@ -104,9 +104,9 @@ CREATE TABLE resa_borne(
         end_date               Datetime NOT NULL ,
         date_last_modification Date ,
         charge                 Float NOT NULL ,
-        id_user                Int NOT NULL ,
+        id_user                Int ,
         id_place               Int NOT NULL ,
-        id_personal_car        Int NOT NULL ,
+        id_personal_car        Int ,
         PRIMARY KEY (id_resa )
 )ENGINE=InnoDB;
 
@@ -125,7 +125,7 @@ CREATE TABLE resa_car(
         km_end         Int ,
         km_planned     Int NOT NULL ,
         date_end       Date NOT NULL ,
-        id_user        Int NOT NULL ,
+        id_user        Int ,
         id_company_car Int NOT NULL ,
         id_reason      Varchar (50) NOT NULL ,
         id_state       Int NOT NULL ,

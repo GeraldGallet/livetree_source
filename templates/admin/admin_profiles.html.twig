@@ -16,9 +16,9 @@
     <ul class="navbar-nav mr-auto">
       {% if rights >= 0 %}
       <li class="nav-item">
-        <a class="nav-link disabled" href="/profil">Profil</a>
+        <a class="nav-link" href="/profil">Profil</a>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="/bornes">Bornes</a>
       </li>
       {% endif %}
@@ -29,7 +29,7 @@
       {% endif %}
       {% if rights >= 2 %}
       <li class="nav-item">
-        <a class="nav-link" href="/admin">Administration</a>
+        <a class="nav-link active" href="/admin">Administration</a>
       </li>
       {% endif %}
     </ul>

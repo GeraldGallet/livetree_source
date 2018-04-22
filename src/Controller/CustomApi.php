@@ -13,7 +13,7 @@
     public function table_get_all($table);
     public function table_get($table, $body, $options = null);
     public function table_add($table, $body);
-    public function table_delete($table, $body);
+    public function table_delete($table, $body, $options = null);
     public function table_update($table, $set, $where);
     public function custom_request($request);
     public function send_mail($body);
@@ -100,7 +100,8 @@
     }
 
 
-    public function table_delete($table, $body) {
+    public function table_delete($table, $body, $options = null) {
+      $body['options'] = $options;
       $query = $table . "/";
 
       $ch = $this->api_connect($this->url . $query);
@@ -108,7 +109,7 @@
       $result = curl_exec($ch);
     }
 
-    public function table_update($table, $set, $where, $options = null) {
+    public function table_update($table, $set, $where) {
       $query = $table . "/";
       $body = array(
         'set' => $set,

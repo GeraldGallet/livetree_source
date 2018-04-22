@@ -3,6 +3,7 @@
 
 {% block head %}
 {{ parent() }}
+{% block title %}Administration des voitures{% endblock %}
 {% endblock %}
 
 {% block body %}
@@ -53,6 +54,7 @@
 {% for resa in resa_car %}
 <hr>
 <ul>
+  <li>Utilisateur: {{resa.id_user}}</li>
   <li>Début: {{resa.date_start}}  {{resa.start_time}}</li>
   <li>Début: {{resa.date_end}}  {{resa.end_time}}</li>
   <li>Kilométrage prévu: {{resa.km_planned}} kms</li>

@@ -5,7 +5,8 @@
   use App\Entity\PersonalCar;
   use App\Entity\Work;
   use App\Entity\Access;
-
+  use \DateTime;
+  
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Response;
   use Symfony\Component\HttpFoundation\Request;
@@ -189,8 +190,17 @@
 
       $id_user = $_SESSION['id_user'];
       $api = new CustomApi();
-      $api->table_delete("resa_borne", array('id_user' => $id_user));
-      $api->table_delete("resa_car", array('id_user' => $id_user));
+      $currentDate = new DateTime("now");
+      $currentDate = date_format($currentDate, 'Y-m-d H:i:s');
+      $options = ['AND start_date > \'' . $currentDate . '\' '];
+      $api->table_delete("resa_borne", array('id_user' => $id_user), $options);
+      $api->table_update("resa_borne", array('id_user' => null, 'id_personal_car' => null), array('id_user' => $id_user));
+
+      $currentDate = new DateTime("now");
+      $currentDate = date_format($currentDate, 'Y-m-d');
+      $options = ['AND date_end > \'' . $currentDate . '\' '];
+      $api->table_delete("resa_car", array('id_user' => $id_user), $options);
+      $api->table_update("resa_car", array('id_user' => null), array('id_user' => $id_user));
       $api->table_delete("personal_car", array('id_user' => $id_user));
       $api->table_delete("has_access", array('id_user' => $id_user));
       $api->table_delete("work", array('id_user' => $id_user));

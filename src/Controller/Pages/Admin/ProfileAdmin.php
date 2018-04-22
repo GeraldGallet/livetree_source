@@ -4,6 +4,7 @@
   use App\Controller\CustomApi;
   use App\Entity\User;
   use App\Entity\ChangeOffsetEntity;
+  use \DateTime;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Response;
@@ -40,18 +41,18 @@
 
       $facility_choices = [];
       $facility_options = "AND (";
-      if($rights = 2) {
+      if($rights == 2) {
         foreach($api->table_get("work", array('id_user' => $_SESSION['id_user'])) as $work) {
           array_push($facility_choices, $work['id_facility']);
-          $facility_options .= 'id_facility = ' . $work['id_facility'] . " ";
+          $facility_options .= 'id_facility = ' . $work['id_facility'] . " OR ";
         }
       } else {
         foreach($api->table_get_all("facility") as $fac) {
           array_push($facility_choices, $fac['id_facility']);
-          $facility_options .= 'id_facility = ' . $work['id_facility'] . " ";
+          $facility_options .= 'id_facility = ' . $work['id_facility'] . " OR ";
         }
       }
-      $facility_options .= ") ";
+      $facility_options .= "1) ";
 
       $profiles = [];
       $this->total = sizeof($api->table_get("work", array(), $facility_options));
@@ -193,8 +194,18 @@
         return $this->redirectToRoute('accueil');
 
       $api = new CustomApi();
-      $api->table_delete("resa_borne", array('id_user' => $id_user));
-      $api->table_delete("resa_car", array('id_user' => $id_user));
+      $currentDate = new DateTime("now");
+      $currentDate = date_format($currentDate, 'Y-m-d H:i:s');
+      $options = ['AND start_date > \'' . $currentDate . '\' '];
+      $api->table_delete("resa_borne", array('id_user' => $id_user), $options);
+      $api->table_update("resa_borne", array('id_user' => null, 'id_personal_car' => null), array('id_user' => $id_user));
+
+      $currentDate = new DateTime("now");
+      $currentDate = date_format($currentDate, 'Y-m-d');
+      $options = ['AND date_end > \'' . $currentDate . '\' '];
+      $api->table_delete("resa_car", array('id_user' => $id_user), $options);
+      $api->table_update("resa_car", array('id_user' => null), array('id_user' => $id_user));
+
       $api->table_delete("personal_car", array('id_user' => $id_user));
       $api->table_delete("has_access", array('id_user' => $id_user));
       $api->table_delete("work", array('id_user' => $id_user));

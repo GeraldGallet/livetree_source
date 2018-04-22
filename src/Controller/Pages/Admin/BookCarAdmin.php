@@ -32,15 +32,30 @@
       if($rights < 2)
         return $this->redirectToRoute('accueil');
 
-      $facilities_choices;
       $resa_car = [];
       $reason_choices = [];
       $company_car_choices = [];
       $api = new CustomApi();
       $state_of_form = new State();
 
-      foreach($api->table_get_all("reason") as $reason) {
+      $facility_choices = [];
+      if($rights == 2) {
+        foreach($api->table_get("work", array('id_user' => $_SESSION['id_user'])) as $work)
+          array_push($facility_choices, $work['id_facility']);
+      } else {
+        foreach($api->table_get_all("facility") as $fac)
+          array_push($facility_choices, $fac['id_facility']);
+      }
+
+      foreach($api->table_get_all("reason") as $reason)
         $reason_choices[$reason['id_reason']] = $reason['id_reason'];
+
+      $user_choice = [];
+      foreach($facility_choices as $id) {
+        foreach($api->table_get("work", array('id_facility' => $id)) as $work) {
+          $user = $api->table_get("user", array('id_user' => $work['id_user']))[0];
+          $user_choice[$user['email']] = $user['id_user'];
+        }
       }
 
       foreach($api->table_get("work", array('id_user' => $_SESSION['id_user'])) as $work) {
@@ -49,10 +64,25 @@
         }
       }
 
-      $resa_car_db = $api->table_get_all("resa_car");
+      $cco = "AND (";
+      foreach($facility_choices as $id_fac) {
+        foreach($api->table_get("company_car", array('id_facility' => $id_fac)) as $cc) {
+          $cco .= 'id_company_car = ' . $cc['id_company_car'] . " OR ";
+        }
+      }
+      $cco .= "1)";
+
+      $options = [$cco, "ORDER BY date_start DESC "];
+      $resa_car_db = $api->table_get("resa_car", array(), $options);
       if(sizeof($resa_car_db != 0)) {
         foreach($resa_car_db as $resa) {
           $car = $api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0];
+          if($resa['id_user'] == null) {
+            $id_user = "Ce compte a été supprimé";
+          } else {
+            $res = $api->table_get("user", array('id_user' => $resa['id_user']))[0];
+            $id_user = $res['first_name'] . " " . $res['last_name'] . " (" . $res['id_user'] . ")";
+          }
           $temp_resa = array(
             'id_resa' => $resa['id_resa'],
             'date_start' => substr($resa['date_start'], 0, 10),
@@ -62,7 +92,8 @@
             'km_planned' => $resa['km_planned'],
             'id_reason' => $resa['id_reason'],
             'id_company_car' => $car['name'] . " (" . $car['model'] . ")",
-            'facility' => $api->table_get("facility", array('id_facility' => ($car ['id_facility'])))[0] ['name']
+            'facility' => $api->table_get("facility", array('id_facility' => ($car ['id_facility'])))[0] ['name'],
+            'id_user' => $id_user
           );
 
           $state = $api->table_get("state", array('id_state' => $resa['id_state']))[0];
@@ -135,7 +166,10 @@
         ->add('id_reason', ChoiceType::class, array('choices' => $reason_choices, 'label' => "Raison de l'emprunt"))
         ->add('reason_details', TextType::class, array('label' => "Détails si nécessaire"))
         ->add('km_planned', NumberType::class, array('label' => "Kilométrage prévu"))
-        ->add('id_user', NumberType::class, array('label' => "Utilisateur"))
+        ->add('id_user', ChoiceType::class, array(
+          'label' => "Utilisateur",
+          'choices' => $user_choice
+        ))
         ->add('add_facility', SubmitType::class, array('label' => 'J\'enregistre ma réservation'))
         ->getForm();
       $car_form->handleRequest($request);
