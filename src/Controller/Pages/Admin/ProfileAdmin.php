@@ -20,9 +20,6 @@
 
   class ProfileAdmin extends Controller
   {
-    protected $limit = 20;
-    protected $total;
-
     /**
       * @Route("/admin/profils", name="admin_profiles")
       */
@@ -55,11 +52,12 @@
       $facility_options .= "1) ";
 
       $profiles = [];
-      $this->total = sizeof($api->table_get("work", array(), $facility_options));
+      $_SESSION['total_profiles'] = sizeof($api->table_get("work", array(), $facility_options));
+
       foreach($facility_choices as $id_fac) {
-        $options = [$facility_options, "LIMIT " . $this->limit . " ", "OFFSET " . $_SESSION['offset_profiles'] . " "];
+        $options = [$facility_options, "LIMIT " . $_SESSION['limit_profiles'] . " ", "OFFSET " . $_SESSION['offset_profiles'] . " "];
         $res = $api->table_get("work", array(), $options);
-        $actual_max = sizeof($res);
+        $actual_max = $_SESSION['offset_profiles']+sizeof($res);
         foreach($res as $work) {
             $user = $api->table_get("user", array('id_user' => $work['id_user']))[0];
             array_push($profiles, array(
@@ -77,11 +75,36 @@
 
       $user = new User();
       $form = $this->get("form.factory")->createNamedBuilder('add_user_form', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType', $user, array())
-          ->add('last_name', TextType::class, array('label' => 'Nom: '))
-          ->add('first_name', TextType::class, array('label' => 'Prenom: '))
-          ->add('email', EmailType::class, array('label' => 'Email: '))
-          ->add('password', PasswordType::class, array('label' => 'Mot de passe: '))
-          ->add('password_confirmation', PasswordType::class, array('label' => 'Confirmer votre mot de passe: '))
+          ->add('last_name', TextType::class, array(
+            'label' => 'Nom: ',
+            'attr' => array(
+              'maxlength' => '50'
+            )
+          ))
+          ->add('first_name', TextType::class, array(
+            'label' => 'Prenom: ',
+            'attr' => array(
+              'maxlength' => '50'
+            )
+          ))
+          ->add('email', EmailType::class, array(
+            'label' => 'Email: ',
+            'attr' => array(
+              'maxlength' => '100'
+            )
+          ))
+          ->add('password', PasswordType::class, array(
+            'label' => 'Mot de passe: ',
+            'attr' => array(
+              'maxlength' => '100'
+            )
+          ))
+          ->add('password_confirmation', PasswordType::class, array(
+            'label' => 'Confirmer votre mot de passe: ',
+            'attr' => array(
+              'maxlength' => '100'
+            )
+          ))
           ->add('id_status', ChoiceType::class, array(
             'label' => 'Statut: ',
             'choices'  => array(
@@ -93,12 +116,43 @@
             )))
           ->add('indicative', ChoiceType::class, array(
             'choices'  => $indicative_choices))
-          ->add('phone_number', NumberType::class, array('label' => 'Téléphone: '))
-          ->add('subscribe', SubmitType::class, array('label' => 'Créer le compte'));
+          ->add('phone_number', NumberType::class, array(
+            'label' => 'Téléphone: ',
+            'attr' => array(
+              'maxlength' => '10',
+              'size' => '10'
+            )
+          ))
+          ->add('subscribe_add', SubmitType::class, array('label' => 'Créer le compte'));
       $form = $form->getForm();
+
+      $limit_form = $this->get("form.factory")->createNamedBuilder('change_limit_form')
+        ->add('new_limit', NumberType::class, array(
+          'label' => false,
+          'attr' => array(
+            'maxlength' => '5',
+            'size' => '5'
+          )
+        ))
+        ->add('subscribe_change', SubmitType::class, array('label' => 'Changer le nombre de profil par page'))
+        ->getForm();
+
+      $go_to_form = $this->get("form.factory")->createNamedBuilder('go_to_form')
+        ->add('number', NumberType::class, array(
+          'label' => false,
+          'attr' => array(
+            'maxlength' => '5',
+            'size' => '5'
+          )
+      ))
+        ->add('subscribe_go_to', SubmitType::class, array('label' => 'Aller directement à ce profil'))
+        ->getForm();
 
       if('POST' === $request->getMethod()) {
         $form->handleRequest($request);
+        $limit_form->handleRequest($request);
+        $go_to_form->handleRequest($request);
+
         if($request->request->has('add_user_form') && $form->isValid()) {
           $user = $form->getData();
 
@@ -107,7 +161,13 @@
                   'profiles' => $profiles,
                   'rights' => $_SESSION['rights'],
                   'form' => $form->createView(),
-                  'error' => "Les 2 mots de passe ne correspondent pas !"
+                  'error' => "Les 2 mots de passe ne correspondent pas !",
+                  'actual_min' => $_SESSION['offset_profiles']+1,
+                  'actual_max' => $actual_max,
+                  'total' => $_SESSION['total_profiles'],
+                  'limit_form' => $limit_form->createView(),
+                  'go_to_form' => $go_to_form->createView(),
+                  'limit' => $_SESSION['limit_profiles']
             ));
           }
 
@@ -118,7 +178,13 @@
                   'profiles' => $profiles,
                   'rights' => $_SESSION['rights'],
                   'form' => $form->createView(),
-                  'error' => "Ce nom de domaine n'est pas enregistré sur le site !"
+                  'error' => "Ce nom de domaine n'est pas enregistré sur le site !",
+                  'actual_min' => $_SESSION['offset_profiles']+1,
+                  'actual_max' => $actual_max,
+                  'total' => $_SESSION['total_profiles'],
+                  'limit_form' => $limit_form->createView(),
+                  'go_to_form' => $go_to_form->createView(),
+                  'limit' => $_SESSION['limit_profiles']
             ));
 
           $id_facs = [];
@@ -146,6 +212,18 @@
             $api->table_add("work", array('id_user' => $user_id, 'id_facility' => $id));
           }
         }
+
+        if($request->request->has('change_limit_form') && $limit_form->isValid()) {
+          if($limit_form->getData()['new_limit'] > 0)
+            $_SESSION['limit_profiles'] = $limit_form->getData()['new_limit'];
+          return $this->redirectToRoute('admin_profiles');
+        }
+
+        if($request->request->has('go_to_form') && $go_to_form->isValid()) {
+          if($go_to_form->getData()['number'] < $_SESSION['total_profiles'])
+            $_SESSION['offset_profiles'] = $go_to_form->getData()['number']-1;
+          return $this->redirectToRoute('admin_profiles');
+        }
       }
 
       return $this->render('admin/admin_profiles.html.twig', array(
@@ -155,7 +233,10 @@
             'error' => null,
             'actual_min' => $_SESSION['offset_profiles']+1,
             'actual_max' => $actual_max,
-            'total' => $this->total
+            'total' => $_SESSION['total_profiles'],
+            'limit_form' => $limit_form->createView(),
+            'go_to_form' => $go_to_form->createView(),
+            'limit' => $_SESSION['limit_profiles']
       ));
     }
 
@@ -218,10 +299,10 @@
       * @Route("/admin/profils/show/{way}", name="change_offset_user_admin")
       */
     public function change_offset($way) {
-      if($way == 1 && ($this->limit + $_SESSION['offset_profiles']) < $this->total) {
-        $_SESSION['offset_profiles'] += $this->limit;
+      if($way == 1 && ($_SESSION['limit_profiles'] + $_SESSION['offset_profiles']) < $_SESSION['total_profiles']) {
+        $_SESSION['offset_profiles'] += $_SESSION['limit_profiles'];
       } else if($way == -1 && $_SESSION['offset_profiles'] != 0) {
-        $_SESSION['offset_profiles'] -= $this->limit;
+        $_SESSION['offset_profiles'] -= $_SESSION['limit_profiles'];
       } else if($way == 0) {
         $_SESSION['offset_profiles'] = 0;
       }

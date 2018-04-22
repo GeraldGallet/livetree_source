@@ -48,9 +48,17 @@
 {{ form_widget(form) }}
 {{ form_end(form) }}
 <h2>Gérer les profils ({{actual_min}}-{{actual_max}}/{{total}})</h2>
+{{ form_start(limit_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(limit_form['new_limit']) }} {{ form_widget(limit_form['subscribe_change']) }}
+{{ form_end(limit_form) }}
+
+{{ form_start(go_to_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(go_to_form['number']) }} {{ form_widget(go_to_form['subscribe_go_to']) }}
+{{ form_end(go_to_form) }}
+
 <a href="{{ path('change_offset_user_admin', {'way': 0}) }}"><button>Revenir au début</button></a>
-<a href="{{ path('change_offset_user_admin', {'way': -1}) }}"><button>20 précédents</button></a>
-<a href="{{ path('change_offset_user_admin', {'way': 1}) }}"><button>20 suivants</button></a>
+<a href="{{ path('change_offset_user_admin', {'way': -1}) }}"><button>{{limit}} précédent{% if limit != 1%}s{% endif %}</button></a>
+<a href="{{ path('change_offset_user_admin', {'way': 1}) }}"><button>{{limit}} suivant{% if limit != 1%}s{% endif %}</button></a>
 {% for profile in profiles %}
   <ul>
     <li>{{profile.first_name}} {{profile.last_name}} ({{profile.id_user}}) </li>

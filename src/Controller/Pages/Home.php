@@ -71,6 +71,7 @@
             $_SESSION['rights'] = $api->table_get("status", array('id_status' => $db_user['id_status']))[0]['rights'];
             if($_SESSION['rights'] >= 2) {
               $_SESSION['offset_profiles'] = 0;
+              $_SESSION['limit_profiles'] = 20;
             }
           } else
           {
