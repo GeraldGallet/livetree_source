@@ -242,10 +242,10 @@
         'resa_car' => $resa_car,
         'car_form' => $car_form->createView(),
         'rights' => $_SESSION['rights'],
-        'limit' => $_SESSION['limit_cars'],
-        'offset' => $_SESSION['offset_cars'],
         'limit_form' => $limit_form->createView(),
         'go_to_form' => $go_to_form->createView(),
+        'limit' => $_SESSION['limit_cars'],
+        'offset' => $_SESSION['offset_cars'],
         'actual_min' => $_SESSION['offset_cars']+1,
         'actual_max' => $actual_max,
         'total' => $_SESSION['total_cars']

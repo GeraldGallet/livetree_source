@@ -38,21 +38,42 @@
       $resas = [];
       $user_choice = [];
 
+      $place_options = "AND (";
       if($rights == 3) {
         foreach($api->table_get_all("place") as $place) {
           $place_choices[$place['name']] = $place['id_place'];
+          $place_options .= 'id_place = ' . $place['id_place'] . " OR ";
         }
       } else {
         foreach($api->table_get("has_access", array('id_user' => $_SESSION['id_user'])) as $acc) {
           $place_choices[$api->table_get("place", array('id_place' => $acc['id_place']))[0]['name']] = $acc['id_place'];
+          $place_options .= 'id_place = ' . $acc['id_place'] . " OR ";
         }
       }
+      $place_options .= "1)";
 
       foreach($place_choices as $id) {
         foreach($api->table_get("has_access", array('id_place' => $id)) as $acc) {
           $user = $api->table_get("user", array('id_user' => $acc['id_user']))[0];
           $user_choice[$user['email']] = $user['id_user'];
         }
+      }
+
+      $_SESSION['total_charging_points'] = sizeof($api->table_get("resa_borne", array(), [$place_options]));
+
+      $resas = [];
+      $options = [$place_options, "ORDER BY start_date DESC ", "LIMIT " . $_SESSION['limit_charging_points'] . " ", "OFFSET " . $_SESSION['offset_charging_points'] . " "];
+      $res = $api->table_get("resa_borne", array(), $options);
+      $actual_max = sizeof($res) + $_SESSION['offset_charging_points'];
+      foreach($res as $resa) {
+        array_push($resas, array(
+          'start_date' => $resa['start_date'],
+          'end_date' => $resa['end_date'],
+          'charge' => $resa['charge'],
+          'id_place' => $api->table_get("place", array('id_place' => $resa['id_place']))[0]['name'],
+          'id_user' => $api->table_get("user", array('id_user' => $resa['id_user']))[0]['email'],
+          'id_resa' => $resa['id_resa']
+        ));
       }
 
       $resa_borne = new BookChargingPointEntity();
@@ -95,36 +116,45 @@
          ->add('subscribe', SubmitType::class, array('label' => 'Je réserve'))
          ->getForm();
 
-      $filter = new FiltreReservationBorne();
-      $filter_form = $this->get("form.factory")->createNamedBuilder('filter_form', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType', $filter, array())
-      ->add('date_start', DateTimeType::class,array(
-        'date_widget' => 'single_text',
-        'widget' => 'choice',
-        'data' => new DateTime("now"),
-        'minutes' => [0, 15, 30, 45]
-      ))
-      ->add('date_end', TimeType::class, array('widget' => 'single_text'))
-      ->add('charge', RangeType::class, [
-                 'attr' => [
-                    "data-provide" => "slider",
-                    "data-slider-ticks" => "[1, 2, 3, 4]",
-                    "data-slider-ticks-labels" => '["short", "medium", "long", "xxl"]',
-                    "min" => 1,
-                    "max" => 100,
-                    "step" => 1,
-                    "value" => 100,
-                 ]
-             ]
-       )
-      ->add('id_user', NumberType::class)
-      ->add('id_place', ChoiceType::class, array(
-        'choices'  => $place_choices))
-      ->add('filter_resa', SubmitType::class, array('label' => 'Filtrer'))
-      ->getForm();
+       $limit_form = $this->get("form.factory")->createNamedBuilder('change_limit_form')
+         ->add('new_limit', NumberType::class, array(
+           'label' => false,
+           'attr' => array(
+             'maxlength' => '5',
+             'size' => '5'
+           )
+         ))
+         ->add('subscribe_change', SubmitType::class, array('label' => 'Changer le nombre de réservations par page'))
+         ->getForm();
+
+       $go_to_form = $this->get("form.factory")->createNamedBuilder('go_to_form')
+         ->add('number', NumberType::class, array(
+           'label' => false,
+           'attr' => array(
+             'maxlength' => '5',
+             'size' => '5'
+           )
+         ))
+         ->add('subscribe_go_to', SubmitType::class, array('label' => 'Aller directement à cette réservation'))
+         ->getForm();
 
       if('POST' === $request->getMethod()) {
         $resa_form->handleRequest($request);
-        $filter_form->handleRequest($request);
+        $limit_form->handleRequest($request);
+        $go_to_form->handleRequest($request);
+
+        if($request->request->has('change_limit_form') && $limit_form->isValid()) {
+          if($limit_form->getData()['new_limit'] > 0)
+            $_SESSION['limit_charging_points'] = $limit_form->getData()['new_limit'];
+          return $this->redirectToRoute('admin_cars');
+        }
+
+        if($request->request->has('go_to_form') && $go_to_form->isValid()) {
+          if($go_to_form->getData()['number'] <= $_SESSION['total_charging_points']) {
+            $_SESSION['offset_charging_points'] = $go_to_form->getData()['number']-1;
+          }
+          return $this->redirectToRoute('admin_cars');
+        }
 
         if($request->request->has('adding_form') && $resa_form->isValid()) {
           $resa_borne = $resa_form->getData();
@@ -146,46 +176,24 @@
 
           return $this->redirectToRoute('admin_bornes');
         }
-
-        if($request->request->has('filter_form') && $filter_form->isValid()) {
-          $filter = $filter_form->getData();
-          if($filter->getDateStart() == NULL)
-            $date = NULL;
-          else
-            $date = date_format($filter->getDateStart(), 'Y-m-d-H-i');
-
-          if($filter->getDateEnd() == NULL)
-            $end = NULL;
-          else
-            $end = $filter->getDateEnd()->format('H:i');
-
-          $filter_options = array(
-            'id_place' => $filter->getIdPlace(),
-            'start_date' => $date,
-            'end_date' => $end,
-            'charge' => $filter->getCharge(),
-            'id_user' => $filter->getIdUser(),
-          );
-
-          foreach($filter_options as $key => $value) {
-            if($value == NULL)
-            unset($filter_options[$key]);
-          }
-          $resas = $api->table_get("resa_borne", $filter_options);
-          return $this->render('admin/admin_bornes.html.twig', array(
-            'resa_bornes' => $resas,
-            'resa_form' => $resa_form->createView(),
-            'filter_form' => $filter_form->createView(),
-            'rights' => $_SESSION['rights']
-          ));
-        }
       }
 
+      if($_SESSION['total_charging_points'] == 0)
+        $actual_min = 0;
+      else
+        $actual_min = $_SESSION['offset_charging_points']+1;
+        
       return $this->render('admin/admin_bornes.html.twig', array(
             'resa_bornes' => $resas,
             'resa_form' => $resa_form->createView(),
-            'filter_form' => $filter_form->createView(),
-            'rights' => $_SESSION['rights']
+            'limit_form' => $limit_form->createView(),
+            'go_to_form' => $go_to_form->createView(),
+            'rights' => $_SESSION['rights'],
+            'limit' => $_SESSION['limit_charging_points'],
+            'offset' => $_SESSION['offset_charging_points'],
+            'actual_min' => $actual_min,
+            'actual_max' => $actual_max,
+            'total' => $_SESSION['total_charging_points']
       ));
     }
 
@@ -218,6 +226,20 @@
 
       $api->table_delete("resa_borne", array('id_resa' => $id_resa));
       return $this->redirectToRoute('admin_bornes');
+    }
+
+    /**
+      * @Route("/admin/bornes/show/{way}", name="change_offset_borne_admin")
+      */
+    public function change_offset($way) {
+      if($way == 1 && ($_SESSION['limit_charging_points'] + $_SESSION['offset_charging_points']) < $_SESSION['total_charging_points']) {
+        $_SESSION['offset_charging_points'] += $_SESSION['limit_charging_points'];
+      } else if($way == -1 && $_SESSION['offset_cars'] != 0) {
+        $_SESSION['offset_charging_points'] -= $_SESSION['limit_charging_points'];
+      } else if($way == 0) {
+        $_SESSION['offset_charging_points'] = 0;
+      }
+      return $this->redirectToRoute('admin_cars');
     }
   }
 
