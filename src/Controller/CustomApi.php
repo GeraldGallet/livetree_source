@@ -11,7 +11,7 @@
 
     // The functions we will use to touch to DB
     public function table_get_all($table);
-    public function table_get($table, $body);
+    public function table_get($table, $body, $options = null);
     public function table_add($table, $body);
     public function table_delete($table, $body);
     public function table_update($table, $set, $where);
@@ -77,7 +77,8 @@
       return $result['response'];
     }
 
-    public function table_get($table, $body) {
+    public function table_get($table, $body, $options = null) {
+      $body['options'] = $options;
       $query = $table . "/get/";
       $ch = $this->api_connect($this->url . $query);
       $ch = $this->api_options($ch, "POST", json_encode($body));
@@ -107,7 +108,7 @@
       $result = curl_exec($ch);
     }
 
-    public function table_update($table, $set, $where) {
+    public function table_update($table, $set, $where, $options = null) {
       $query = $table . "/";
       $body = array(
         'set' => $set,

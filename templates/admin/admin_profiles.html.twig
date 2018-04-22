@@ -37,12 +37,20 @@
 </nav>
 </header>
 <br/>
-<br/>
 <a href='/admin'>Général</a>
 <a href='/admin/bornes'>Bornes</a>
 <a href='/admin/voitures'>Voitures</a>
 <a href='/admin/profils'>Profils</a>
 <h1>Administration des profils</h1>
+<h2>Créer un profil</h2>
+<p>{{ error }}</p>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(form) }}
+{{ form_end(form) }}
+<h2>Gérer les profils ({{actual_min}}-{{actual_max}}/{{total}})</h2>
+<a href="{{ path('change_offset_user_admin', {'way': 0}) }}"><button>Revenir au début</button></a>
+<a href="{{ path('change_offset_user_admin', {'way': -1}) }}"><button>20 précédents</button></a>
+<a href="{{ path('change_offset_user_admin', {'way': 1}) }}"><button>20 suivants</button></a>
 {% for profile in profiles %}
   <ul>
     <li>{{profile.first_name}} {{profile.last_name}} ({{profile.id_user}}) </li>

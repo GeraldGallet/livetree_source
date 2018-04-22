@@ -1,9 +1,10 @@
 <?php
   namespace App\Controller\Pages\Admin;
 
-  use App\Entity\AdminReservationBorne;
+  use App\Entity\BookChargingPointEntity;
   use App\Entity\FiltreReservationBorne;
   use App\Controller\CustomApi;
+  use \DateTime;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Response;
@@ -35,6 +36,7 @@
       $api = new CustomApi();
       $place_choices = [];
       $resas = [];
+      $user_choice = [];
 
       if($rights == 3) {
         foreach($api->table_get_all("place") as $place) {
@@ -46,32 +48,62 @@
         }
       }
 
-      $resa_borne = new AdminReservationBorne();
+      foreach($place_choices as $id) {
+        foreach($api->table_get("has_access", array('id_place' => $id)) as $acc) {
+          $user = $api->table_get("user", array('id_user' => $acc['id_user']))[0];
+          $user_choice[$user['email']] = $user['id_user'];
+        }
+      }
+
+      $resa_borne = new BookChargingPointEntity();
       $resa_form = $this->get("form.factory")->createNamedBuilder('adding_form', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType', $resa_borne, array())
-      ->add('start_date', DateTimeType::class, array('date_widget' => 'single_text'))
-      ->add('end_date', DateTimeType::class, array('date_widget' => 'single_text'))
-      ->add('charge', RangeType::class, [
-                 'attr' => [
-                    "data-provide" => "slider",
-                    "data-slider-ticks" => "[1, 2, 3, 4]",
-                    "data-slider-ticks-labels" => '["short", "medium", "long", "xxl"]',
-                    "min" => 1,
-                    "max" => 100,
-                    "step" => 1,
-                    "value" => 100,
-                 ]
-             ]
-       )
-      ->add('id_user', NumberType::class)
-      ->add('id_place', ChoiceType::class, array(
-        'choices'  => $place_choices))
-      ->add('add_resa', SubmitType::class, array('label' => 'Créer la réservation'))
-      ->getForm();
+        ->add('id_place', ChoiceType::class, array(
+          'choices' => $place_choices,
+          'label' => "Lieu: "
+        ))
+        ->add('start_date', DateTimeType::class,array(
+          'label' => "Date et heure d'arrivée: ",
+          'date_widget' => 'single_text',
+          'widget' => 'choice',
+          'minutes' => [0, 15, 30, 45]
+        ))
+        ->add('end_date', TimeType::class,array(
+          'label' => "Heure de départ: ",
+          'widget' => 'choice',
+          'minutes' => [0, 15, 30, 45]
+        ))
+        ->add('charge', RangeType::class, [
+                   'attr' => [
+                      "data-provide" => "slider",
+                      "data-slider-ticks" => "[1, 2, 3, 4]",
+                      "data-slider-ticks-labels" => '["short", "medium", "long", "xxl"]',
+                      "min" => 1,
+                      "max" => 100,
+                      "step" => 1,
+                      "value" => 100,
+                   ]
+               ]
+         )
+         ->add('id_user', ChoiceType::class, array(
+           'label' => "Utilisateur: ",
+           'choices' => $user_choice
+         ))
+         ->add('id_personal_car', ChoiceType::class, array(
+           'choices' => array('2' => 2),
+           'label' => "Voiture à recharger: "
+         ))
+         ->add('subscribe', SubmitType::class, array('label' => 'Je réserve'))
+         ->getForm();
 
       $filter = new FiltreReservationBorne();
       $filter_form = $this->get("form.factory")->createNamedBuilder('filter_form', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType', $filter, array())
-      ->add('date_start', DateTimeType::class,array('date_widget' => 'single_text', 'widget' => 'choice'))
-      ->add('end_time', TimeType::class, array('widget' => 'single_text'))
+      ->add('date_start', DateTimeType::class,array(
+        'date_widget' => 'single_text',
+        'widget' => 'choice',
+        'data' => new DateTime("now"),
+        'minutes' => [0, 15, 30, 45]
+      ))
+      ->add('date_end', TimeType::class, array('widget' => 'single_text'))
       ->add('charge', RangeType::class, [
                  'attr' => [
                     "data-provide" => "slider",
@@ -96,14 +128,20 @@
 
         if($request->request->has('adding_form') && $resa_form->isValid()) {
           $resa_borne = $resa_form->getData();
+          $start_date = $resa_borne->getStartDate();
+          $end_date = new DateTime();
+          $end_date->setDate($start_date->format('Y'), $start_date->format('m'), $start_date->format('d'));
+          $end_date->setTime($resa_borne->getEndDate()->format('H'), $resa_borne->getEndDate()->format('i'), $resa_borne->getEndDate()->format('s'));
 
           $api->table_add("resa_borne", array(
-            'date_creation' => date_format($resa_borne->getDateCreation(), 'Y-m-d'),
-            'start_date' => $resa_borne->getStartDate()->format( 'Y-m-d H:i:s'),
-            'end_date' => $resa_borne->getEndDate()->format( 'Y-m-d H:i:s'),
+            'date_creation' => date_format(new DateTime("now"), 'Y-m-d'),
+            'date_last_modification' => date_format(new DateTime("now"), 'Y-m-d'),
+            'start_date' => $start_date->format('Y-m-d H:i:s'),
+            'end_date' => $end_date->format('Y-m-d H:i:s'),
             'charge' => $resa_borne->getCharge(),
             'id_user' => $resa_borne->getIdUser(),
-            'id_place' => $resa_borne->getIdPlace()
+            'id_place' => $resa_borne->getIdPlace(),
+            'id_personal_car' => $resa_borne->getIdPersonalCar()
           ));
 
           return $this->redirectToRoute('admin_bornes');
@@ -111,20 +149,20 @@
 
         if($request->request->has('filter_form') && $filter_form->isValid()) {
           $filter = $filter_form->getData();
-          if($filter->getDateTime() == NULL)
+          if($filter->getDateStart() == NULL)
             $date = NULL;
           else
-            $date = date_format($filter->getDateTime(), 'Y-m-d-H-i');
+            $date = date_format($filter->getDateStart(), 'Y-m-d-H-i');
 
-          if($filter->getEndTime() == NULL)
+          if($filter->getDateEnd() == NULL)
             $end = NULL;
           else
-            $end = $filter->getEndtime()->format('H:i');
+            $end = $filter->getDateEnd()->format('H:i');
 
           $filter_options = array(
             'id_place' => $filter->getIdPlace(),
             'start_date' => $date,
-            'end_time' => $end,
+            'end_date' => $end,
             'charge' => $filter->getCharge(),
             'id_user' => $filter->getIdUser(),
           );

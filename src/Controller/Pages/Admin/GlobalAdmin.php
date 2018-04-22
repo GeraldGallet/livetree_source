@@ -108,9 +108,9 @@
       }
 
       $facility_form = $this->createFormBuilder($facility)
-      ->add('name', TextType::class)
-      ->add('address', TextType::class)
-      ->add('complementary', TextType::class)
+      ->add('name', TextType::class, array('label' => "Nom: "))
+      ->add('address', TextType::class, array('label' => "Adresse: "))
+      ->add('complementary', TextType::class, array('label' => "Informations complémentaires: "))
       ->add('add_facility', SubmitType::class, array('label' => 'Ajouter l\'établissement'))
       ->getForm();
       $facility_form->handleRequest($request);
@@ -128,29 +128,35 @@
 
 
       $place_form = $this->createFormBuilder($place)
-      ->add('name', TextType::class)
-      ->add('address', TextType::class)
+      ->add('name', TextType::class, array('label' => "Nom: "))
+      ->add('address', TextType::class, array('label' => "Adresse: "))
       ->add('id_facility', ChoiceType::class, array(
-        'choices'  => $choices_facilities))
+        'choices'  => $choices_facilities,
+        'label' => "Etablissement concerné: "
+      ))
       ->add('add_place', SubmitType::class, array('label' => 'Ajouter le lieu'))
       ->getForm();
       $place_form->handleRequest($request);
 
       $car_form = $this->createFormBuilder($company_car)
-      ->add('name', TextType::class)
-      ->add('model', TextType::class)
-      ->add('power', NumberType::class)
+      ->add('name', TextType::class, array('label' => "Nom: "))
+      ->add('model', TextType::class, array('label' => "Modèle: "))
+      ->add('power', NumberType::class, array('label' => "Puissance (kW): "))
       ->add('id_facility', ChoiceType::class, array(
-        'choices'  => $choices_facilities))
+        'choices'  => $choices_facilities,
+        'label' => "Etablissement concerné: "
+      ))
       ->add('add_company_car', SubmitType::class, array('label' => 'Ajouter la voiture'))
       ->getForm();
       $car_form->handleRequest($request);
 
       $borne_form = $this->createFormBuilder($borne)
-      ->add('name', TextType::class)
-      ->add('place', TextType::class)
+      ->add('name', TextType::class, array('label' => "Nom: "))
+      ->add('place', TextType::class, array('label' => "Emplacement (ex. 2e etage): "))
       ->add('id_place', ChoiceType::class, array(
-        'choices'  => $choices_places))
+        'choices'  => $choices_places,
+        'label' => "Lieu: "
+      ))
       ->add('add_borne', SubmitType::class, array('label' => 'Ajouter la borne'))
       ->getForm();
       $borne_form->handleRequest($request);

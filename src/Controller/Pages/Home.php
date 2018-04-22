@@ -69,6 +69,9 @@
             $_SESSION['phone_number'] = $db_user['phone_number'];
             $_SESSION['indicative'] = $db_user['indicative'];
             $_SESSION['rights'] = $api->table_get("status", array('id_status' => $db_user['id_status']))[0]['rights'];
+            if($_SESSION['rights'] >= 2) {
+              $_SESSION['offset_profiles'] = 0;
+            }
           } else
           {
             return $this->render('home.html.twig', array(

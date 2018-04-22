@@ -45,8 +45,8 @@
 
       if(sizeof($company_car_choices) == 0) {
         return $this->render('reservations/cars.html.twig', array(
-              'form' => $car_form->createView(),
-              'error' => "Le(s) établissement(s) au(x)quel(s) vous êtes affilié ne dispose pas de véhicules !",
+            'rights' => $_SESSION['rights'],
+              'error' => "Le(s) établissement(s) au(x)quel(s) vous êtes affilié ne dispose pas de véhicule !",
               'success' => false
         ));
       }

@@ -5,15 +5,10 @@
   class FiltreReservationBorne
   {
 	 protected $date_start;
-	 protected $end_time;
+	 protected $date_end;
 	 protected $charge;
 	 protected $id_place;
 	 protected $id_user;
-
-   public function __construct()
-   {
-     $this->date = new \DateTime("now");
-   }
 
 	 function getDateStart(){
 		 return $this->date_start;
@@ -22,18 +17,11 @@
 		 $this->date_start=$date_start;
 	 }
 
-	 function getStartTime(){
-		 return $this->start_time;
+   function getDateEnd(){
+		 return $this->date_end;
 	 }
-	 function setStartTime($start_time){
-		 $this->start_time=$start_time;
-	 }
-
-	  function getEndTime(){
-		 return $this->end_time;
-	 }
-	 function setEndTime($end_time){
-		 $this->end_time=$end_time;
+	 function setDateEnd($date_end){
+		 $this->date_end = $date_end;
 	 }
 
 	  function getCharge(){
