@@ -38,10 +38,10 @@
     <ul class="navbar-nav mr-auto">
       {% if rights >= 0 %}
       <li class="nav-item">
-        <a class="nav-link disabled" href="/profil">Profil</a>
+        <a class="nav-link" href="/profil">Profil</a>
       </li>
-      <li class="nav-item active">
-        <a class="nav-link" href="/bornes">Bornes</a>
+      <li class="nav-item">
+        <a class="nav-link active" href="/bornes">Bornes</a>
       </li>
       {% endif %}
       {% if rights >= 1 %}
@@ -61,6 +61,7 @@
 <br/>
 <h1>Réserver une borne</h1>
 {% if success %}
+<p>{{error_booking}}</p>
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_row(form.id_place) }}
 {{ form_row(form.start_date) }}
@@ -74,6 +75,19 @@
 {{ form_start(form_planning, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(form_planning) }}
 {{ form_end(form_planning) }}
+{% for day_planning in planning %}
+<ul>
+  <li>{{day_planning.day}}
+    {% for creneau in day_planning.plan %}
+    <ul>
+      <li>{{creneau.begin}}</li>
+      <li>{{creneau.dispo}}</li>
+      <li>{{creneau.end}}</li>
+    </ul>
+    {% endfor %}
+  </li>
+</ul>
+{% endfor %}
 {% else %}
   <p>{{ error }}</p>
 {% endif %}

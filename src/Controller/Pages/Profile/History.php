@@ -193,6 +193,20 @@
         return $this->redirectToRoute('accueil');
 
       $api->table_delete("resa_borne", array('id_resa' => $id_resa));
+      $mail_body = array(
+        'email' => $_SESSION['email'],
+        'subject' => "Annulation de votre réservation n°" . $id_resa,
+        'html' => "<p>Votre réservation de borne décrite ci-dessous a bien été supprimée :</p>
+        <ul>
+          <li>Début: " . $resa['start_date'] . "</li>
+          <li>Fin: " . $resa['end_date'] . "</li>
+          <li>Charge estimée en arrivant: " . $resa['charge'] . "</li>
+          <li>Lieu: " . $api->table_get("place", array('id_place' => $resa['id_place']))[0]['name'] . "</li>
+        <ul>
+        "
+      );
+
+      $api->send_mail($mail_body);
       return $this->redirectToRoute('history');
     }
 
@@ -200,7 +214,6 @@
       * @Route("/profil/delete_resa_car/{id_resa}", name="delete_resa_car")
       */
     public function delete_resa_car($id_resa) {
-      //session_start();
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
@@ -212,6 +225,20 @@
       $api->table_update("state", array('id_resa' => NULL), array('id_state' => $resa['id_state']));
       $api->table_delete("resa_car", array('id_resa' => $id_resa));
       $api->table_delete("state", array('id_state' => $resa['id_state']));
+      $mail_body = array(
+        'email' => $_SESSION['email'],
+        'subject' => "Annulation de votre réservation n°" . $id_resa,
+        'html' => "<p>Votre réservation de voiture décrite ci-dessous a bien été supprimée :</p>
+        <ul>
+          <li>Début: " . $resa['date_start'] . " à " . $resa['start_time'] . "</li>
+          <li>Fin: " . $resa['date_end'] . " à " . $resa['end_time'] . "</li>
+          <li>Raison: " . $resa['id_reason'] . "</li>
+          <li>Voiture: " . $api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0]['name'] . "</li>
+        <ul>
+        "
+      );
+
+      $api->send_mail($mail_body);
       return $this->redirectToRoute('history');
     }
   }

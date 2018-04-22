@@ -148,10 +148,10 @@ function send_mail(body, res) {
       res.send(JSON.stringify({"status": 404, "error": "Mail could not be sent", "response": null}));
     } else {
       console.log(info);
-      res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+      res.send(JSON.stringify({"status": 200, "error": null, "response": null}));
     }
   });
-
+  res.send(JSON.stringify({"status": 200, "error": null, "response": null}));
   return;
 }
 

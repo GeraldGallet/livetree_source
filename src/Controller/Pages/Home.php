@@ -109,9 +109,7 @@
       * @Route("/deconnexion", name="deconnect")
       */
     public function deconnect(Request $request) {
-      if(!isset($_SESSION))
-        session_start();
-
+      session_unset();
       session_destroy();
       return $this->redirectToRoute('accueil');
     }
