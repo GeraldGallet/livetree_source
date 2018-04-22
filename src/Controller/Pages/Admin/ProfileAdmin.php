@@ -144,7 +144,7 @@
             'maxlength' => '5',
             'size' => '5'
           )
-      ))
+        ))
         ->add('subscribe_go_to', SubmitType::class, array('label' => 'Aller directement à ce profil'))
         ->getForm();
 
@@ -220,7 +220,7 @@
         }
 
         if($request->request->has('go_to_form') && $go_to_form->isValid()) {
-          if($go_to_form->getData()['number'] < $_SESSION['total_profiles'])
+          if($go_to_form->getData()['number'] <= $_SESSION['total_profiles'])
             $_SESSION['offset_profiles'] = $go_to_form->getData()['number']-1;
           return $this->redirectToRoute('admin_profiles');
         }

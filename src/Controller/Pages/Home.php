@@ -72,6 +72,10 @@
             if($_SESSION['rights'] >= 2) {
               $_SESSION['offset_profiles'] = 0;
               $_SESSION['limit_profiles'] = 20;
+              $_SESSION['offset_cars'] = 0;
+              $_SESSION['limit_cars'] = 20;
+              $_SESSION['offset_charging_points'] = 0;
+              $_SESSION['limit_charging_points'] = 20;
             }
           } else
           {

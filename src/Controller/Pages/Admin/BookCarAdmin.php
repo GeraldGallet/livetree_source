@@ -72,9 +72,12 @@
       }
       $cco .= "1)";
 
-      $options = [$cco, "ORDER BY date_start DESC "];
+      $_SESSION['total_cars'] = sizeof($api->table_get("resa_car", array(), [$cco]));
+
+      $options = [$cco, "ORDER BY date_start DESC ", "LIMIT " . $_SESSION['limit_cars'] . " ", "OFFSET " . $_SESSION['offset_cars'] . " "];
       $resa_car_db = $api->table_get("resa_car", array(), $options);
       if(sizeof($resa_car_db != 0)) {
+        $actual_max = $_SESSION['offset_cars'] + sizeof($resa_car_db);
         foreach($resa_car_db as $resa) {
           $car = $api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0];
           if($resa['id_user'] == null) {
@@ -157,7 +160,7 @@
 
       $reservationCar = new AdminReservationCar();
       $car_form = NULL;
-      $car_form = $this->createFormBuilder($reservationCar)
+      $car_form = $this->get("form.factory")->createNamedBuilder('car_form', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType', $reservationCar, array())
         ->add('id_company_car', ChoiceType::class, array('choices' => $company_car_choices, 'label' => "Voiture"))
         ->add('date_start', DateType::class, array('label' => "Date de départ"))
         ->add('start_time', TimeType::class, array('label' => "Heure de départ"))
@@ -170,36 +173,82 @@
           'label' => "Utilisateur",
           'choices' => $user_choice
         ))
-        ->add('add_facility', SubmitType::class, array('label' => 'J\'enregistre ma réservation'))
+        ->add('add_facility', SubmitType::class, array('label' => 'J\'enregistre la réservation'))
         ->getForm();
-      $car_form->handleRequest($request);
 
-      if ($car_form->isSubmitted() && $car_form->isValid())
-      {
-    		date_default_timezone_set('Europe/Paris');
-        $reservationCar = $car_form->getData();
-        $new_resa = array(
-          'date_start' => date_format($reservationCar->getDateStart(), 'Y-m-d'),
-          'date_end' => date_format($reservationCar->getDateEnd(), 'Y-m-d'),
-          'start_time' => $reservationCar->getStartTime()->format('H:i'),
-          'end_time' => $reservationCar->getEndTime()->format('H:i'),
-          'id_reason' => $reservationCar->getIdReason(),
-          'reason_details' => $reservationCar->getReasonDetails(),
-          'km_start' => NULL,
-          'km_end' => NULL,
-          'km_planned' => $reservationCar->getKmPlanned(),
-          'id_user' => $reservationCar->getIdUser(),
-          'id_company_car' => $reservationCar->getIdCompanyCar(),
-          'id_state' => NULL
-        );
+      $limit_form = $this->get("form.factory")->createNamedBuilder('change_limit_form')
+        ->add('new_limit', NumberType::class, array(
+          'label' => false,
+          'attr' => array(
+            'maxlength' => '5',
+            'size' => '5'
+          )
+        ))
+        ->add('subscribe_change', SubmitType::class, array('label' => 'Changer le nombre de réservations par page'))
+        ->getForm();
 
-        $api->table_add("resa_car", $new_resa);
+      $go_to_form = $this->get("form.factory")->createNamedBuilder('go_to_form')
+        ->add('number', NumberType::class, array(
+          'label' => false,
+          'attr' => array(
+            'maxlength' => '5',
+            'size' => '5'
+          )
+        ))
+        ->add('subscribe_go_to', SubmitType::class, array('label' => 'Aller directement à cette réservation'))
+        ->getForm();
+
+      if('POST' === $request->getMethod()) {
+        $car_form->handleRequest($request);
+        $limit_form->handleRequest($request);
+        $go_to_form->handleRequest($request);
+
+        if($request->request->has('change_limit_form') && $limit_form->isValid()) {
+          if($limit_form->getData()['new_limit'] > 0)
+            $_SESSION['limit_cars'] = $limit_form->getData()['new_limit'];
+          return $this->redirectToRoute('admin_cars');
+        }
+
+        if($request->request->has('go_to_form') && $go_to_form->isValid()) {
+          if($go_to_form->getData()['number'] <= $_SESSION['total_cars']) {
+            $_SESSION['offset_cars'] = $go_to_form->getData()['number']-1;
+          }
+          return $this->redirectToRoute('admin_cars');
+        }
+
+        if($request->request->has('car_form') && $car_form->isValid()) {
+          date_default_timezone_set('Europe/Paris');
+          $reservationCar = $car_form->getData();
+          $new_resa = array(
+            'date_start' => date_format($reservationCar->getDateStart(), 'Y-m-d'),
+            'date_end' => date_format($reservationCar->getDateEnd(), 'Y-m-d'),
+            'start_time' => $reservationCar->getStartTime()->format('H:i'),
+            'end_time' => $reservationCar->getEndTime()->format('H:i'),
+            'id_reason' => $reservationCar->getIdReason(),
+            'reason_details' => $reservationCar->getReasonDetails(),
+            'km_start' => NULL,
+            'km_end' => NULL,
+            'km_planned' => $reservationCar->getKmPlanned(),
+            'id_user' => $reservationCar->getIdUser(),
+            'id_company_car' => $reservationCar->getIdCompanyCar(),
+            'id_state' => NULL
+          );
+
+          $api->table_add("resa_car", $new_resa);
+        }
       }
 
       return $this->render('admin/admin_cars.html.twig', array(
         'resa_car' => $resa_car,
         'car_form' => $car_form->createView(),
-        'rights' => $_SESSION['rights']
+        'rights' => $_SESSION['rights'],
+        'limit' => $_SESSION['limit_cars'],
+        'offset' => $_SESSION['offset_cars'],
+        'limit_form' => $limit_form->createView(),
+        'go_to_form' => $go_to_form->createView(),
+        'actual_min' => $_SESSION['offset_cars']+1,
+        'actual_max' => $actual_max,
+        'total' => $_SESSION['total_cars']
       ));
     }
 
@@ -232,6 +281,20 @@
         return $this->redirectToRoute('accueil');
 
       $api->table_delete("resa_car", array('id_resa' => $id_resa));
+      return $this->redirectToRoute('admin_cars');
+    }
+
+    /**
+      * @Route("/admin/cars/show/{way}", name="change_offset_car_admin")
+      */
+    public function change_offset($way) {
+      if($way == 1 && ($_SESSION['limit_cars'] + $_SESSION['offset_cars']) < $_SESSION['total_cars']) {
+        $_SESSION['offset_cars'] += $_SESSION['limit_cars'];
+      } else if($way == -1 && $_SESSION['offset_cars'] != 0) {
+        $_SESSION['offset_cars'] -= $_SESSION['limit_cars'];
+      } else if($way == 0) {
+        $_SESSION['offset_cars'] = 0;
+      }
       return $this->redirectToRoute('admin_cars');
     }
   }

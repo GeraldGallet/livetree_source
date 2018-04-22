@@ -60,6 +60,7 @@
 <a href="{{ path('change_offset_user_admin', {'way': -1}) }}"><button>{{limit}} précédent{% if limit != 1%}s{% endif %}</button></a>
 <a href="{{ path('change_offset_user_admin', {'way': 1}) }}"><button>{{limit}} suivant{% if limit != 1%}s{% endif %}</button></a>
 {% for profile in profiles %}
+<hr>
   <ul>
     <li>{{profile.first_name}} {{profile.last_name}} ({{profile.id_user}}) </li>
     <li>{{profile.email}}</li>

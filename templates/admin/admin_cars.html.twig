@@ -49,8 +49,18 @@
 {{ form_widget(car_form) }}
 {{ form_end(car_form) }}
 
-<h2>Réservations de voitures</h2>
-<ul>
+<h2>Réservations de voitures ({{actual_min}}-{{actual_max}}/{{total}})</h2>
+{{ form_start(limit_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(limit_form['new_limit']) }} {{ form_widget(limit_form['subscribe_change']) }}
+{{ form_end(limit_form) }}
+
+{{ form_start(go_to_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(go_to_form['number']) }} {{ form_widget(go_to_form['subscribe_go_to']) }}
+{{ form_end(go_to_form) }}
+
+<a href="{{ path('change_offset_car_admin', {'way': 0}) }}"><button>Revenir au début</button></a>
+<a href="{{ path('change_offset_car_admin', {'way': -1}) }}"><button>{{limit}} précédent{% if limit != 1%}s{% endif %}</button></a>
+<a href="{{ path('change_offset_car_admin', {'way': 1}) }}"><button>{{limit}} suivant{% if limit != 1%}s{% endif %}</button></a>
 {% for resa in resa_car %}
 <hr>
 <ul>
@@ -81,5 +91,4 @@
 </ul>
 <br/>
 {% endfor %}
-</ul>
 {% endblock %}
