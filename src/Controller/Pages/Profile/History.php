@@ -44,6 +44,7 @@
       }
 
       foreach($api->table_get("resa_car", array('id_user' => $_SESSION['id_user'])) as $resa) {
+        $car = $api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0];
         $temp_resa = array(
           'id_resa' => $resa['id_resa'],
           'date_start' => substr($resa['date_start'], 0, 10),
@@ -52,11 +53,11 @@
           'end_time' => substr($resa['end_time'], 0, 5),
           'km_planned' => $resa['km_planned'],
           'id_reason' => $resa['id_reason'],
-          'id_company_car' => $resa['id_company_car'],
-          'facility' => $api->table_get("facility", array('id_facility' => ($api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0] ['id_facility'])))[0]['name']
+          'id_company_car' => $car['name'] . " (" . $car['model'] . ")",
+          'facility' => $api->table_get("facility", array('id_facility' => ($car['id_facility'])))[0]['name']
         );
 
-        $state = $api->table_get("state", array('id_state' => $resa['id_state']))[0]; // PROBLEME
+        $state = $api->table_get("state", array('id_state' => $resa['id_state']))[0];
         $temp_state = [];
         if($state['front'] == NULL) {
           $temp_state['done'] = false;

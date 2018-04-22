@@ -16,9 +16,9 @@
     <ul class="navbar-nav mr-auto">
       {% if rights >= 0 %}
       <li class="nav-item">
-        <a class="nav-link disabled" href="/profil">Profil</a>
+        <a class="nav-link" href="/profil">Profil</a>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="/bornes">Bornes</a>
       </li>
       {% endif %}
@@ -29,7 +29,7 @@
       {% endif %}
       {% if rights >= 2 %}
       <li class="nav-item">
-        <a class="nav-link" href="/admin">Administration</a>
+        <a class="nav-link active" href="/admin">Administration</a>
       </li>
       {% endif %}
     </ul>
@@ -51,14 +51,30 @@
 <h2>Réservations de voitures</h2>
 <ul>
 {% for resa in resa_car %}
+<hr>
 <ul>
   <li>Début: {{resa.date_start}}  {{resa.start_time}}</li>
   <li>Début: {{resa.date_end}}  {{resa.end_time}}</li>
   <li>Kilométrage prévu: {{resa.km_planned}} kms</li>
-  <li>Heure de départ: {{resa.end_time}}</li>
   <li>Etablissement: {{resa.facility}}</li>
   <li>Raison: {{resa.id_reason}}</li>
   <li>Voiture: {{resa.id_company_car}}</li>
+  <li>Etat des lieux:
+    {% if resa.state.done %}
+    <ul>
+      <li>Avant: {{resa.state.front}}</li>
+      <li>Arrière: {{resa.state.back}}</li>
+      <li>Droite: {{resa.state.right_side}}</li>
+      <li>Gauche: {{resa.state.left_side}}</li>
+      <li>Intérieur: {{resa.state.inside}}</li>
+      <li>Commentaire: {{resa.state.commentary}}</li>
+    </ul>
+    {% else %}
+    {{ form_start(resa.state.form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_widget(resa.state.form) }}
+    {{ form_end(resa.state.form) }}
+    {% endif %}
+  </li>
   <li><a href="{{ path('delete_resa_car_admin', {'id_resa': resa.id_resa}) }}"><button>Supprimer</button></a></li>
 </ul>
 <br/>

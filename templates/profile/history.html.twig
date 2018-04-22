@@ -60,6 +60,7 @@
 {% endfor %}
 <h2>Réservations de véhicules</h2>
 {% for resa in resa_car %}
+  <hr>
   <ul>
     <li>Début: {{resa.date_start|date('Y-m-d')}}  {{resa.start_time|date('H:i:s')}}</li>
     <li>Fin: {{resa.date_end|date('Y-m-d')}}  {{resa.end_time|date('H:i:s')}}</li>
@@ -77,7 +78,7 @@
         <li>Gauche: {{resa.state.left_side}}</li>
         <li>Intérieur: {{resa.state.inside}}</li>
         <li>Commentaire: {{resa.state.commentary}}</li>
-      <ul>
+      </ul>
       {% else %}
       {{ form_start(resa.state.form, {'attr': {'novalidate': 'novalidate'}}) }}
       {{ form_widget(resa.state.form) }}
