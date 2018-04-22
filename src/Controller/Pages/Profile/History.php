@@ -3,6 +3,7 @@
 
   use App\Controller\CustomApi;
   use App\Entity\State;
+  use \DateTime;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Response;
@@ -28,13 +29,18 @@
         return $this->redirectToRoute('accueil');
 
       date_default_timezone_set('Europe/Paris');
-      $resa_borne = [];
-      $resa_car = [];
+      $resa_borne_futur = [];
+      $resa_borne_past = [];
+      $resa_car_futur = [];
+      $resa_car_past = [];
       $api = new CustomApi();
       $state_of_form = new State();
 
-      foreach($api->table_get("resa_borne", array('id_user' => $_SESSION['id_user'])) as $resa) {
-        array_push($resa_borne, array(
+      $currentDate = new DateTime("now");
+      $currentDate = date_format($currentDate, 'Y-m-d H:i:s');
+      $options = ['AND end_date > \'' . $currentDate . '\' '];
+      foreach($api->table_get("resa_borne", array('id_user' => $_SESSION['id_user']), $options) as $resa) {
+        array_push($resa_borne_futur, array(
           'id_resa' => $resa['id_resa'],
           'start_date' => $resa['start_date'],
           'end_date' => $resa['end_date'],
@@ -43,7 +49,21 @@
         ));
       }
 
-      foreach($api->table_get("resa_car", array('id_user' => $_SESSION['id_user'])) as $resa) {
+      $options = ['AND end_date < \'' . $currentDate . '\' '];
+      foreach($api->table_get("resa_borne", array('id_user' => $_SESSION['id_user']), $options) as $resa) {
+        array_push($resa_borne_past, array(
+          'id_resa' => $resa['id_resa'],
+          'start_date' => $resa['start_date'],
+          'end_date' => $resa['end_date'],
+          'charge' => $resa['charge'],
+          'place' => $api->table_get("place", array('id_place' => $resa['id_place']))[0]['name'],
+        ));
+      }
+
+      $currentDate = new DateTime("now");
+      $currentDate = date_format($currentDate, 'Y-m-d');
+      $options = ['AND date_end > \'' . $currentDate . '\' '];
+      foreach($api->table_get("resa_car", array('id_user' => $_SESSION['id_user']), $options) as $resa) {
         $car = $api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0];
         $temp_resa = array(
           'id_resa' => $resa['id_resa'],
@@ -112,13 +132,50 @@
           );
         }
         $temp_resa['state'] = $temp_state;
-        array_push($resa_car, $temp_resa);
+        array_push($resa_car_futur, $temp_resa);
+      }
+
+      $options = ['AND date_end < \'' . $currentDate . '\' '];
+      foreach($api->table_get("resa_car", array('id_user' => $_SESSION['id_user']), $options) as $resa) {
+        $car = $api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0];
+        $temp_resa = array(
+          'id_resa' => $resa['id_resa'],
+          'date_start' => substr($resa['date_start'], 0, 10),
+          'date_end' => substr($resa['date_end'], 0, 10),
+          'start_time' => substr($resa['start_time'], 0, 5),
+          'end_time' => substr($resa['end_time'], 0, 5),
+          'km_planned' => $resa['km_planned'],
+          'id_reason' => $resa['id_reason'],
+          'id_company_car' => $car['name'] . " (" . $car['model'] . ")",
+          'facility' => $api->table_get("facility", array('id_facility' => ($car['id_facility'])))[0]['name']
+        );
+
+        $state = $api->table_get("state", array('id_state' => $resa['id_state']))[0];
+        $temp_state = [];
+        if($state['front'] == NULL) {
+          $temp_state['done'] = false;
+        } else {
+          $temp_state = array(
+            'done' => true,
+            'front' => $state['front'],
+            'back' => $state['back'],
+            'left_side' => $state['left_side'],
+            'right_side' => $state['right_side'],
+            'inside' => $state['inside'],
+            'commentary' => $state['commentary'],
+            'form' => NULL
+          );
+        }
+        $temp_resa['state'] = $temp_state;
+        array_push($resa_car_past, $temp_resa);
       }
 
       return $this->render('profile/history.html.twig', array(
-            'resa_borne' => $resa_borne,
-            'resa_car' => $resa_car,
-            'rights' => $_SESSION['rights']
+        'resa_borne_futur' => $resa_borne_futur,
+        'resa_borne_past' => $resa_borne_past,
+        'resa_car_futur' => $resa_car_futur,
+        'resa_car_past' => $resa_car_past,
+        'rights' => $_SESSION['rights']
       ));
     }
 

@@ -52,6 +52,7 @@ function get_all(res, table) {
 }
 
 function get(body, res, table) {
+  console.log(body);
   var query = 'SELECT * FROM ' + table + ' WHERE ';
   var placeholder = [];
 
@@ -69,6 +70,7 @@ function get(body, res, table) {
   }
 
   query += ";";
+  console.log(query);
   res.locals.connection.query(query, placeholder, function(error, results, fields) {
     if(error) throw error;
     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));

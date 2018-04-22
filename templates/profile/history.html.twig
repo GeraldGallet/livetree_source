@@ -17,9 +17,9 @@
     <ul class="navbar-nav mr-auto">
       {% if rights >= 0 %}
       <li class="nav-item">
-        <a class="nav-link disabled" href="/profil">Profil</a>
+        <a class="nav-link active" href="/profil">Profil</a>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="/bornes">Bornes</a>
       </li>
       {% endif %}
@@ -49,7 +49,9 @@
 </ul>
 <h1>Historique</h1>
 <h2>Réservations de bornes</h2>
-{% for resa in resa_borne %}
+<h3>A venir</h3>
+{% for resa in resa_borne_futur %}
+<hr>
   <ul>
     <li>Début: {{resa.start_date|date('Y-m-d H:i:s')}}</li>
     <li>Fin: {{resa.end_date|date('H:i:s')}}</li>
@@ -58,8 +60,19 @@
     <li><a href="{{ path('delete_resa_borne', {'id_resa': resa.id_resa}) }}"><button>Annuler</button></a></li>
   </ul>
 {% endfor %}
+<h3>Historique</h3>
+{% for resa in resa_borne_past %}
+<hr>
+  <ul>
+    <li>Début: {{resa.start_date|date('Y-m-d H:i:s')}}</li>
+    <li>Fin: {{resa.end_date|date('H:i:s')}}</li>
+    <li>Charge estimée en arrivant: {{resa.charge}}</li>
+    <li>Lieu: {{resa.place}}</li>
+  </ul>
+{% endfor %}
 <h2>Réservations de véhicules</h2>
-{% for resa in resa_car %}
+<h3>A venir</h3>
+{% for resa in resa_car_futur %}
   <hr>
   <ul>
     <li>Début: {{resa.date_start|date('Y-m-d')}}  {{resa.start_time|date('H:i:s')}}</li>
@@ -88,5 +101,33 @@
     </li>
     <li><a href="{{ path('delete_resa_car', {'id_resa': resa.id_resa}) }}"><button>Annuler</button></a></li>
   </ul>
+{% endfor %}
+<h3>Historique</h3>
+{% for resa in resa_car_past %}
+<hr>
+<ul>
+  <li>Début: {{resa.date_start|date('Y-m-d')}}  {{resa.start_time|date('H:i:s')}}</li>
+  <li>Fin: {{resa.date_end|date('Y-m-d')}}  {{resa.end_time|date('H:i:s')}}</li>
+  <li>Kilométrage prévu: {{resa.km_planned}} kms</li>
+  <li>Heure de départ: {{resa.end_time}}</li>
+  <li>Etablissement: {{resa.facility}}</li>
+  <li>Raison: {{resa.id_reason}}</li>
+  <li>Voiture: {{resa.id_company_car}}</li>
+  <li>Etat des lieux:
+    {% if resa.state.done %}
+    <ul>
+      <li>Avant: {{resa.state.front}}</li>
+      <li>Arrière: {{resa.state.back}}</li>
+      <li>Droite: {{resa.state.right_side}}</li>
+      <li>Gauche: {{resa.state.left_side}}</li>
+      <li>Intérieur: {{resa.state.inside}}</li>
+      <li>Commentaire: {{resa.state.commentary}}</li>
+    </ul>
+    {% else %}
+    <p>Il est trop tard pour réaliser l'état des lieux</p>
+    {% endif %}
+
+  </li>
+</ul>
 {% endfor %}
 {% endblock %}
