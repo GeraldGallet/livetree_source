@@ -142,53 +142,9 @@
 
             $plan = new AvailableTime();
             $res = $plan->get_timeslots_with_placeId($res->getIdPlacePlanning(), array('end_date' => $planning_end, 'start_date' => $planning_start));
-            $res = $plan->humanize_arrays($res);
             //dump($res);
-            $max_available = $res['numberMaxOfBookingPerParking'];
-            $list = $res['updatedListeOfBooking'];
-            $planning = array();
-            foreach($list as $day) {
-              $day_planning = [];
-              $readable_date = $day[0]['date']->format('D. d F');
-              $old_var = $day[0]['numberOfDisponibility'];
-              if($max_available - $old_var > 0) {
-                $dispo = "OUI";
-                $old_var = true;
-              } else {
-                $dispo = "NON";
-                $old_var = false;
-              }
-              $creneau = array(
-                'begin' => date_format($day[0]['date'], 'H:i:s'),
-                'dispo' => $dispo
-              );
-              for($i = 1; $i < sizeof($day); $i++) {
-                if($max_available - $day[$i]['numberOfDisponibility'] > 0) {
-                  $actual_var = true;
-                  $dispo = "OUI";
-                } else {
-                  $actual_var = false;
-                  $dispo = "NON";
-                }
-
-                if($old_var != $actual_var) {
-                  $creneau['end'] = date_format($day[$i]['date'], 'H:i:s');
-                  array_push($day_planning, $creneau);
-                  $old_var = $actual_var;
-                  $creneau = array(
-                    'begin' => date_format($day[$i]['date'], 'H:i:s'),
-                    'dispo' => $dispo
-                  );
-                }
-              }
-              $creneau['end'] = date_format($day[sizeof($day)-1]['date'], 'H:i:s');
-              array_push($day_planning, $creneau);
-              array_push($planning, array(
-                'day' => $readable_date,
-                'plan' => $day_planning
-              ));
-            }
-            //dump($planning);
+            $res = $plan->humanize_arrays($res);
+            $planning = $this->humanize_planning($res);
           }
         }
 
@@ -209,25 +165,27 @@
                 $end_date->setDate($start_date->format('Y'), $start_date->format('m'), $start_date->format('d'));
                 $end_date->setTime($obj->getEndDate()->format('H'), $obj->getEndDate()->format('i'), $obj->getEndDate()->format('s'));
 
-                try {
-                  $plan = new AvailableTime();
-                  $plan->get_timeslots_with_placeId($obj->getIdPlace(), array('end_date' => $end_date, 'start_date' => $start_date), true);
-                  $resa_borne = array(
-                    'date_creation' => date_format(new DateTime("now"),'Y:m:d'),
-                    'start_date' => date_format($start_date, 'Y-m-d H:i:s'),
-                    'end_date' => date_format($end_date, 'Y-m-d H:i:s'),
-                    'date_last_modification' => $current_date,
-                    'charge' => $obj->getCharge(),
-                    'id_user' => $_SESSION['id_user'],
-                    'id_place' => $obj->getIdPlace(),
-                    'id_personal_car' => $obj->getidPersonalCar()
-                  );
-
-                  $api->table_add("resa_borne", $resa_borne);
+                $plan = new AvailableTime();
+                $resa_borne = array(
+                  'date_creation' => date_format(new DateTime("now"),'Y:m:d'),
+                  'start_date' => date_format($start_date, 'Y-m-d H:i:s'),
+                  'end_date' => date_format($end_date, 'Y-m-d H:i:s'),
+                  'date_last_modification' => $current_date,
+                  'charge' => $obj->getCharge(),
+                  'id_user' => $_SESSION['id_user'],
+                  'id_place' => $obj->getIdPlace(),
+                  'id_personal_car' => $obj->getidPersonalCar()
+                );
+                $res = $plan->get_timeslots_with_placeId($obj->getIdPlace(), array('end_date' => $end_date, 'start_date' => $start_date));
+                $res = $plan->humanize_arrays($res);
+                $planning = $this->humanize_planning($res);
+                $available = $this->is_available($start_date, $end_date, $planning[0]);
+                if($available) {
+                  $id = $api->table_add("resa_borne", $resa_borne);
                   return $this->redirectToRoute('history');
-                } catch (\Exception $exception) {
+                } else
                   $error_booking = "Ce créneau n'est pas libre ! Vérifiez le planning avant de réserver";
-                }
+
 
               }
 		        }
@@ -243,6 +201,68 @@
         'planning' => $planning,
         'error_booking' => $error_booking
       ));
+  }
+
+  private function humanize_planning($res) {
+    $max_available = $res['numberMaxOfBookingPerParking'];
+    $list = $res['updatedListeOfBooking'];
+    $planning = array();
+    foreach($list as $day) {
+      $day_planning = [];
+      $readable_date = $day[0]['date']->format('D. d F');
+      $old_var = $day[0]['numberOfDisponibility'];
+      if($max_available - $old_var > 0) {
+        $dispo = true;
+        $old_var = true;
+      } else {
+        $dispo = false;
+        $old_var = false;
+      }
+      $creneau = array(
+        'begin' => date_format($day[0]['date'], 'H:i:s'),
+        'dispo' => $dispo
+      );
+      for($i = 1; $i < sizeof($day); $i++) {
+        if($max_available - $day[$i]['numberOfDisponibility'] > 0) {
+          $actual_var = true;
+          $dispo = true;
+        } else {
+          $actual_var = false;
+          $dispo = false;
+        }
+
+        if($old_var != $actual_var) {
+          $creneau['end'] = date_format($day[$i]['date'], 'H:i:s');
+          array_push($day_planning, $creneau);
+          $old_var = $actual_var;
+          $creneau = array(
+            'begin' => date_format($day[$i]['date'], 'H:i:s'),
+            'dispo' => $dispo
+          );
+        }
+      }
+      $creneau['end'] = date_format($day[sizeof($day)-1]['date'], 'H:i:s');
+      array_push($day_planning, $creneau);
+      array_push($planning, array(
+        'day' => $readable_date,
+        'plan' => $day_planning
+      ));
+    }
+
+    return $planning;
+  }
+
+  private function is_available($start_time, $end_time, $planning) {
+    foreach($planning['plan'] as $creneau) {
+      $begin_date = date_create_from_format('D. d F H:i:s', $planning['day'] . ' ' . $creneau['begin']);
+      $end_date = date_create_from_format('D. d F H:i:s', $planning['day'] . ' ' . $creneau['end']);
+
+      if(($start_time > $begin_date && $start_time < $end_date) || ($end_time > $begin_date && $end_time < $end_date)) {
+        if(!$creneau['dispo'])
+          return false;
+      }
+    }
+    return true;
   }
 }
 
