@@ -76,7 +76,7 @@ class AvailableTime
         $available = new AvailableTime();
         try {
             $updated = $available->get_timeslots_with_placeId(1, $reservation
-                ,true
+//                ,true
             );
             $updated = $available->humanize_arrays($updated);//humanize_arrays($updated);
         } catch (\Exception $exception) {
@@ -150,7 +150,7 @@ class AvailableTime
                         if (!isset($numberMaxtriggerexception['numberMax'])
                             || $timeNdisp['numberOfDisponibility'] == $numberMaxtriggerexception['numberMax']) {
                             $this->setReservationAllowed(false);
-                            throw new Exception("Borne complète: nombre actuel ->(" . $timeNdisp['numberOfDisponibility'] . ") nombre disponible->(" . $numberMaxtriggerexception['numberMax'] . ")");
+//                            throw new Exception("Borne complète: nombre actuel ->(" . $timeNdisp['numberOfDisponibility'] . ") nombre disponible->(" . $numberMaxtriggerexception['numberMax'] . ")");
 
                         }
                         if (!isset($numberMaxtriggerexception['numberMax'])
@@ -274,11 +274,7 @@ class AvailableTime
             $updated = array('numberMaxOfBookingPerParking' => null, 'updatedListeOfBooking' => null);
             $this->setNumberMaxOfReservtion(array('numberMax'=> $this->get_number_of_docks($id_place))) ;
             $updated['numberMaxOfBookingPerParking'] = $this->getNumberMaxOfReservtion()['numberMax'];
-            $api_interface = new CustomApi();
-            $bornes = $api_interface->table_get(
-                'resa_borne',
-                array('id_place' => strval($id_place)
-                ));
+            $bornes=$this->get_resa_borne($id_place);
 
             $updated['updatedListeOfBooking'] = $this->get_disponibilities_with_resa_N_targetedResa($bornes, $bookingDates);
             $updated['reservationAllowed'] = $this->isReservationAllowed();
@@ -306,9 +302,24 @@ class AvailableTime
             $result = $api_interface->table_get("borne", array('id_place' => $id_place));
 //            dump($result);
             if (!isset($result) || empty($result)) {
-                throw new \Exception("Le nombre de places disponibles est inaccessible: check node app");
+                throw new \Exception("Le nombre de places disponibles est inaccessible ou il n'y a pas de bornes à ce parking: check node app");
             } else {
                 return sizeof($result);
+            }
+        }
+        return null;
+    }
+    public function get_resa_borne($id_place)
+    {
+        if (isset($id_place)) {
+            $api_interface = new CustomApi();
+            $result = $api_interface->table_get("resa_borne", array('id_place' => $id_place));
+           dump($result);
+            if (!isset($result) || empty($result)) {
+                throw new \Exception("Les reservations actuelles sont inaccessibles " .
+                    "ou il n'y en a pas pour ce parking: check node app or database");
+            } else {
+                return $result;
             }
         }
         return null;

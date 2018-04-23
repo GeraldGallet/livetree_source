@@ -9,9 +9,7 @@
 namespace App\Controller\Form;
 
 use App\Controller\CustomApi;
-use DateInterval;
 use DateTime;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Routing\Annotation;
 
@@ -67,7 +65,8 @@ class AvailableTimeCar
         $php_errormsg = null;
         $available = new AvailableTimeCar();
         try {
-            $updated = $available->get_timeslots_with_CarID(1, $reservation
+            $id = 1;
+            $updated = $available->get_timeslots_with_CarID($id, $reservation
                 , true
             );
             $updated = $available->humanize_arrays($updated);//humanize_arrays($updated);
@@ -166,7 +165,7 @@ class AvailableTimeCar
 
 
     /**
-     * @param $id_place
+     * @param $id_company_car
      * @param $bookingDates
      * @return mixed
      */
@@ -180,10 +179,9 @@ class AvailableTimeCar
             $updated = array('numberMaxOfBookingPerParking' => null, 'updatedListeOfBooking' => null);
             $this->setNumberMaxOfReservtion(array('numberMax' => $this->get_car_Int($id_car_company)));
             $updated['numberMaxOfBookingPerParking'] = $this->getNumberMaxOfReservtion()['numberMax'];
-            $api_interface = new CustomApi();
-            $bornes = $this->get_resa_car($id_car_company);
+            $resa_car = $this->get_resa_car($id_car_company);
 
-            $updated['updatedListeOfBooking'] = $this->get_disponibilities_with_resa_N_targetedResa($bornes, $bookingDates);
+            $updated['updatedListeOfBooking'] = $this->get_disponibilities_with_resa_N_targetedResa($resa_car, $bookingDates);
             $updated['reservationAllowed'] = $this->isReservationAllowed();
 //            dump(isset($triggerExceptionReservationAllowed));
 //            dump(($triggerExceptionReservationAllowed == true) );
@@ -206,35 +204,71 @@ class AvailableTimeCar
 
     public function get_car_Int($id_company_car)
     {
-        if (isset($id_place)) {
+        if (isset($id_company_car)) {
             $api_interface = new CustomApi();
             $result = $api_interface->table_get("company_car", array('id_company_car' => $id_company_car));
 //            dump($result);
             if (!isset($result) || empty($result)) {
-                throw new \Exception("L'id de la voiture est inaccessible: check node app");
+                throw new \Exception("L'id de la voiture n'existe pas ou est inaccessible: check node app / Database");
             } else {
                 return sizeof($result);
             }
+        } else {
+            throw new \Exception("id_company_car isn't set");
         }
     }
     public function get_resa_car($id_company_car)
     {
-        if (isset($id_place)) {
+        if (isset($id_company_car)) {
             $api_interface = new CustomApi();
             $result = $api_interface->table_get("resa_car", array('id_company_car' => $id_company_car));
-//            dump($result);
-            if (!isset($result) || empty($result)) {
-                throw new \Exception("L'id de la voiture est inaccessible: check node app");
+//            dump(!isset($result));
+            if (!isset($result) /*|| empty($result)*/) {
+                throw new \Exception("Les réservations de la voiture sont inaccessibles: check node app");
             } else {
-                return sizeof($result);
+
+                $configured = $this->configure_resa_car_like_resa_bornes($result);
+                return $configured;
             }
+        } else {
+            throw new \Exception("id_company_car isn't set");
+
         }
     }
 
+    private function configure_resa_car_like_resa_bornes($dockReservationList)
+    {
+        $result = array();
+        if (isset($dockReservationList)) {
+            foreach ($dockReservationList as $tuple) {
+                $max = new DateTime($tuple['date_end']);
+//                $max->setTime(new Time($tuple['end_time']));
+                $max2=new DateTime( $tuple['end_time']);
+                $max->setTime(
+                    intval($max2->format('H')),
+                    intval($max2->format('i')),
+                    intval($max2->format('s'))
+                    );
+                dump($max);
+//                $min = new DateTime($tuple['date_start']);
+//                $min->setTime(new Time($tuple['start_time']));
+//                $tmp = array('end_date' => $max, 'start_date' => $min);
+//                $result[] = $tmp;
 
+                dump("date", $tuple['date_end'], "time", $tuple['end_time']);
+            }
+            return $result;
+        } else {
+            throw new \Exception("DockReservationList isn't set");
+        }
+    }
+    private function mySetTime(DateTime &$date, DateTime $time){
+        $date->setTime(
+            intval($time->format('i')),
+            intval($time->format('H')),
+            intval($time->format('s'))
+        );
+    }
     //===Affichage
-
-
-
 
 }
