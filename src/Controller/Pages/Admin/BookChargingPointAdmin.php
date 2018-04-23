@@ -257,6 +257,16 @@
       }
       return $this->redirectToRoute('admin_cars');
     }
+
+    /**
+      * @Route("/admin/bornes/extract/{data}", name="extract_charging_points_admin")
+      */
+    public function extract_data($data) {
+      $fp = fopen('charging_points.json', 'w');
+      fwrite($fp, $data);
+      fclose($fp);
+      return $this->redirectToRoute('admin_bornes');
+    }
   }
 
  ?>

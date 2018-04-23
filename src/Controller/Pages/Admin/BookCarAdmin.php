@@ -33,6 +33,7 @@
         return $this->redirectToRoute('accueil');
 
       $resa_car = [];
+      $resa_car_extract = [];
       $reason_choices = [];
       $company_car_choices = [];
       $api = new CustomApi();
@@ -155,6 +156,9 @@
           }
           $temp_resa['state'] = $temp_state;
           array_push($resa_car, $temp_resa);
+          if(!$temp_resa['state']['done'])
+            unset($temp_resa['state']['form']);
+          array_push($resa_car_extract, $temp_resa);
         }
       }
 
@@ -245,6 +249,7 @@
 
       return $this->render('admin/admin_cars.html.twig', array(
         'resa_car' => $resa_car,
+        'resa_car_extractable' => $resa_car_extract,
         'car_form' => $car_form->createView(),
         'rights' => $_SESSION['rights'],
         'limit_form' => $limit_form->createView(),
@@ -319,6 +324,17 @@
       } else if($way == 0) {
         $_SESSION['offset_cars'] = 0;
       }
+      return $this->redirectToRoute('admin_cars');
+    }
+
+    /**
+      *
+      * @Route("/admin/cars/extract/{data}", name="extract_car_admin")
+      */
+    public function extract_data($data) {
+      $fp = fopen('cars.json', 'w');
+      fwrite($fp, $data);
+      fclose($fp);
       return $this->redirectToRoute('admin_cars');
     }
   }
