@@ -60,14 +60,14 @@ class AvailableTimeCar
      */
     function main()
     {
-        $reservation = array('end_date' => new DateTime('2018-04-30T12:00:00'), 'start_date' => new DateTime('2018-04-30T00:00:00'));
+        $reservation = array('end_date' => new DateTime('2018-04-30T12:00:00'), 'start_date' => new DateTime('2018-04-29T00:00:00'));
         $updated = array('numberMaxOfBookingPerParking' => null, 'updatedListeOfBooking' => null);
         $php_errormsg = null;
         $available = new AvailableTimeCar();
         try {
             $id = 1;
             $updated = $available->get_timeslots_with_CarID($id, $reservation
-                , true
+//                , true
             );
             $updated = $available->humanize_arrays($updated);//humanize_arrays($updated);
         } catch (\Exception $exception) {
@@ -104,7 +104,7 @@ class AvailableTimeCar
                         if (!isset($numberMaxtriggerexception['numberMax'])
                             || $timeNdisp['numberOfDisponibility'] == $numberMaxtriggerexception['numberMax']) {
                             $this->setReservationAllowed(false);
-                            throw new Exception("Borne complète: nombre actuel ->(" . $timeNdisp['numberOfDisponibility'] . ") nombre disponible->(" . $numberMaxtriggerexception['numberMax'] . ")");
+                            //throw new Exception("Borne complète: nombre actuel ->(" . $timeNdisp['numberOfDisponibility'] . ") nombre disponible->(" . $numberMaxtriggerexception['numberMax'] . ")");
 
                         }
                         if (!isset($numberMaxtriggerexception['numberMax'])
@@ -228,6 +228,7 @@ class AvailableTimeCar
             } else {
 
                 $configured = $this->configure_resa_car_like_resa_bornes($result);
+                dump($configured);
                 return $configured;
             }
         } else {
@@ -241,34 +242,39 @@ class AvailableTimeCar
         $result = array();
         if (isset($dockReservationList)) {
             foreach ($dockReservationList as $tuple) {
+                //max
                 $max = new DateTime($tuple['date_end']);
-//                $max->setTime(new Time($tuple['end_time']));
                 $max2=new DateTime( $tuple['end_time']);
-                $max->setTime(
-                    intval($max2->format('H')),
-                    intval($max2->format('i')),
-                    intval($max2->format('s'))
-                    );
-                dump($max);
-//                $min = new DateTime($tuple['date_start']);
-//                $min->setTime(new Time($tuple['start_time']));
-//                $tmp = array('end_date' => $max, 'start_date' => $min);
-//                $result[] = $tmp;
+                AvailableTimeCar::mySetTime($max,$max2);
+                //min
+                $min = new DateTime($tuple['date_start']);
+                $min2=new DateTime($tuple['start_time']);
+                AvailableTimeCar::mySetTime($min,$min2);
 
-                dump("date", $tuple['date_end'], "time", $tuple['end_time']);
+
+                $tmp = array('end_date' => $max, 'start_date' => $min);
+                $result[] = $tmp;
+
+//                dump("yo",$max,new DateTime($max),"date", $tuple['date_end'], "time", $tuple['end_time']);
             }
             return $result;
         } else {
             throw new \Exception("DockReservationList isn't set");
         }
     }
-    private function mySetTime(DateTime &$date, DateTime $time){
+    private static function mySetTime(DateTime &$date, DateTime $time){
         $date->setTime(
-            intval($time->format('i')),
             intval($time->format('H')),
+            intval($time->format('i')),
             intval($time->format('s'))
+
         );
+        $date=$date->format('Y-m-d H:i:s');
+
     }
+
+
+
     //===Affichage
 
 }
