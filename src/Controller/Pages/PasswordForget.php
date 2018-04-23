@@ -16,48 +16,56 @@
   class PasswordForget extends Controller {
 
     /**
-      * @Route("/passwordForget")
+      * @Route("/motdepasse")
       */
       public function new(Request $request)
       {
-
-
-
-        $user = new User();
         $api = new CustomApi();
 
-        $form = $this->createFormBuilder($user)
+        $form = $this->get('form.factory')->createNamedBuilder('password_forgot')
             ->add('email', EmailType::class, array('label' => 'Email: '))
             ->add('subscribe', SubmitType::class, array('label' => 'J\'envoie un mail'));
         $form = $form->getForm();
-        $form->handleRequest($request);
 
+        if('POST' === $request->getMethod()) {
+          $form->handleRequest($request);
 
-        if ($form->isSubmitted() )  {
-            $user = $form->getData();
+          if($request->request->has('password_forgot') && $form->isValid()) {
             $api = new CustomApi();
-            $email = $user->getEmail();
+            $email = $form->getData()['email'];
+
+            if(sizeof($email) == 0)
+              return $this->render('passwordforget.html.twig', array(
+                  'form' => $form->createView(),
+                  'error' => 'Vous n\'avez renseigné aucun e-mail',
+                  'state' => "Subscribe"
+              ));
+
             $res = $api->table_get("user", array('email' => $email));
             if(sizeof($res) == 0)
               return $this->render('passwordforget.html.twig', array(
                   'form' => $form->createView(),
-                  'error' => "Votre e-mail n'est pas enregistrée sur ce site",
+                  'error' => "Cet e-mail n'est pas enregistrée sur ce site",
                   'state' => "Subscribe"
               ));
+
             date_default_timezone_set('Europe/Paris');
             $expirationDate = new DateTime("now");
             $token =  substr(bin2hex(random_bytes(40)), 0, 10);
             $new_token = array(
               'token' => $token,
-              'email' => $email,
+              'id_user' => $res[0]['id_user'],
               'expiration_time' => date_format($expirationDate, 'Y-m-d H:i:s'),
               );
-            $link = "http://localhost:8000/PasswordRecovery/" . $token;
+
+            $link = "http://localhost:8000/nouveaumotdepasse/" . $token;
+
             $mail_body = array(
               'email' => $email,
               'subject' => "Oubli de mot de passe",
               'html' => "<p>Vous pouvez changer votre mot de passe LiveTree en cliquant sur <u><a href=\"" . $link . "\">ce lien</a></u></p>"
               );
+
             $api->table_add("password_recovery", $new_token);
             $api->send_mail($mail_body);
             return $this->render('passwordforget.html.twig', array(
@@ -65,23 +73,14 @@
                 'state' => "Validation"
             ));
 
+            }
           }
-          else
-           {
-             return $this->render('passwordforget.html.twig', array(
-              'form' => $form->createView(),
-              'error' => NULL,
-              'state' => "Subscribe"
-                ));
-          }
-      }
 
-
-
-
-
-
-
-
-  }
+          return $this->render('passwordforget.html.twig', array(
+           'form' => $form->createView(),
+           'error' => NULL,
+           'state' => "Subscribe"
+           ));
+         }
+       }
   ?>
