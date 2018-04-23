@@ -38,7 +38,7 @@
 
       $currentDate = new DateTime("now");
       $currentDate = date_format($currentDate, 'Y-m-d H:i:s');
-      $options = ['AND end_date > \'' . $currentDate . '\' '];
+      $options = ['AND end_date > \'' . $currentDate . '\' ', 'ORDER BY start_date ASC'];
       foreach($api->table_get("resa_borne", array('id_user' => $_SESSION['id_user']), $options) as $resa) {
         array_push($resa_borne_futur, array(
           'id_resa' => $resa['id_resa'],
