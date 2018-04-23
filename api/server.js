@@ -189,6 +189,7 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
     }
   }
 
+  res.locals.connection.end();
   if(!passed)
     res.send(JSON.stringify({"status": 404, "error": "Table not found", "response": null}));
 });
@@ -201,6 +202,7 @@ app.delete('/:table', jsonParser, function(req, res, next) {
       delete_entry(req.body, res, cmds[i]);
     }
   }
+  res.locals.connection.end();
 });
 
 app.patch('/:table', jsonParser, function(req, res) {
@@ -211,4 +213,5 @@ app.patch('/:table', jsonParser, function(req, res) {
       update_table(req.body, res, cmds[i]);
     }
   }
+  res.locals.connection.end();
 });
