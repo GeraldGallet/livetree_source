@@ -122,11 +122,11 @@
         } else {
           $temp_state = array(
             'done' => true,
-            'front' => $state['front'],
-            'back' => $state['back'],
-            'left_side' => $state['left_side'],
-            'right_side' => $state['right_side'],
-            'inside' => $state['inside'],
+            'front' => ($state['front'] ? "Ok" : "Pas Ok"),
+            'back' => ($state['back'] ? "Ok" : "Pas Ok"),
+            'left_side' =>($state['left_side'] ? "Ok" : "Pas Ok"),
+            'right_side' => ($state['right_side'] ? "Ok" : "Pas Ok"),
+            'inside' => ($state['inside'] ? "Ok" : "Pas Ok"),
             'commentary' => $state['commentary'],
             'form' => NULL
           );
@@ -157,11 +157,11 @@
         } else {
           $temp_state = array(
             'done' => true,
-            'front' => $state['front'],
-            'back' => $state['back'],
-            'left_side' => $state['left_side'],
-            'right_side' => $state['right_side'],
-            'inside' => $state['inside'],
+            'front' => ($state['front'] ? "Ok" : "Pas Ok"),
+            'back' => ($state['back'] ? "Ok" : "Pas Ok"),
+            'left_side' =>($state['left_side'] ? "Ok" : "Pas Ok"),
+            'right_side' => ($state['right_side'] ? "Ok" : "Pas Ok"),
+            'inside' => ($state['inside'] ? "Ok" : "Pas Ok"),
             'commentary' => $state['commentary'],
             'form' => NULL
           );
