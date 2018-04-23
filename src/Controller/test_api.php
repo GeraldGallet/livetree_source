@@ -151,9 +151,9 @@
         'subject' => "Validation de votre compte",
         'html' => "<p>Vous pouvez valider votre compte Live Tree en cliquant sur ce lien</p>"
       );
-      $api_interface->send_mail($mail_body);
+      //$api_interface->send_mail($mail_body);
 
-      //$result = $api_interface->table_get("phone_indicative", array('country' => "France"));
+      $result = $api_interface->custom_request("SELECT * FROM facility");
       return $this->render('test.html.twig', array(
             'result' => $result,
       ));

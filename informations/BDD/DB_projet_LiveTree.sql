@@ -104,9 +104,9 @@ CREATE TABLE resa_borne(
         end_date               Datetime NOT NULL ,
         date_last_modification Date ,
         charge                 Float NOT NULL ,
-        id_user                Int NOT NULL ,
+        id_user                Int ,
         id_place               Int NOT NULL ,
-        id_personal_car        Int NOT NULL ,
+        id_personal_car        Int ,
         PRIMARY KEY (id_resa )
 )ENGINE=InnoDB;
 
@@ -125,7 +125,7 @@ CREATE TABLE resa_car(
         km_end         Int ,
         km_planned     Int NOT NULL ,
         date_end       Date NOT NULL ,
-        id_user        Int NOT NULL ,
+        id_user        Int ,
         id_company_car Int NOT NULL ,
         id_reason      Varchar (50) NOT NULL ,
         id_state       Int NOT NULL ,
@@ -184,11 +184,11 @@ CREATE TABLE phone_indicative(
 
 CREATE TABLE state(
         id_state   int (11) Auto_increment  NOT NULL ,
-        front      Bool NOT NULL ,
-        back       Bool NOT NULL ,
-        left_side  Bool NOT NULL ,
-        right_side Bool NOT NULL ,
-        inside     Bool NOT NULL ,
+        front      Bool ,
+        back       Bool ,
+        left_side  Bool ,
+        right_side Bool ,
+        inside     Bool ,
         commentary Varchar (280) ,
         id_resa    Int ,
         PRIMARY KEY (id_state )

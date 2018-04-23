@@ -10,10 +10,12 @@
   <a href=/deconnexion>{{first_name}} {{last_name}} (Déconnexion)</a>
 {% else %}
   <a href='/inscription'><button>S'inscrire</button></a>
+  <a href='/inscription'><button>Mot de passe oublié</button></a>
   <p>{{ error }}</p>
   {{ form_start(connection_form, {'attr': {'novalidate': 'novalidate'}}) }}
   {{ form_widget(connection_form) }}
   {{ form_end(connection_form) }}
+
 {% endif %}
 
 <h1>Accueil</h1>

@@ -1,6 +1,5 @@
 {# templates/reservations/bornes.html.twig #}
 {% extends "base.html.twig" %}
-{% extends "home.html.twig" %}
 
 {% block head %}
 {{ parent() }}
@@ -9,52 +8,60 @@
 
 {% block javascripts %}
 <script src="modernizr.js"></script>
-  <!-- Webforms2 -->
-  <script src="webforms2/webforms2-p.js"></script>  
-  <!-- jQuery  -->
-  <script src="js/jquery-1.4.3.min.js"></script>
-  <script src="js/jquery-ui-1.8.5.min.js"></script>
-  <!-- Feuille de style -->
-  <link rel="stylesheet" href="styleFormulaire.css">
-  <!-- jQuery Numeric Spinner -->
-  <script src="spinner.js"></script>  
-  
-  <!-- jQuery Placehol 
-    <script src="jquery.placehold-0.2.min.js"></script>  -->
+<!-- Webforms2 -->
+<script src="webforms2/webforms2-p.js"></script>
+<!-- jQuery  -->
+<script src="js/jquery-1.4.3.min.js"></script>
+<script src="js/jquery-ui-1.8.5.min.js"></script>
+<!-- Feuille de style -->
+<link rel="stylesheet" href="styleFormulaire.css">
+<!-- jQuery Numeric Spinner -->
+<script src="spinner.js"></script>
 
-  <!-- Demo page layout  
-  <link rel="stylesheet" href="html5forms.layout.css">  -->
-  <script src="html5forms.js"></script>
-  <script src="html5forms.fallback.js"></script>
-  {% endblock %}
+<!-- jQuery Placehol
+<script src="jquery.placehold-0.2.min.js"></script>  -->
+
+<!-- Demo page layout
+<link rel="stylesheet" href="html5forms.layout.css">  -->
+<script src="html5forms.js"></script>
+<script src="html5forms.fallback.js"></script>
+{% endblock %}
 
 {% block body %}
-<p>
-<br />
-<img src="universitecatholille.png" width="100" height="70" alt="Universite Catholique de Lille" />
-<img src="LOGO-LIVE-TREE.jpg" width="100" height="70" alt="Logo Live Tree" />
-</p>
+<header>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-<a class="navbar-brand" href="Accueil.html">Accueil</a>
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-<span class="navbar-toggler-icon"></span>
-</button>
-<div class="collapse navbar-collapse" id="navbarCollapse">
-<ul class="navbar-nav mr-auto">
-<li class="nav-item active">
-<a class="nav-link" href="Bornes.html">Bornes<span class="sr-only">(current)</span></a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="Voitures.html">Voitures</a>
-</li>
-<li class="nav-item">
-<a class="nav-link disabled" href="Profil.html">Profil</a>
-</li>
-</ul>
-</div>
+  <a class="navbar-brand" href="/">Accueil</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav mr-auto">
+      {% if rights >= 0 %}
+      <li class="nav-item">
+        <a class="nav-link" href="/profil">Profil</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="/bornes">Bornes</a>
+      </li>
+      {% endif %}
+      {% if rights >= 1 %}
+      <li class="nav-item">
+        <a class="nav-link" href="/voitures">Voitures</a>
+      </li>
+      {% endif %}
+      {% if rights >= 2 %}
+      <li class="nav-item">
+        <a class="nav-link" href="/admin">Administration</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
 </nav>
-<h1>Réservation de bornes</h1>
+</header>
+<br/>
+<h1>Réserver une borne</h1>
 {% if success %}
+<p>{{error_booking}}</p>
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_row(form.id_place) }}
 {{ form_row(form.start_date) }}
@@ -64,6 +71,23 @@
 {{ form_row(form.subscribe) }}
 
 {{ form_end(form) }}
+<h2>Voir le planning</h2>
+{{ form_start(form_planning, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_widget(form_planning) }}
+{{ form_end(form_planning) }}
+{% for day_planning in planning %}
+<ul>
+  <li>{{day_planning.day}}
+    {% for creneau in day_planning.plan %}
+    <ul>
+      <li>{{creneau.begin}}</li>
+      <li>{{creneau.dispo}}</li>
+      <li>{{creneau.end}}</li>
+    </ul>
+    {% endfor %}
+  </li>
+</ul>
+{% endfor %}
 {% else %}
   <p>{{ error }}</p>
 {% endif %}

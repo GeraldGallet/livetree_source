@@ -4,6 +4,8 @@
 
   use App\Controller\CustomApi;
   use App\Entity\BookChargingPointEntity;
+  use App\Entity\ShowPlanningEntity;
+  use App\Controller\Form\AvailableTime;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +14,7 @@
 
   use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
   use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+  use Symfony\Component\Form\Extension\Core\Type\DateType;
   use Symfony\Component\Form\Extension\Core\Type\TimeType;
   use Symfony\Component\Form\Extension\Core\Type\RangeType;
   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -23,19 +26,21 @@
       * @Route("/bornes",name="bornes")
       */
     public function new(Request $request) {
-      if(!isset($_SESSION))
-        session_start();
-
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
       date_default_timezone_set('Europe/Paris');
       $api = new CustomApi();
+      $planning = null;
+      $error_booking = null;
       $res = $api->table_get("has_access", array('id_user' => $_SESSION['id_user']));
       if(sizeof($res) == 0) {
         return $this->render('reservations/bornes.html.twig', array(
           'success' => false,
-          'error' => "Vous n'avez accès à aucun lieu ! Rendez-vous dans la section profil pour renseigner les lieux auquels vous avez accès. Si vous n'avez aucun accès, demandez à votre établissement comment en obtenir"
+          'error' => "Vous n'avez accès à aucun lieu ! Rendez-vous dans la section profil pour renseigner les lieux auquels vous avez accès. Si vous n'avez aucun accès, demandez à votre établissement comment en obtenir",
+          'rights' => $_SESSION['rights'],
+          'planning' => $planning,
+          'error_booking' => $error_booking
         ));
       } else {
         $place_choices = [];
@@ -49,7 +54,10 @@
       if(sizeof($res) == 0) {
         return $this->render('reservations/bornes.html.twig', array(
           'success' => false,
-          'error' => "Vous n'avez aucune voiture enregistrée ! Rendez-vous dans la section profil pour enregistrer une voiture afin de pouvoir réserver une borne de recharge !"
+          'error' => "Vous n'avez aucune voiture enregistrée ! Rendez-vous dans la section profil pour enregistrer une voiture afin de pouvoir réserver une borne de recharge !",
+          'rights' => $_SESSION['rights'],
+          'planning' => $planning,
+          'error_booking' => $error_booking
         ));
       } else {
         $personal_car_choices = [];
@@ -59,7 +67,7 @@
       }
 
       $obj = new BookChargingPointEntity();
-      $form = $this->createFormBuilder($obj)
+      $form = $this->get("form.factory")->createNamedBuilder('form', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType', $obj, array())
         ->add('id_place', ChoiceType::class, array(
           'choices' => $places_choice,
           'label' => "Lieu: "
@@ -67,11 +75,13 @@
   	    ->add('start_date', DateTimeType::class,array(
     		  'label' => "Date et heure d'arrivée: ",
           'date_widget' => 'single_text',
-          'widget' => 'choice'
+          'widget' => 'choice',
+          'minutes' => [0, 15, 30, 45]
     		))
     		->add('end_date', TimeType::class,array(
     		  'label' => "Heure de départ: ",
-          'widget' => 'choice'
+          'widget' => 'choice',
+          'minutes' => [0, 15, 30, 45]
     		))
         ->add('charge', RangeType::class, [
                    'attr' => [
@@ -92,17 +102,106 @@
   	     ->add('subscribe', SubmitType::class, array('label' => 'Je réserve'))
   	     ->getForm();
 
-       $form->handleRequest($request);
-       if ($form->isSubmitted() && $form->isValid()) {
-         $obj = $form->getData();
+      $obj_planning = new ShowPlanningEntity();
+      $form_planning = $this->get("form.factory")->createNamedBuilder('planning_form', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType', $obj_planning, array())
+       ->add('id_place_planning', ChoiceType::class, array(
+         'choices' => $places_choice,
+         'label' => "Lieu: "
+       ))
+       ->add('date_start', DateType::class,array(
+         'label' => "Début: ",
+         'widget' => 'single_text'
+       ))
+       ->add('date_end', DateType::class,array(
+         'label' => "Fin: ",
+         'widget' => 'single_text'
+       ))
+        ->add('show_planning', SubmitType::class, array('label' => 'Je consulte le planning'))
+        ->getForm();
 
-     		 $start_date = $obj->getStartDate();
-     		 $current_date = new DateTime("now");
-         $current_date = $current_date->format('Y:m:d');
+      if('POST' === $request->getMethod()) {
+        $form_planning->handleRequest($request);
+        $form->handleRequest($request);
 
-     		 if($start_date->format('Y:m:d') > $current_date) {
-     		    $input_start_time = ($obj->getStartDate())->format('H:i');
-     			  $input_end_time = ($obj->getEndDate())->format('H:i');
+        if($request->request->has('planning_form') && $form_planning->isValid()) {
+          $res = $form_planning->getData();
+
+          $start_date = $obj_planning->getDateStart();
+          $end_date = $obj_planning->getDateEnd();
+          $temp_end_date = clone $end_date;
+          $temp_end_date->modify("-7 day");
+
+          if($start_date->format('Y:m:d') <= $end_date->format('Y:m:d') && $temp_end_date->format('Y:m:d') <= $start_date->format('Y:m:d')) {
+            $planning_start = new DateTime();
+            $planning_start->setDate($start_date->format('Y'), $start_date->format('m'), $start_date->format('d'));
+            $planning_start->setTime(0, 0, 0);
+
+            $planning_end = new DateTime();
+            $planning_end->setDate($end_date->format('Y'), $end_date->format('m'), $end_date->format('d'));
+            $planning_end->setTime(0, 0, 0);
+
+            $plan = new AvailableTime();
+            $res = $plan->get_timeslots_with_placeId($res->getIdPlacePlanning(), array('end_date' => $planning_end, 'start_date' => $planning_start));
+            $res = $plan->humanize_arrays($res);
+            //dump($res);
+            $max_available = $res['numberMaxOfBookingPerParking'];
+            $list = $res['updatedListeOfBooking'];
+            $planning = array();
+            foreach($list as $day) {
+              $day_planning = [];
+              $readable_date = $day[0]['date']->format('D. d F');
+              $old_var = $day[0]['numberOfDisponibility'];
+              if($max_available - $old_var > 0) {
+                $dispo = "OUI";
+                $old_var = true;
+              } else {
+                $dispo = "NON";
+                $old_var = false;
+              }
+              $creneau = array(
+                'begin' => date_format($day[0]['date'], 'H:i:s'),
+                'dispo' => $dispo
+              );
+              for($i = 1; $i < sizeof($day); $i++) {
+                if($max_available - $day[$i]['numberOfDisponibility'] > 0) {
+                  $actual_var = true;
+                  $dispo = "OUI";
+                } else {
+                  $actual_var = false;
+                  $dispo = "NON";
+                }
+
+                if($old_var != $actual_var) {
+                  $creneau['end'] = date_format($day[$i]['date'], 'H:i:s');
+                  array_push($day_planning, $creneau);
+                  $old_var = $actual_var;
+                  $creneau = array(
+                    'begin' => date_format($day[$i]['date'], 'H:i:s'),
+                    'dispo' => $dispo
+                  );
+                }
+              }
+              $creneau['end'] = date_format($day[sizeof($day)-1]['date'], 'H:i:s');
+              array_push($day_planning, $creneau);
+              array_push($planning, array(
+                'day' => $readable_date,
+                'plan' => $day_planning
+              ));
+            }
+            //dump($planning);
+          }
+        }
+
+        if($request->request->has('form') && $form->isValid()) {
+          $obj = $form->getData();
+
+      		$start_date = $obj->getStartDate();
+      		$current_date = new DateTime("now");
+          $current_date = $current_date->format('Y:m:d');
+
+      		if($start_date->format('Y:m:d') > $current_date) {
+    		    $input_start_time = ($obj->getStartDate())->format('H:i');
+    			  $input_end_time = ($obj->getEndDate())->format('H:i');
 
             if($input_end_time >= $input_start_time) {
               if($obj->getCharge() < 100) {
@@ -110,29 +209,40 @@
                 $end_date->setDate($start_date->format('Y'), $start_date->format('m'), $start_date->format('d'));
                 $end_date->setTime($obj->getEndDate()->format('H'), $obj->getEndDate()->format('i'), $obj->getEndDate()->format('s'));
 
-                $resa_borne = array(
-                 'date_creation' => date_format(new DateTime("now"),'Y:m:d'),
-                 'start_date' => date_format($start_date, 'Y-m-d H:i:s'),
-                 'end_date' => date_format($end_date, 'Y-m-d H:i:s'),
-                 'date_last_modification' => $current_date,
-                 'charge' => $obj->getCharge(),
-                 'id_user' => $_SESSION['id_user'],
-                 'id_place' => $obj->getIdPlace(),
-                 'id_personal_car' => $obj->getidPersonalCar()
-                );
+                try {
+                  $plan = new AvailableTime();
+                  $plan->get_timeslots_with_placeId($obj->getIdPlace(), array('end_date' => $end_date, 'start_date' => $start_date), true);
+                  $resa_borne = array(
+                    'date_creation' => date_format(new DateTime("now"),'Y:m:d'),
+                    'start_date' => date_format($start_date, 'Y-m-d H:i:s'),
+                    'end_date' => date_format($end_date, 'Y-m-d H:i:s'),
+                    'date_last_modification' => $current_date,
+                    'charge' => $obj->getCharge(),
+                    'id_user' => $_SESSION['id_user'],
+                    'id_place' => $obj->getIdPlace(),
+                    'id_personal_car' => $obj->getidPersonalCar()
+                  );
 
-                $api->table_add("resa_borne", $resa_borne);
-                return $this->redirectToRoute('history');
+                  $api->table_add("resa_borne", $resa_borne);
+                  return $this->redirectToRoute('history');
+                } catch (\Exception $exception) {
+                  $error_booking = "Ce créneau n'est pas libre ! Vérifiez le planning avant de réserver";
+                }
+
               }
-				    }
-     		  }
+		        }
+    		  }
         }
+      }
 
-    return $this->render('reservations/bornes.html.twig', array(
-      'success' => true,
-      'form' => $form->createView()
-    ));
-
+      return $this->render('reservations/bornes.html.twig', array(
+        'success' => true,
+        'form' => $form->createView(),
+        'form_planning' => $form_planning->createView(),
+        'rights' => $_SESSION['rights'],
+        'planning' => $planning,
+        'error_booking' => $error_booking
+      ));
   }
 }
 

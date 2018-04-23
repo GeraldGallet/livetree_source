@@ -29,13 +29,13 @@
         $form = $this->createFormBuilder($user)
             ->add('email', EmailType::class, array('label' => 'Email: '))
             ->add('subscribe', SubmitType::class, array('label' => 'J\'envoie un mail'));
-
         $form = $form->getForm();
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid())  {
+
+
+        if ($form->isSubmitted() )  {
             $user = $form->getData();
             $api = new CustomApi();
-
             $email = $user->getEmail();
             $res = $api->table_get("user", array('email' => $email));
             if(sizeof($res) == 0)
@@ -44,6 +44,9 @@
                   'error' => "Votre e-mail n'est pas enregistrée sur ce site",
                   'state' => "Subscribe"
               ));
+            date_default_timezone_set('Europe/Paris');
+            $expirationDate = new DateTime("now");
+            $token =  substr(bin2hex(random_bytes(40)), 0, 10);
             $new_token = array(
               'token' => $token,
               'email' => $email,
@@ -65,7 +68,7 @@
           }
           else
            {
-          return $this->render('passwordforget.html.twig', array(
+             return $this->render('passwordforget.html.twig', array(
               'form' => $form->createView(),
               'error' => NULL,
               'state' => "Subscribe"

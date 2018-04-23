@@ -3,9 +3,41 @@
 
 {% block head %}
 {{ parent() }}
+{% block title %}Administration des bornes{% endblock %}
 {% endblock %}
 
 {% block body %}
+<header>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="/">Accueil<span class="sr-only">(current)</span></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav mr-auto">
+      {% if rights >= 0 %}
+      <li class="nav-item">
+        <a class="nav-link" href="/profil">Profil</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/bornes">Bornes</a>
+      </li>
+      {% endif %}
+      {% if rights >= 1 %}
+      <li class="nav-item">
+        <a class="nav-link" href="/voitures">Voitures</a>
+      </li>
+      {% endif %}
+      {% if rights >= 2 %}
+      <li class="nav-item active">
+        <a class="nav-link" href="/admin">Administration</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+</header>
+<br/>
 <br/>
 <a href='/admin'>Général</a>
 <a href='/admin/bornes'>Bornes</a>
@@ -17,23 +49,28 @@
 {{ form_widget(resa_form) }}
 {{ form_end(resa_form) }}
 
-<h2>Réservations de bornes</h2>
-<h3>Options de filtrage</h3>
-{{ form_start(filter_form, {'attr': {'novalidate': 'novalidate'}}) }}
-{{ form_widget(filter_form) }}
-{{ form_end(filter_form) }}
-<h3>Résultat</h3>
-<ul>
+<h2>Réservations de bornes ({{actual_min}}-{{actual_max}}/{{total}})</h2>
+{{ form_start(limit_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(limit_form['new_limit']) }} {{ form_widget(limit_form['subscribe_change']) }}
+{{ form_end(limit_form) }}
+
+{{ form_start(go_to_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(go_to_form['number']) }} {{ form_widget(go_to_form['subscribe_go_to']) }}
+{{ form_end(go_to_form) }}
+
+<a href="{{ path('change_offset_borne_admin', {'way': 0}) }}"><button>Revenir au début</button></a>
+<a href="{{ path('change_offset_borne_admin', {'way': -1}) }}"><button>{{limit}} précédent{% if limit != 1%}s{% endif %}</button></a>
+<a href="{{ path('change_offset_borne_admin', {'way': 1}) }}"><button>{{limit}} suivant{% if limit != 1%}s{% endif %}</button></a>
 {% for resa in resa_bornes %}
-<li><ul>
-  <li>{{resa.date_time}}</li>
-  <li>{{resa.start_time}}</li>
-  <li>{{resa.end_time}}</li>
-  <li>{{resa.charge}}</li>
+<hr>
+<ul>
+  <li>Début: {{resa.start_date|date('Y-m-d H:i:s')}}</li>
+  <li>Fin: {{resa.end_date|date('H:i:s')}}</li>
+  <li>Charge estimée en arrivant: {{resa.charge}}</li>
+  <li>Lieu: {{resa.place}}</li>
   <li>{{resa.id_place}}</li>
   <li>{{resa.id_user}}</li>
   <li><a href="{{ path('delete_resa_borne_admin', {'id_resa': resa.id_resa}) }}"><button>Supprimer</button></a></li>
-</ul></li>
-{% endfor %}
 </ul>
+{% endfor %}
 {% endblock %}

@@ -52,15 +52,25 @@ function get_all(res, table) {
 }
 
 function get(body, res, table) {
+  //console.log(body);
   var query = 'SELECT * FROM ' + table + ' WHERE ';
   var placeholder = [];
 
   for(var prop in body) {
-    placeholder.push(body[prop]);
-    query += prop + " = ? AND ";
+    if(prop != 'options') {
+      placeholder.push(body[prop]);
+      query += prop + " = ? AND ";
+    }
+  }
+  query += '1 ';
+
+  if(body.options != null) {
+    for(var option in body.options)
+      query += body.options[option];
   }
 
-  query += '1;';
+  query += ";";
+  //console.log(query);
   res.locals.connection.query(query, placeholder, function(error, results, fields) {
     if(error) throw error;
     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
@@ -81,11 +91,19 @@ function delete_entry(body, res, table) {
   var placeholder = [];
 
   for(var prop in body) {
-    placeholder.push(body[prop]);
-    query += prop + " = ? AND ";
+    if(prop != 'options') {
+      placeholder.push(body[prop]);
+      query += prop + " = ? AND ";
+    }
+  }
+  query += '1 ';
+
+  if(body.options != null) {
+    for(var option in body.options)
+      query += body.options[option];
   }
 
-  query += '1;';
+  query += ";";
   res.locals.connection.query(query, placeholder, function(error, results, fields) {
     if(error) throw error;
     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
@@ -108,6 +126,13 @@ function update_table(body, res, table) {
   });
 }
 
+function custom(body, res) {
+  res.locals.connection.query(body.query, function(error, results, fields) {
+    if(error) throw error;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+}
+
 function send_mail(body, res) {
   //console.log(body);
   let mailOptions = {
@@ -123,10 +148,10 @@ function send_mail(body, res) {
       res.send(JSON.stringify({"status": 404, "error": "Mail could not be sent", "response": null}));
     } else {
       console.log(info);
-      res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+      res.send(JSON.stringify({"status": 200, "error": null, "response": null}));
     }
   });
-
+  res.send(JSON.stringify({"status": 200, "error": null, "response": null}));
   return;
 }
 
@@ -137,6 +162,11 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
   var passed = false;
   if(req.params.table == "mail") {
     send_mail(req.body, res);
+    return;
+  }
+
+  if(req.params.table == "custom") {
+    custom(req.body, res);
     return;
   }
 

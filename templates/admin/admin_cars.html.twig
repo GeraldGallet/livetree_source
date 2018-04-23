@@ -3,9 +3,41 @@
 
 {% block head %}
 {{ parent() }}
+{% block title %}Administration des voitures{% endblock %}
 {% endblock %}
 
 {% block body %}
+<header>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="/">Accueil<span class="sr-only">(current)</span></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav mr-auto">
+      {% if rights >= 0 %}
+      <li class="nav-item">
+        <a class="nav-link" href="/profil">Profil</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/bornes">Bornes</a>
+      </li>
+      {% endif %}
+      {% if rights >= 1 %}
+      <li class="nav-item">
+        <a class="nav-link" href="/voitures">Voitures</a>
+      </li>
+      {% endif %}
+      {% if rights >= 2 %}
+      <li class="nav-item">
+        <a class="nav-link active" href="/admin">Administration</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+</header>
+<br/>
 <br/>
 <a href='/admin'>Général</a>
 <a href='/admin/bornes'>Bornes</a>
@@ -17,20 +49,46 @@
 {{ form_widget(car_form) }}
 {{ form_end(car_form) }}
 
-<h2>Réservations de voitures</h2>
-<ul>
+<h2>Réservations de voitures ({{actual_min}}-{{actual_max}}/{{total}})</h2>
+{{ form_start(limit_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(limit_form['new_limit']) }} {{ form_widget(limit_form['subscribe_change']) }}
+{{ form_end(limit_form) }}
+
+{{ form_start(go_to_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(go_to_form['number']) }} {{ form_widget(go_to_form['subscribe_go_to']) }}
+{{ form_end(go_to_form) }}
+
+<a href="{{ path('change_offset_car_admin', {'way': 0}) }}"><button>Revenir au début</button></a>
+<a href="{{ path('change_offset_car_admin', {'way': -1}) }}"><button>{{limit}} précédent{% if limit != 1%}s{% endif %}</button></a>
+<a href="{{ path('change_offset_car_admin', {'way': 1}) }}"><button>{{limit}} suivant{% if limit != 1%}s{% endif %}</button></a>
 {% for resa in resa_car %}
+<hr>
 <ul>
+  <li>Utilisateur: {{resa.id_user}}</li>
   <li>Début: {{resa.date_start}}  {{resa.start_time}}</li>
   <li>Début: {{resa.date_end}}  {{resa.end_time}}</li>
   <li>Kilométrage prévu: {{resa.km_planned}} kms</li>
-  <li>Heure de départ: {{resa.end_time}}</li>
   <li>Etablissement: {{resa.facility}}</li>
   <li>Raison: {{resa.id_reason}}</li>
   <li>Voiture: {{resa.id_company_car}}</li>
+  <li>Etat des lieux:
+    {% if resa.state.done %}
+    <ul>
+      <li>Avant: {{resa.state.front}}</li>
+      <li>Arrière: {{resa.state.back}}</li>
+      <li>Droite: {{resa.state.right_side}}</li>
+      <li>Gauche: {{resa.state.left_side}}</li>
+      <li>Intérieur: {{resa.state.inside}}</li>
+      <li>Commentaire: {{resa.state.commentary}}</li>
+    </ul>
+    {% else %}
+    {{ form_start(resa.state.form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_widget(resa.state.form) }}
+    {{ form_end(resa.state.form) }}
+    {% endif %}
+  </li>
   <li><a href="{{ path('delete_resa_car_admin', {'id_resa': resa.id_resa}) }}"><button>Supprimer</button></a></li>
 </ul>
 <br/>
 {% endfor %}
-</ul>
 {% endblock %}

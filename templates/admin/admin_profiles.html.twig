@@ -6,13 +6,61 @@
 {% endblock %}
 
 {% block body %}
+<header>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="/">Accueil<span class="sr-only">(current)</span></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarCollapse">
+    <ul class="navbar-nav mr-auto">
+      {% if rights >= 0 %}
+      <li class="nav-item">
+        <a class="nav-link" href="/profil">Profil</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/bornes">Bornes</a>
+      </li>
+      {% endif %}
+      {% if rights >= 1 %}
+      <li class="nav-item">
+        <a class="nav-link" href="/voitures">Voitures</a>
+      </li>
+      {% endif %}
+      {% if rights >= 2 %}
+      <li class="nav-item">
+        <a class="nav-link active" href="/admin">Administration</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+</header>
 <br/>
 <a href='/admin'>Général</a>
 <a href='/admin/bornes'>Bornes</a>
 <a href='/admin/voitures'>Voitures</a>
 <a href='/admin/profils'>Profils</a>
 <h1>Administration des profils</h1>
+<h2>Créer un profil</h2>
+<p>{{ error }}</p>
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(form) }}
+{{ form_end(form) }}
+<h2>Gérer les profils ({{actual_min}}-{{actual_max}}/{{total}})</h2>
+{{ form_start(limit_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(limit_form['new_limit']) }} {{ form_widget(limit_form['subscribe_change']) }}
+{{ form_end(limit_form) }}
+
+{{ form_start(go_to_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
+{{ form_widget(go_to_form['number']) }} {{ form_widget(go_to_form['subscribe_go_to']) }}
+{{ form_end(go_to_form) }}
+
+<a href="{{ path('change_offset_user_admin', {'way': 0}) }}"><button>Revenir au début</button></a>
+<a href="{{ path('change_offset_user_admin', {'way': -1}) }}"><button>{{limit}} précédent{% if limit != 1%}s{% endif %}</button></a>
+<a href="{{ path('change_offset_user_admin', {'way': 1}) }}"><button>{{limit}} suivant{% if limit != 1%}s{% endif %}</button></a>
 {% for profile in profiles %}
+<hr>
   <ul>
     <li>{{profile.first_name}} {{profile.last_name}} ({{profile.id_user}}) </li>
     <li>{{profile.email}}</li>

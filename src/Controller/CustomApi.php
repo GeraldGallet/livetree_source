@@ -11,10 +11,11 @@
 
     // The functions we will use to touch to DB
     public function table_get_all($table);
-    public function table_get($table, $body);
+    public function table_get($table, $body, $options = null);
     public function table_add($table, $body);
-    public function table_delete($table, $body);
+    public function table_delete($table, $body, $options = null);
     public function table_update($table, $set, $where);
+    public function custom_request($request);
     public function send_mail($body);
   }
 
@@ -76,7 +77,8 @@
       return $result['response'];
     }
 
-    public function table_get($table, $body) {
+    public function table_get($table, $body, $options = null) {
+      $body['options'] = $options;
       $query = $table . "/get/";
       $ch = $this->api_connect($this->url . $query);
       $ch = $this->api_options($ch, "POST", json_encode($body));
@@ -98,7 +100,8 @@
     }
 
 
-    public function table_delete($table, $body) {
+    public function table_delete($table, $body, $options = null) {
+      $body['options'] = $options;
       $query = $table . "/";
 
       $ch = $this->api_connect($this->url . $query);
@@ -126,6 +129,20 @@
       $ch = $this->api_connect($this->url . "mail/send");
       $ch = $this->api_options($ch, "POST", json_encode($body));
       $result = curl_exec($ch);
+    }
+
+    public function custom_request($request) {
+      $body = array(
+        'query' => $request
+      );
+      $query = "custom/custom";
+      $ch = $this->api_connect($this->url . $query);
+      $ch = $this->api_options($ch, "POST", json_encode($body));
+      $result = curl_exec($ch);
+      curl_close($ch);
+
+      $result = json_decode($result, true);
+      return $result['response'];
     }
 
   }

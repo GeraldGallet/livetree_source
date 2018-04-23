@@ -1,0 +1,92 @@
+/* GLOBAL STYLES
+-------------------------------------------------- */
+/* Padding below the footer and lighter body text */
+
+body {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  color: #5a5a5a;
+}
+
+
+/* CUSTOMIZE THE CAROUSEL
+-------------------------------------------------- */
+
+/* Carousel base class */
+.carousel {
+  margin-bottom: 4rem;
+}
+/* Since positioning the image, we need to help out the caption */
+.carousel-caption {
+  bottom: 3rem;
+  z-index: 10;
+}
+
+/* Declare heights because of positioning of img element */
+.carousel-item {
+  height: 32rem;
+  background-color: #777;
+}
+.carousel-item > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  height: 32rem;
+}
+
+
+/* MARKETING CONTENT
+-------------------------------------------------- */
+
+/* Center align the text within the three columns below the carousel */
+.marketing .col-lg-4 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.marketing h2 {
+  font-weight: 400;
+}
+.marketing .col-lg-4 p {
+  margin-right: .75rem;
+  margin-left: .75rem;
+}
+
+
+/* Featurettes
+------------------------- */
+
+.featurette-divider {
+  margin: 5rem 0; /* Space out the Bootstrap <hr> more */
+}
+
+/* Thin out the marketing headings */
+.featurette-heading {
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -.05rem;
+}
+
+
+/* RESPONSIVE CSS
+-------------------------------------------------- */
+
+@media (min-width: 40em) {
+  /* Bump up size of carousel content */
+  .carousel-caption p {
+    margin-bottom: 1.25rem;
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .featurette-heading {
+    font-size: 50px;
+  }
+}
+
+@media (min-width: 62em) {
+  .featurette-heading {
+    margin-top: 7rem;
+  }
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9hc3NldHMvY3NzL2Nhcm91c2VsLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtxREFDcUQ7QUFDckQsb0RBQW9EOztBQUVwRDtFQUNFLGtCQUFrQjtFQUNsQixxQkFBcUI7RUFDckIsZUFBZTtDQUNoQjs7O0FBR0Q7cURBQ3FEOztBQUVyRCx5QkFBeUI7QUFDekI7RUFDRSxvQkFBb0I7Q0FDckI7QUFDRCxrRUFBa0U7QUFDbEU7RUFDRSxhQUFhO0VBQ2IsWUFBWTtDQUNiOztBQUVELDJEQUEyRDtBQUMzRDtFQUNFLGNBQWM7RUFDZCx1QkFBdUI7Q0FDeEI7QUFDRDtFQUNFLG1CQUFtQjtFQUNuQixPQUFPO0VBQ1AsUUFBUTtFQUNSLGdCQUFnQjtFQUNoQixjQUFjO0NBQ2Y7OztBQUdEO3FEQUNxRDs7QUFFckQsdUVBQXVFO0FBQ3ZFO0VBQ0Usc0JBQXNCO0VBQ3RCLG1CQUFtQjtDQUNwQjtBQUNEO0VBQ0UsaUJBQWlCO0NBQ2xCO0FBQ0Q7RUFDRSxxQkFBcUI7RUFDckIsb0JBQW9CO0NBQ3JCOzs7QUFHRDs0QkFDNEI7O0FBRTVCO0VBQ0UsZUFBZSxDQUFDLHVDQUF1QztDQUN4RDs7QUFFRCxxQ0FBcUM7QUFDckM7RUFDRSxpQkFBaUI7RUFDakIsZUFBZTtFQUNmLHdCQUF3QjtDQUN6Qjs7O0FBR0Q7cURBQ3FEOztBQUVyRDtFQUNFLHNDQUFzQztFQUN0QztJQUNFLHVCQUF1QjtJQUN2QixtQkFBbUI7SUFDbkIsaUJBQWlCO0dBQ2xCOztFQUVEO0lBQ0UsZ0JBQWdCO0dBQ2pCO0NBQ0Y7O0FBRUQ7RUFDRTtJQUNFLGlCQUFpQjtHQUNsQiIsImZpbGUiOiJhcHAuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLyogR0xPQkFMIFNUWUxFU1xyXG4tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqL1xyXG4vKiBQYWRkaW5nIGJlbG93IHRoZSBmb290ZXIgYW5kIGxpZ2h0ZXIgYm9keSB0ZXh0ICovXHJcblxyXG5ib2R5IHtcclxuICBwYWRkaW5nLXRvcDogM3JlbTtcclxuICBwYWRkaW5nLWJvdHRvbTogM3JlbTtcclxuICBjb2xvcjogIzVhNWE1YTtcclxufVxyXG5cclxuXHJcbi8qIENVU1RPTUlaRSBUSEUgQ0FST1VTRUxcclxuLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0gKi9cclxuXHJcbi8qIENhcm91c2VsIGJhc2UgY2xhc3MgKi9cclxuLmNhcm91c2VsIHtcclxuICBtYXJnaW4tYm90dG9tOiA0cmVtO1xyXG59XHJcbi8qIFNpbmNlIHBvc2l0aW9uaW5nIHRoZSBpbWFnZSwgd2UgbmVlZCB0byBoZWxwIG91dCB0aGUgY2FwdGlvbiAqL1xyXG4uY2Fyb3VzZWwtY2FwdGlvbiB7XHJcbiAgYm90dG9tOiAzcmVtO1xyXG4gIHotaW5kZXg6IDEwO1xyXG59XHJcblxyXG4vKiBEZWNsYXJlIGhlaWdodHMgYmVjYXVzZSBvZiBwb3NpdGlvbmluZyBvZiBpbWcgZWxlbWVudCAqL1xyXG4uY2Fyb3VzZWwtaXRlbSB7XHJcbiAgaGVpZ2h0OiAzMnJlbTtcclxuICBiYWNrZ3JvdW5kLWNvbG9yOiAjNzc3O1xyXG59XHJcbi5jYXJvdXNlbC1pdGVtID4gaW1nIHtcclxuICBwb3NpdGlvbjogYWJzb2x1dGU7XHJcbiAgdG9wOiAwO1xyXG4gIGxlZnQ6IDA7XHJcbiAgbWluLXdpZHRoOiAxMDAlO1xyXG4gIGhlaWdodDogMzJyZW07XHJcbn1cclxuXHJcblxyXG4vKiBNQVJLRVRJTkcgQ09OVEVOVFxyXG4tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqL1xyXG5cclxuLyogQ2VudGVyIGFsaWduIHRoZSB0ZXh0IHdpdGhpbiB0aGUgdGhyZWUgY29sdW1ucyBiZWxvdyB0aGUgY2Fyb3VzZWwgKi9cclxuLm1hcmtldGluZyAuY29sLWxnLTQge1xyXG4gIG1hcmdpbi1ib3R0b206IDEuNXJlbTtcclxuICB0ZXh0LWFsaWduOiBjZW50ZXI7XHJcbn1cclxuLm1hcmtldGluZyBoMiB7XHJcbiAgZm9udC13ZWlnaHQ6IDQwMDtcclxufVxyXG4ubWFya2V0aW5nIC5jb2wtbGctNCBwIHtcclxuICBtYXJnaW4tcmlnaHQ6IC43NXJlbTtcclxuICBtYXJnaW4tbGVmdDogLjc1cmVtO1xyXG59XHJcblxyXG5cclxuLyogRmVhdHVyZXR0ZXNcclxuLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqL1xyXG5cclxuLmZlYXR1cmV0dGUtZGl2aWRlciB7XHJcbiAgbWFyZ2luOiA1cmVtIDA7IC8qIFNwYWNlIG91dCB0aGUgQm9vdHN0cmFwIDxocj4gbW9yZSAqL1xyXG59XHJcblxyXG4vKiBUaGluIG91dCB0aGUgbWFya2V0aW5nIGhlYWRpbmdzICovXHJcbi5mZWF0dXJldHRlLWhlYWRpbmcge1xyXG4gIGZvbnQtd2VpZ2h0OiAzMDA7XHJcbiAgbGluZS1oZWlnaHQ6IDE7XHJcbiAgbGV0dGVyLXNwYWNpbmc6IC0uMDVyZW07XHJcbn1cclxuXHJcblxyXG4vKiBSRVNQT05TSVZFIENTU1xyXG4tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSAqL1xyXG5cclxuQG1lZGlhIChtaW4td2lkdGg6IDQwZW0pIHtcclxuICAvKiBCdW1wIHVwIHNpemUgb2YgY2Fyb3VzZWwgY29udGVudCAqL1xyXG4gIC5jYXJvdXNlbC1jYXB0aW9uIHAge1xyXG4gICAgbWFyZ2luLWJvdHRvbTogMS4yNXJlbTtcclxuICAgIGZvbnQtc2l6ZTogMS4yNXJlbTtcclxuICAgIGxpbmUtaGVpZ2h0OiAxLjQ7XHJcbiAgfVxyXG5cclxuICAuZmVhdHVyZXR0ZS1oZWFkaW5nIHtcclxuICAgIGZvbnQtc2l6ZTogNTBweDtcclxuICB9XHJcbn1cclxuXHJcbkBtZWRpYSAobWluLXdpZHRoOiA2MmVtKSB7XHJcbiAgLmZlYXR1cmV0dGUtaGVhZGluZyB7XHJcbiAgICBtYXJnaW4tdG9wOiA3cmVtO1xyXG4gIH1cclxufVxuXG5cbi8vIFdFQlBBQ0sgRk9PVEVSIC8vXG4vLyAuL2Fzc2V0cy9jc3MvY2Fyb3VzZWwuY3NzIl0sInNvdXJjZVJvb3QiOiIifQ==*/
