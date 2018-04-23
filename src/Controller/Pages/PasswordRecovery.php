@@ -97,10 +97,8 @@
         'expiration_time' => date_format($expirationDate, 'Y-m-d H:i:s'),
       ), array('token' => $token));
 
-      $email = $api->table_get("user", array('id_user' => $res['id_user']))[0]['email'];
       return $this->render('passwordforget.html.twig', array(
           'state' => "Validation"
-          'email' => $email,
       ));
     }
   }

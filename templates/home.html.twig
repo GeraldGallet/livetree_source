@@ -49,12 +49,12 @@
     <a href=/deconnexion>{{first_name}} {{last_name}} (Déconnexion)</a>
   {% else %}
     <a href='/inscription'><button>S'inscrire</button></a>
-    
+
     <p>{{ error }}</p>
     {{ form_start(connection_form, {'attr': {'novalidate': 'novalidate'}}) }}
     {{ form_widget(connection_form) }}
     {{ form_end(connection_form) }}
-    <a href='/passwordForget'><button>Mot de passe oublié</button></a>
+    <a href='motdepasse'><button>Mot de passe oublié</button></a>
   {% endif %}
   <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
