@@ -50,8 +50,8 @@
 <h1>Historique</h1>
 <h2>Réservations de bornes</h2>
 <h3>A venir</h3>
-{% for resa in resa_borne_futur %}
 <hr>
+{% for resa in resa_borne_futur %}
   <ul>
     <li>Début: {{resa.start_date|date('Y-m-d H:i:s')}}</li>
     <li>Fin: {{resa.end_date|date('H:i:s')}}</li>
@@ -59,21 +59,23 @@
     <li>Lieu: {{resa.place}}</li>
     <li><a href="{{ path('delete_resa_borne', {'id_resa': resa.id_resa}) }}"><button>Annuler</button></a></li>
   </ul>
+  <hr>
 {% endfor %}
 <h3>Historique</h3>
-{% for resa in resa_borne_past %}
 <hr>
+{% for resa in resa_borne_past %}
   <ul>
     <li>Début: {{resa.start_date|date('Y-m-d H:i:s')}}</li>
     <li>Fin: {{resa.end_date|date('H:i:s')}}</li>
     <li>Charge estimée en arrivant: {{resa.charge}}</li>
     <li>Lieu: {{resa.place}}</li>
   </ul>
+  <hr>
 {% endfor %}
 <h2>Réservations de véhicules</h2>
 <h3>A venir</h3>
+<hr>
 {% for resa in resa_car_futur %}
-  <hr>
   <ul>
     <li>Début: {{resa.date_start|date('Y-m-d')}}  {{resa.start_time|date('H:i:s')}}</li>
     <li>Fin: {{resa.date_end|date('Y-m-d')}}  {{resa.end_time|date('H:i:s')}}</li>
@@ -101,10 +103,11 @@
     </li>
     <li><a href="{{ path('delete_resa_car', {'id_resa': resa.id_resa}) }}"><button>Annuler</button></a></li>
   </ul>
+  <hr>
 {% endfor %}
 <h3>Historique</h3>
-{% for resa in resa_car_past %}
 <hr>
+{% for resa in resa_car_past %}
 <ul>
   <li>Début: {{resa.date_start|date('Y-m-d')}}  {{resa.start_time|date('H:i:s')}}</li>
   <li>Fin: {{resa.date_end|date('Y-m-d')}}  {{resa.end_time|date('H:i:s')}}</li>
@@ -129,5 +132,6 @@
 
   </li>
 </ul>
+<hr>
 {% endfor %}
 {% endblock %}

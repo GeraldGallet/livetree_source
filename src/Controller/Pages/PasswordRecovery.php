@@ -23,14 +23,19 @@
       if(sizeof($res) == 0)
         return $this->redirectToRoute('accueil');
 
-      $form = $this->get('form.factory')->createNamedBuilder('password_recovery')
-          ->add('new_password', PasswordType::class, array('label' => 'Nouveau mot de passe: '))
-          ->add('new_password_confirmation', PasswordType::class, array('label' => 'Confirmez nouveau mot de passe: '))
-          ->add('subscribe', SubmitType::class, array('label' => 'je change mon mot de passe'));
+      date_default_timezone_set('Europe/Paris');
+      $res = $res[0];
+      $currentDate = (new DateTime("now"));
+      $expDate = date_create($res['expiration_time']);
+
+      if($currentDate < $expDate) {
+        $form = $this->get('form.factory')->createNamedBuilder('password_recovery')
+        ->add('new_password', PasswordType::class, array('label' => 'Nouveau mot de passe: '))
+        ->add('new_password_confirmation', PasswordType::class, array('label' => 'Confirmez nouveau mot de passe: '))
+        ->add('subscribe', SubmitType::class, array('label' => 'Je change mon Mot de Passe'));
         $form = $form->getForm();
 
-      if('POST' === $request->getMethod()) {
-
+        if('POST' === $request->getMethod()) {
           $form->handleRequest($request);
           if($request->request->has('password_recovery') && $form->isValid()) {
             $api = new CustomApi();
@@ -52,13 +57,8 @@
                 'state' => "Subscribe2"
               ));
             }
-            date_default_timezone_set('Europe/Paris');
-            $res = $res[0];
-            $currentDate = (new DateTime("now"));
-            $expDate = date_create($res['expiration_time']);
+
             $password = password_hash($password,PASSWORD_DEFAULT);
-
-
 
             if($currentDate < $expDate) {
               $api->table_update("user",  array('password' =>$password), array('id_user' => $res['id_user']));
@@ -81,7 +81,13 @@
           'state' => "Subscribe2"
         ));
 
+      } else {
+        return $this->render('passwordforget.html.twig', array(
+          'token' => $res['token'],
+          'state' => "Resend"
+        ));
       }
+    }
 
     /**
       * @Route("/resend_password_recovery/{token}", name="new_password_recovery")
@@ -92,13 +98,24 @@
       $expirationDate->modify("+1 hour");
       $api = new CustomApi();
       $res = $api->table_get("password_recovery", array('token' => $token))[0];
+      $new_token = substr(bin2hex(random_bytes(40)), 0, 10);
       $api->table_update("password_recovery", array(
-        'token' => substr(bin2hex(random_bytes(40)), 0, 10),
+        'token' => $new_token,
         'expiration_time' => date_format($expirationDate, 'Y-m-d H:i:s'),
       ), array('token' => $token));
 
+      $link = "http://localhost:8000/nouveaumotdepasse/" . $new_token;
+      $email = $api->table_get("user", array('id_user' => $res['id_user']))[0]['email'];
+      $mail_body = array(
+        'email' => $email,
+        'subject' => "Oubli de mot de passe",
+        'html' => "<p>Vous pouvez changer votre mot de passe LiveTree en cliquant sur <u><a href=\"" . $link . "\">ce lien</a></u></p>"
+        );
+      $api->send_mail($mail_body);
+
       return $this->render('passwordforget.html.twig', array(
-          'state' => "Validation"
+          'state' => "Validation",
+          'email' => $email
       ));
     }
   }

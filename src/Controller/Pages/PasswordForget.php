@@ -51,6 +51,7 @@
 
             date_default_timezone_set('Europe/Paris');
             $expirationDate = new DateTime("now");
+            $expirationDate->modify("+1 hour");
             $token =  substr(bin2hex(random_bytes(40)), 0, 10);
             $new_token = array(
               'token' => $token,
