@@ -308,6 +308,58 @@
       }
       return $this->redirectToRoute('admin_profiles');
     }
+
+    /**
+      * @Route("/admin/profils/extract", name="extract_profiles_admin")
+      */
+    public function extract_profiles() {
+      $api = new CustomApi();
+      if(!isset($_SESSION['id_user']))
+        return $this->redirectToRoute('accueil');
+
+      $rights = $_SESSION['rights'];
+      if($rights < 2)
+        return $this->redirectToRoute('accueil');
+
+      $facility_choices = [];
+      $facility_options = "AND (";
+      if($rights == 2) {
+        foreach($api->table_get("work", array('id_user' => $_SESSION['id_user'])) as $work) {
+          array_push($facility_choices, $work['id_facility']);
+          $facility_options .= 'id_facility = ' . $work['id_facility'] . " OR ";
+        }
+      } else {
+        foreach($api->table_get_all("facility") as $fac) {
+          array_push($facility_choices, $fac['id_facility']);
+          $facility_options .= 'id_facility = ' . $work['id_facility'] . " OR ";
+        }
+      }
+      $facility_options .= "1) ";
+
+      $profiles = [];
+      foreach($facility_choices as $id_fac) {
+        $options = [$facility_options, "LIMIT " . $_SESSION['limit_profiles'] . " ", "OFFSET " . $_SESSION['offset_profiles'] . " "];
+        $res = $api->table_get("work", array(), $options);
+        foreach($res as $work) {
+            $user = $api->table_get("user", array('id_user' => $work['id_user']))[0];
+            array_push($profiles, array(
+              'id_user' => $user['id_user'],
+              'email' => $user['email'],
+              'last_name' => $user['last_name'],
+              'first_name' => $user['first_name'],
+              'activated' => $user['activated'],
+              'phone_number' => $user['phone_number'],
+              'indicative' => $user['indicative'],
+              'id_status' => $user['id_status']
+            ));
+        }
+      }
+
+      $fp = fopen('profiles.json', 'w');
+      fwrite($fp, json_encode($profiles));
+      fclose($fp);
+      return $this->redirectToRoute('admin_profiles');
+    }
   }
 
  ?>

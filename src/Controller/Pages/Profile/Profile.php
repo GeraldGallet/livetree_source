@@ -6,7 +6,7 @@
   use App\Entity\Work;
   use App\Entity\Access;
   use \DateTime;
-  
+
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Response;
   use Symfony\Component\HttpFoundation\Request;
@@ -199,7 +199,13 @@
       $currentDate = new DateTime("now");
       $currentDate = date_format($currentDate, 'Y-m-d');
       $options = ['AND date_end > \'' . $currentDate . '\' '];
-      $api->table_delete("resa_car", array('id_user' => $id_user), $options);
+      foreach($api->table_get("resa_car", array('id_user' => $id_user), $options) as $resa) {
+        $api->table_update("state", array('id_resa' => NULL), array('id_state' => $resa['id_state']));
+        $api->table_delete("resa_car", array('id_resa' => $id_resa));
+        $api->table_delete("state", array('id_state' => $resa['id_state']));
+      }
+
+
       $api->table_update("resa_car", array('id_user' => null), array('id_user' => $id_user));
       $api->table_delete("personal_car", array('id_user' => $id_user));
       $api->table_delete("has_access", array('id_user' => $id_user));

@@ -259,11 +259,45 @@
     }
 
     /**
-      * @Route("/admin/bornes/extract/{data}", name="extract_charging_points_admin")
+      * @Route("/admin/bornes/extract", name="extract_charging_points_admin")
       */
-    public function extract_data($data) {
+    public function extract_data() {
+      $api = new CustomApi();
+      if(!isset($_SESSION['id_user']))
+        return $this->redirectToRoute('accueil');
+
+      $rights = $_SESSION['rights'];
+      if($rights < 2)
+        return $this->redirectToRoute('accueil');
+
+      $place_options = "AND (";
+      if($rights == 3) {
+        foreach($api->table_get_all("place") as $place) {
+          $place_options .= 'id_place = ' . $place['id_place'] . " OR ";
+        }
+      } else {
+        foreach($api->table_get("has_access", array('id_user' => $_SESSION['id_user'])) as $acc) {
+          $place_options .= 'id_place = ' . $acc['id_place'] . " OR ";
+        }
+      }
+      $place_options .= "1)";
+
+      $resas = [];
+      $options = [$place_options, "ORDER BY start_date DESC ", "LIMIT " . $_SESSION['limit_charging_points'] . " ", "OFFSET " . $_SESSION['offset_charging_points'] . " "];
+      $res = $api->table_get("resa_borne", array(), $options);
+      foreach($res as $resa) {
+        array_push($resas, array(
+          'start_date' => $resa['start_date'],
+          'end_date' => $resa['end_date'],
+          'charge' => $resa['charge'],
+          'id_place' => $api->table_get("place", array('id_place' => $resa['id_place']))[0]['name'],
+          'id_user' => $api->table_get("user", array('id_user' => $resa['id_user']))[0]['email'],
+          'id_resa' => $resa['id_resa']
+        ));
+      }
+
       $fp = fopen('charging_points.json', 'w');
-      fwrite($fp, $data);
+      fwrite($fp, json_encode($resas));
       fclose($fp);
       return $this->redirectToRoute('admin_bornes');
     }
