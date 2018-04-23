@@ -53,9 +53,15 @@
       $car_form = NULL;
       $car_form = $this->createFormBuilder($reservationCar)
         ->add('id_company_car', ChoiceType::class, array('choices' => $company_car_choices, 'label' => "Voiture"))
-        ->add('date_start', DateType::class, array('label' => "Date de départ"))
+        ->add('date_start', DateType::class,array(
+    		  'label' => "Date de départ: ",
+           'widget' => 'single_text',
+    		  ))
         ->add('start_time', TimeType::class, array('label' => "Heure de départ"))
-        ->add('date_end', DateType::class, array('label' => "Date du retour"))
+        ->add('date_end', DateType::class,array(
+    		  'label' => "Date de retour: ",
+           'widget' => 'single_text',
+    		  ))
         ->add('end_time', TimeType::class, array('label' => "Heure du retour"))
         ->add('id_reason', ChoiceType::class, array('choices' => $reason_choices, 'label' => "Raison de l'emprunt"))
         ->add('reason_details', TextType::class, array('label' => "Détails si nécessaire"))

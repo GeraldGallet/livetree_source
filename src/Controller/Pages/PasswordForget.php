@@ -63,11 +63,14 @@
             ));
 
           }
+          else
+           {
           return $this->render('passwordforget.html.twig', array(
               'form' => $form->createView(),
               'error' => NULL,
               'state' => "Subscribe"
                 ));
+          }
       }
 
 
