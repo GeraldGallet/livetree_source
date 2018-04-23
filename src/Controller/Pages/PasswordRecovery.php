@@ -5,47 +5,83 @@
   use App\Controller\CustomApi;
   use \DateTime;
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+  use Symfony\Component\HttpFoundation\Request;
   use Symfony\Component\HttpFoundation\Response;
   use Symfony\Component\Routing\Annotation\Route;
   use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+  use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
   class PasswordRecovery extends Controller
   {
     /**
       * @Route("/nouveaumotdepasse/{token}", name="PasswordRecovery")
       */
-    public function load_validation($token) {
+    public function change_password(Request $request,$token) {
       $api = new CustomApi();
 
       $res = $api->table_get("password_recovery", array('token' => $token));
       if(sizeof($res) == 0)
         return $this->redirectToRoute('accueil');
 
-      date_default_timezone_set('Europe/Paris');
-      $res = $res[0];
-      $currentDate = (new DateTime("now"));
-      $expDate = date_create($res['expiration_time']);
-      $email = $api->table_get("user", array('id_user' => $res['id_user']))[0]['email'];
+      $form = $this->get('form.factory')->createNamedBuilder('password_recovery')
+          ->add('new_password', PasswordType::class, array('label' => 'Nouveau mot de passe: '))
+          ->add('new_password_confirmation', PasswordType::class, array('label' => 'Confirmez nouveau mot de passe: '))
+          ->add('subscribe', SubmitType::class, array('label' => 'je change mon mot de passe'));
+        $form = $form->getForm();
+
+      if('POST' === $request->getMethod()) {
+
+          $form->handleRequest($request);
+          if($request->request->has('password_recovery') && $form->isValid()) {
+            $api = new CustomApi();
+            $password = $form->getData()['new_password'];
+            $password_confirmation = $form->getData()['new_password_confirmation'];
+
+            if(sizeof($password) == 0 || sizeof($password_confirmation) == 0){
+              return $this->render('passwordforget.html.twig', array(
+                'form' => $form->createView(),
+                'error' => "Vous n'avez renseigné aucun mot de passe",
+                'state' => "Subscribe2"
+              ));
+            }
+
+            if( $password != $password_confirmation){
+              return $this->render('passwordforget.html.twig', array(
+                'form' => $form->createView(),
+                'error' => "Votre mot de passe ne correspond pas",
+                'state' => "Subscribe2"
+              ));
+            }
+            date_default_timezone_set('Europe/Paris');
+            $res = $res[0];
+            $currentDate = (new DateTime("now"));
+            $expDate = date_create($res['expiration_time']);
+            $password = password_hash($password,PASSWORD_DEFAULT);
 
 
 
-      if($currentDate < $expDate) {
-        $api->table_update("user",  array('email' => $res['email']));
-        $api->table_delete("email_validate", array('token' => $token));
-        return $this->render('validation.html.twig', array(
-          'success' => true,
-          'email' => $res['email']
+            if($currentDate < $expDate) {
+              $api->table_update("user",  array('password' =>$password), array('id_user' => $res['id_user']));
+              $api->table_delete("password_recovery", array('token' => $token));
+              return $this->render('passwordforget.html.twig', array(
+                'state' => "Validation2"
+              ));
+            } else {
+              return $this->render('passwordforget.html.twig', array(
+                'form' => $form->createView(),
+                'error' => "Session expirée ",
+                'state' => "Resend"
+              ));
+            }
+          }
+        }
+        return $this->render('passwordforget.html.twig', array(
+          'form' => $form->createView(),
+          'error' => Null,
+          'state' => "Subscribe2"
         ));
-      } else {
-        return $this->render('validation.html.twig', array(
-          'success' => false,
-          'email' => $res['email'],
-          'token' => $token
-        ));
+
       }
-
-
-    }
 
     /**
       * @Route("/resend_password_recovery/{token}", name="new_password_recovery")
@@ -62,10 +98,9 @@
       ), array('token' => $token));
 
       $email = $api->table_get("user", array('id_user' => $res['id_user']))[0]['email'];
-      return $this->render('forms/inscription.html.twig', array(
-          'email' => $email,
-          'visiting' => false,
+      return $this->render('passwordforget.html.twig', array(
           'state' => "Validation"
+          'email' => $email,
       ));
     }
   }
