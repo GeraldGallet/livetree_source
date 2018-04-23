@@ -67,9 +67,8 @@
   <li>Début: {{resa.start_date|date('Y-m-d H:i:s')}}</li>
   <li>Fin: {{resa.end_date|date('H:i:s')}}</li>
   <li>Charge estimée en arrivant: {{resa.charge}}</li>
-  <li>Lieu: {{resa.place}}</li>
-  <li>{{resa.id_place}}</li>
-  <li>{{resa.id_user}}</li>
+  <li>Lieu: {{resa.id_place}}</li>
+  <li>Utilisateur: {{resa.id_user}}</li>
   <li><a href="{{ path('delete_resa_borne_admin', {'id_resa': resa.id_resa}) }}"><button>Supprimer</button></a></li>
 </ul>
 {% endfor %}

@@ -238,6 +238,11 @@
         }
       }
 
+      if($actual_max == 0)
+        $actual_min = 0;
+      else
+        $actual_min = $_SESSION['offset_cars']+1;
+
       return $this->render('admin/admin_cars.html.twig', array(
         'resa_car' => $resa_car,
         'car_form' => $car_form->createView(),
@@ -246,7 +251,7 @@
         'go_to_form' => $go_to_form->createView(),
         'limit' => $_SESSION['limit_cars'],
         'offset' => $_SESSION['offset_cars'],
-        'actual_min' => $_SESSION['offset_cars']+1,
+        'actual_min' => $actual_min,
         'actual_max' => $actual_max,
         'total' => $_SESSION['total_cars']
       ));
@@ -280,7 +285,26 @@
       if(!$present)
         return $this->redirectToRoute('accueil');
 
+      $email = $api->table_get("user", array('id_user' => $resa['id_user']))[0]['email'];
+
+      $mail_body = array(
+        'email' => $email,
+        'subject' => "Annulation de votre réservation n°" . $id_resa,
+        'html' => "<p>Votre réservation de voiture décrite ci-dessous a été supprimée par l'Administrateur " . $_SESSION['first_name'] . " " . $_SESSION['last_name'] . "</p>
+        <ul>
+          <li>Début: " . $resa['date_start'] . " à " . $resa['start_time'] . "</li>
+          <li>Fin: " . $resa['date_end'] . " à " . $resa['end_time'] . "</li>
+          <li>Raison: " . $resa['id_reason'] . "</li>
+          <li>Voiture: " . $api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0]['name'] . "</li>
+        <ul>
+        <p>Vous pouvez le contacter à l'adresse <u>" . $_SESSION['email'] . "</u>.</p>
+        "
+      );
+
+      $api->send_mail($mail_body);
+      $api->table_update("state", array('id_resa' => NULL), array('id_state' => $resa['id_state']));
       $api->table_delete("resa_car", array('id_resa' => $id_resa));
+      $api->table_delete("state", array('id_state' => $resa['id_state']));
       return $this->redirectToRoute('admin_cars');
     }
 

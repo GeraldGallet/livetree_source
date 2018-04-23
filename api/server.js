@@ -134,7 +134,7 @@ function custom(body, res) {
 }
 
 function send_mail(body, res) {
-  //console.log(body);
+  console.log(body);
   let mailOptions = {
     from: 'Live Tree Web <coelablivetree@gmail.com>', // sender address
     to: body.email, // list of receivers
@@ -148,7 +148,7 @@ function send_mail(body, res) {
       res.send(JSON.stringify({"status": 404, "error": "Mail could not be sent", "response": null}));
     } else {
       console.log(info);
-      res.send(JSON.stringify({"status": 200, "error": null, "response": null}));
+      //res.send(JSON.stringify({"status": 200, "error": null, "response": null}));
     }
   });
   res.send(JSON.stringify({"status": 200, "error": null, "response": null}));

@@ -182,7 +182,7 @@
         $actual_min = 0;
       else
         $actual_min = $_SESSION['offset_charging_points']+1;
-        
+
       return $this->render('admin/admin_bornes.html.twig', array(
             'resa_bornes' => $resas,
             'resa_form' => $resa_form->createView(),
@@ -224,6 +224,22 @@
       if(!$present)
         return $this->redirectToRoute('accueil');
 
+      $email = $api->table_get("user", array('id_user' => $resa['id_user']))[0]['email'];
+      $mail_body = array(
+        'email' => $email,
+        'subject' => "Annulation de votre réservation n°" . $id_resa,
+        'html' => "<p>Votre réservation de borne décrite ci-dessous a été supprimée par l'Administrateur " . $_SESSION['first_name'] . " " . $_SESSION['last_name'] . "</p>
+        <ul>
+          <li>Début: " . $resa['start_date'] . "</li>
+          <li>Fin: " . $resa['end_date'] . "</li>
+          <li>Charge estimée en arrivant: " . $resa['charge'] . "</li>
+          <li>Lieu: " . $api->table_get("place", array('id_place' => $resa['id_place']))[0]['name'] . "</li>
+        <ul>
+        <p>Vous pouvez le contacter à l'adresse <u>" . $_SESSION['email'] . "</u>.</p>
+        "
+      );
+
+      $api->send_mail($mail_body);
       $api->table_delete("resa_borne", array('id_resa' => $id_resa));
       return $this->redirectToRoute('admin_bornes');
     }
