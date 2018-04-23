@@ -12,7 +12,7 @@
   class PasswordRecovery extends Controller
   {
     /**
-      * @Route("/PasswordRecovery/{token}", name="PasswordRecovery")
+      * @Route("/nouveaumotdepasse/{token}", name="PasswordRecovery")
       */
     public function load_validation($token) {
       $api = new CustomApi();
