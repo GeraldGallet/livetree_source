@@ -13,7 +13,7 @@ app.listen(port);
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 
-var cmds = ["user", "status", "personal_car", "facility", "place", "company_car", "borne", "work", "domain", "has_domain", "phone_indicative", "has_access", "resa_borne", "reason", "resa_car", "state", "email_validate"];
+var cmds = ["user", "status", "personal_car", "facility", "place", "company_car", "borne", "work", "domain", "has_domain", "phone_indicative", "has_access", "resa_borne", "reason", "resa_car", "state", "email_validate", "password_recovery"];
 
 // Partie envoi de mail avec Nodemailer et le SMTP de Google
 'use strict';
