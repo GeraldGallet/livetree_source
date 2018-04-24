@@ -62,7 +62,7 @@
 
       $currentDate = new DateTime("now");
       $currentDate = date_format($currentDate, 'Y-m-d');
-      $options = ['AND date_end > \'' . $currentDate . '\' '];
+      $options = ['AND date_end >= \'' . $currentDate . '\' '];
       foreach($api->table_get("resa_car", array('id_user' => $_SESSION['id_user']), $options) as $resa) {
         $car = $api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0];
         $temp_resa = array(
