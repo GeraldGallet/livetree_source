@@ -1,6 +1,6 @@
 <?php
 
-  namespace App\Controller\Pages;
+  namespace App\Controller\Pages\Profile;
   use App\Entity\User;
   use App\Controller\CustomApi;
   use \DateTime;

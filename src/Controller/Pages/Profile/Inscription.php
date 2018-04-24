@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Form;
+namespace App\Controller\Pages\Profile;
 
 use App\Entity\User;
 use App\Controller\CustomApi;

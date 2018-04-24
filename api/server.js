@@ -1,24 +1,24 @@
 /********** SERVER *********/
-/* The server we use as an API */
+/* Le serveur NodeJS utilisé comme API */
 
-// Configuration import
+// On importe la configuration
 const config = require('./config.json');
 
-// Needed packages
-const mysql = require('mysql');
-var express = require('express'),
+// On prends les packages dont on a besoin
+const mysql = require('mysql'); // Connection a la BDD
+const express = require('express'), // Pour recevoir les requetes HTTP
   app = express(),
   port = process.env.PORT || 3000;
+const bodyParser = require('body-parser'); // Pour parser le body des requetes
+const nodemailer = require('nodemailer'); // Pour envoyer des mails
+const jsonParser = bodyParser.json();
 app.listen(port);
-var bodyParser = require('body-parser');
-var jsonParser = bodyParser.json();
 
+// La liste des tables de la BDD. Si on recoit une requete avec une autre table, on renverre une erreur 404
 var cmds = ["user", "status", "personal_car", "facility", "place", "company_car", "borne", "work", "domain", "has_domain", "phone_indicative", "has_access", "resa_borne", "reason", "resa_car", "state", "email_validate", "password_recovery"];
 
 // Partie envoi de mail avec Nodemailer et le SMTP de Google
 'use strict';
-const nodemailer = require('nodemailer');
-
 var transporter = nodemailer.createTransport({
  service: 'gmail',
  auth: {
@@ -27,70 +27,67 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-// Connecting to DB
-app.use(function(req, res, next){
-	res.locals.connection = mysql.createConnection({
+// Connection a la BDD
+const connection = mysql.createConnection({
 		host     : config.host,
 		user     : config.user,
 		password : config.password,
 		database : config.database
 	});
-	res.locals.connection.connect();
-	next();
-});
+connection.connect();
 
-app.get('/', function(req, res, next) {
-  res.send('hello world :)');
-});
-
+// Renvoie l'intégralité d'une table
 function get_all(res, table) {
   var query = 'SELECT * FROM ' + table + ';';
-  res.locals.connection.query(query, function(error, results, fields) {
+  connection.query(query, function(error, results, fields) {
     if(error) throw error;
     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
   });
 }
 
+// Renvoie certaines lignes d'une table
 function get(body, res, table) {
-  //console.log(body);
   var query = 'SELECT * FROM ' + table + ' WHERE ';
   var placeholder = [];
 
-  for(var prop in body) {
+  for(var prop in body) { // On ajoute tous les filtres envoyés dans le body
     if(prop != 'options') {
       placeholder.push(body[prop]);
       query += prop + " = ? AND ";
     }
   }
-  query += '1 ';
+  query += '1 '; // Pour ne pas finir sur un "AND"
 
-  if(body.options != null) {
+  if(body.options != null) { // On ajoute les options (GROUP BY / ORDER BY / LIMIT / ...)
     for(var option in body.options)
       query += body.options[option];
   }
 
   query += ";";
-  //console.log(query);
-  res.locals.connection.query(query, placeholder, function(error, results, fields) {
+  connection.query(query, placeholder, function(error, results, fields) {
     if(error) throw error;
     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
   });
 }
 
+// Ajoute une ligne dans la table
+// On utilise le placeholder (?) avec le body en json
+// Renvoie l'id de la ligne créée
 function add(body, res, table) {
   var query = "INSERT INTO " + table + " SET ?";
-  res.locals.connection.query(query, body, function (error, results, fields) {
+  connection.query(query, body, function (error, results, fields) {
     if (error) throw error;
     res.send(JSON.stringify({"status": 200, "error": null, "response": results}))
     res.end(JSON.stringify(results));
   });
 }
 
+// Supprime une ligne
 function delete_entry(body, res, table) {
   var query = "DELETE FROM " + table + " WHERE ";
   var placeholder = [];
 
-  for(var prop in body) {
+  for(var prop in body) { // On ajoute les filtres
     if(prop != 'options') {
       placeholder.push(body[prop]);
       query += prop + " = ? AND ";
@@ -98,48 +95,51 @@ function delete_entry(body, res, table) {
   }
   query += '1 ';
 
-  if(body.options != null) {
+  if(body.options != null) { // On ajoute les options
     for(var option in body.options)
       query += body.options[option];
   }
 
   query += ";";
-  res.locals.connection.query(query, placeholder, function(error, results, fields) {
+  connection.query(query, placeholder, function(error, results, fields) {
     if(error) throw error;
     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
   });
 }
 
+// Modifie une ligne
+// placeholder pour les valeurs à changer
 function update_table(body, res, table) {
   var query = "UPDATE " + table + " SET ? WHERE ";
   placeholder = [body.set];
 
-  for(var prop in body.where) {
+  for(var prop in body.where) { // On ajoute les filtres
     placeholder.push(body.where[prop]);
     query += prop + " = ? AND ";
   }
   query += '1;';
 
-  res.locals.connection.query(query, placeholder, function(error, results, fields) {
+  connection.query(query, placeholder, function(error, results, fields) {
     if(error) throw error;
     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
   });
 }
 
+// Applique une requête directement créée par l'utilisateur
 function custom(body, res) {
-  res.locals.connection.query(body.query, function(error, results, fields) {
+  connection.query(body.query, function(error, results, fields) {
     if(error) throw error;
     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
   });
 }
 
+// Envoie un e-mail
 function send_mail(body, res) {
-  console.log(body);
   let mailOptions = {
-    from: 'Live Tree Web <coelablivetree@gmail.com>', // sender address
-    to: body.email, // list of receivers
-    subject: body.subject, // Subject line
-    html: body.html // html body
+    from: 'Live Tree Web <coelablivetree@gmail.com>', // Adresse avec laquelle on envoie l'e-mail
+    to: body.email, // Liste des receveurs
+    subject: body.subject, // Objet du mail
+    html: body.html // Corps du mail en HTML
   };
 
   transporter.sendMail(mailOptions, function (err, info) {
@@ -147,16 +147,14 @@ function send_mail(body, res) {
       console.log(err)
       res.send(JSON.stringify({"status": 404, "error": "Mail could not be sent", "response": null}));
     } else {
-      console.log(info);
-      //res.send(JSON.stringify({"status": 200, "error": null, "response": null}));
+      //console.log(info);
     }
   });
   res.send(JSON.stringify({"status": 200, "error": null, "response": null}));
   return;
 }
 
-
-// The commands that can be done on a table (get / add)
+/* Fonction qui recoivent les requêtes */
 app.post('/:table/:cmd', jsonParser, function(req, res, next) {
   console.log(req.params.table + "/" + req.params.cmd);
   var passed = false;
@@ -189,7 +187,6 @@ app.post('/:table/:cmd', jsonParser, function(req, res, next) {
     }
   }
 
-  res.locals.connection.end();
   if(!passed)
     res.send(JSON.stringify({"status": 404, "error": "Table not found", "response": null}));
 });
@@ -202,7 +199,6 @@ app.delete('/:table', jsonParser, function(req, res, next) {
       delete_entry(req.body, res, cmds[i]);
     }
   }
-  res.locals.connection.end();
 });
 
 app.patch('/:table', jsonParser, function(req, res) {
@@ -213,5 +209,4 @@ app.patch('/:table', jsonParser, function(req, res) {
       update_table(req.body, res, cmds[i]);
     }
   }
-  res.locals.connection.end();
 });
