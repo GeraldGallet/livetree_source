@@ -69,6 +69,24 @@
   <li>Début: {{resa.date_start}}  {{resa.start_time}}</li>
   <li>Début: {{resa.date_end}}  {{resa.end_time}}</li>
   <li>Kilométrage prévu: {{resa.km_planned}} kms</li>
+  <li>
+    {% if resa.km_start_done %}
+    Kilométrage au départ: {{resa.km_start}} kms
+    {% else %}
+    {{ form_start(resa.km_start_form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_row(resa.km_start_form.km) }} {{ form_row(resa.km_start_form.confirm) }}
+    {{ form_end(resa.km_start_form) }}
+    {% endif %}
+  </li>
+  <li>
+    {% if resa.km_end_done %}
+    Kilométrage au retour: {{resa.km_end}} kms
+    {% else %}
+    {{ form_start(resa.km_end_form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_row(resa.km_end_form.km) }} {{ form_row(resa.km_end_form.confirm) }}
+    {{ form_end(resa.km_end_form) }}
+    {% endif %}
+  </li>
   <li>Etablissement: {{resa.facility}}</li>
   <li>Raison: {{resa.id_reason}}</li>
   <li>Voiture: {{resa.id_company_car}}</li>
