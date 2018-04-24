@@ -98,7 +98,7 @@
 
           if($resa['id_user'] == null)
             $id_user = "Ce compte a été supprimé";
-          else
+          else {
             $res = $api->table_get("user", array('id_user' => $resa['id_user']))[0];
             $id_user = $res['first_name'] . " " . $res['last_name'] . " (" . $res['id_user'] . ")";
           }
@@ -192,8 +192,20 @@
         ->add('date_end', DateType::class, array('label' => "Date du retour"))
         ->add('end_time', TimeType::class, array('label' => "Heure du retour"))
         ->add('id_reason', ChoiceType::class, array('choices' => $reason_choices, 'label' => "Raison de l'emprunt"))
-        ->add('reason_details', TextType::class, array('label' => "Détails si nécessaire"))
-        ->add('km_planned', NumberType::class, array('label' => "Kilométrage prévu"))
+        ->add('reason_details', TextType::class, array(
+          'label' => "Détails si nécessaire",
+          'attr' => array(
+            'maxlength' => 200,
+            'size' => 50
+          )
+        ))
+        ->add('km_planned', NumberType::class, array(
+          'label' => "Kilométrage prévu",
+          'attr' => array(
+            'maxlength' => 5,
+            'size' => 5
+          )
+        ))
         ->add('id_user', ChoiceType::class, array(
           'label' => "Utilisateur",
           'choices' => $user_choice
