@@ -60,6 +60,7 @@
 </header>
 <br/>
 <h1>Réserver une borne</h1>
+<ul id="placementform" >
 {% if success %}
 <p>{{error_booking}}</p>
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
@@ -91,4 +92,5 @@
 {% else %}
   <p>{{ error }}</p>
 {% endif %}
+</ul>
 {% endblock %}
