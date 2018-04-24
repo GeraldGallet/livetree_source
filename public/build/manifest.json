@@ -1,19 +1,4 @@
 {
   "build/app.js": "/build/app.js",
-  "build/app.css": "/build/app.css",
-  "build/images/ui-bg_flat_10_000000_40x100.png": "/build/images/ui-bg_flat_10_000000_40x100.c18cd016.png",
-  "build/images/button_bg.png": "/build/images/button_bg.d4492f9f.png",
-  "build/images/icon_sprite.png": "/build/images/icon_sprite.ac4263b0.png",
-  "build/images/progress_bar.gif": "/build/images/progress_bar.3c00b22f.gif",
-  "build/images/slider_h_bg.gif": "/build/images/slider_h_bg.70228c5d.gif",
-  "build/images/slider_handles.png": "/build/images/slider_handles.02b38564.png",
-  "build/images/slider_v_bg.gif": "/build/images/slider_v_bg.72f5d756.gif",
-  "build/images/the_gradient.gif": "/build/images/the_gradient.a3b3552c.gif",
-  "build/images/datepicker.gif": "/build/images/datepicker.fe3015c0.gif",
-  "build/images/ui-bg_glass_100_f6f6f6_1x400.png": "/build/images/ui-bg_glass_100_f6f6f6_1x400.5f184717.png",
-  "build/images/ui-bg_glass_100_fdf5ce_1x400.png": "/build/images/ui-bg_glass_100_fdf5ce_1x400.b83f736b.png",
-  "build/images/ui-bg_glass_65_ffffff_1x400.png": "/build/images/ui-bg_glass_65_ffffff_1x400.e5a8f32e.png",
-  "build/images/ui-icons_222222_256x240.png": "/build/images/ui-icons_222222_256x240.ebe6b690.png",
-  "build/images/ui-icons_228ef1_256x240.png": "/build/images/ui-icons_228ef1_256x240.79f41c07.png",
-  "build/images/ui-icons_ffffff_256x240.png": "/build/images/ui-icons_ffffff_256x240.342bc03f.png"
+  "build/app.css": "/build/app.css"
 }

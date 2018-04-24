@@ -4,6 +4,8 @@
   use App\Entity\BookCarEntity;
   use App\Controller\CustomApi;
   use App\Entity\ShowPlanningEntity;
+  use App\Controller\Form\AvailableTimeCar;
+  use \DateTime;
 
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Symfony\Component\HttpFoundation\Response;
@@ -35,11 +37,12 @@
       $api = new CustomApi();
       $reason_chocies = [];
       $company_car_choices = [];
+      $planning = [];
       $first = true;
 
       foreach($api->table_get("work", array('id_user' => $_SESSION['id_user'])) as $work) {
         foreach($api->table_get("company_car", array('id_facility' => $work['id_facility'])) as $temp_car) {
-          $company_car_choices[$temp_car['name']] = $temp_car['id_company_car'];
+          $company_car_choices[$temp_car['name'] . " (" . $temp_car['model'] . ")"] = $temp_car['id_company_car'];
         }
       }
 
@@ -71,8 +74,8 @@
         ->getForm();
 
       $obj_planning = new ShowPlanningEntity();
-      $form_planning = $this->get("form.factory")->createNamedBuilder('planning_form', 'Symfony\\Component\\Form\\Extension\\Core\\Type\\FormType', $obj_planning, array())
-       ->add('id_place_planning', ChoiceType::class, array(
+      $form_planning = $this->get("form.factory")->createNamedBuilder('planning_form')
+       ->add('id_company_car_planning', ChoiceType::class, array(
          'choices' => $company_car_choices,
          'label' => "Lieu: "
        ))
@@ -93,6 +96,31 @@
         $car_form->handleRequest($request);
 
         if($request->request->has('planning_form') && $form_planning->isValid()) {
+          $res = $form_planning->getData();
+
+          $start_date = $res['date_start'];
+          $end_date = $res['date_end'];
+          $temp_end_date = clone $end_date;
+          $temp_end_date->modify("-7 day");
+
+          if($start_date->format('Y:m:d') <= $end_date->format('Y:m:d') && $temp_end_date->format('Y:m:d') <= $start_date->format('Y:m:d')) {
+            $planning_start = new DateTime();
+            $planning_start->setDate($start_date->format('Y'), $start_date->format('m'), $start_date->format('d'));
+            $planning_start->setTime(0, 0, 0);
+
+            $planning_end = new DateTime();
+            $planning_end->setDate($end_date->format('Y'), $end_date->format('m'), $end_date->format('d'));
+            $planning_end->setTime(0, 0, 0);
+
+            $plan = new AvailableTimeCar();
+            $res = $plan->get_timeslots_with_CarId($res['id_company_car_planning'], array('end_date' => $planning_end, 'start_date' => $planning_start));
+            //dump($res);
+            $res = $plan->humanize_arrays($res);
+            $planning = $this->humanize_planning($res);
+            //$planning = $res;
+            dump("BONJOUR");
+            dump($planning);
+          }
         }
 
         if($request->request->has('car_form') && $car_form->isValid()) {
@@ -158,8 +186,58 @@
             'form' => $car_form->createView(),
             'rights' => $_SESSION['rights'],
             'success' => true,
-            'planning_form' => $form_planning->createView()
+            'planning_form' => $form_planning->createView(),
+            'planning' => $planning
       ));
+    }
+
+    private function humanize_planning($res) {
+      $max_available = $res['numberMaxOfBookingPerParking'];
+      $list = $res['updatedListeOfBooking'];
+      $planning = array();
+      foreach($list as $day) {
+        $day_planning = [];
+        $readable_date = $day[0]['date']->format('D. d F');
+        $old_var = $day[0]['numberOfDisponibility'];
+        if($max_available - $old_var > 0) {
+          $dispo = true;
+          $old_var = true;
+        } else {
+          $dispo = false;
+          $old_var = false;
+        }
+        $creneau = array(
+          'begin' => date_format($day[0]['date'], 'H:i:s'),
+          'dispo' => $dispo
+        );
+        for($i = 1; $i < sizeof($day); $i++) {
+          if($max_available - $day[$i]['numberOfDisponibility'] > 0) {
+            $actual_var = true;
+            $dispo = true;
+          } else {
+            $actual_var = false;
+            $dispo = false;
+          }
+
+          if($old_var != $actual_var) {
+            $creneau['end'] = date_format($day[$i]['date'], 'H:i:s');
+            array_push($day_planning, $creneau);
+            $old_var = $actual_var;
+            $creneau = array(
+              'begin' => date_format($day[$i]['date'], 'H:i:s'),
+              'dispo' => $dispo
+            );
+          }
+        }
+        $creneau['end'] = date_format($day[sizeof($day)-1]['date'], 'H:i:s');
+        array_push($day_planning, $creneau);
+        array_push($planning, array(
+          'day' => $readable_date,
+          'plan' => $day_planning
+        ));
+      }
+
+      return $planning;
     }
   }
 

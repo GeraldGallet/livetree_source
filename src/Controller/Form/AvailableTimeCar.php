@@ -244,7 +244,7 @@ class AvailableTimeCar
             foreach ($dockReservationList as $tuple) {
                 //max
                 $max = new DateTime($tuple['date_end']);
-                $max2=new DateTime( $tuple['end_time']);
+                $max2 = new DateTime( $tuple['end_time']);
                 AvailableTimeCar::mySetTime($max,$max2);
                 //min
                 $min = new DateTime($tuple['date_start']);
@@ -255,7 +255,7 @@ class AvailableTimeCar
                 $tmp = array('end_date' => $max, 'start_date' => $min);
                 $result[] = $tmp;
 
-//                dump("yo",$max,new DateTime($max),"date", $tuple['date_end'], "time", $tuple['end_time']);
+                //dump("yo",$max,new DateTime($max),"date", $tuple['date_end'], "time", $tuple['end_time']);
             }
             return $result;
         } else {
@@ -263,13 +263,15 @@ class AvailableTimeCar
         }
     }
     private static function mySetTime(DateTime &$date, DateTime $time){
+        $date->modify("+2 hour");
+        dump($date);
         $date->setTime(
             intval($time->format('H')),
             intval($time->format('i')),
             intval($time->format('s'))
-
         );
         $date=$date->format('Y-m-d H:i:s');
+
 
     }
 
