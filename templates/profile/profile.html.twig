@@ -47,7 +47,7 @@
 </ul>
 </header>
 <br/>
-
+<ul id="placementprofil" >
 <h1>{{ first_name }} {{ last_name }}</h1><a href="/suppression"><button>Supprimer mon compte</button></a>
 <h2>Mon compte</h2>
 <ul>
@@ -89,4 +89,5 @@
 {{ form_start(personal_car_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(personal_car_form) }}
 {{ form_end(personal_car_form) }}
+</ul>
 {% endblock %}
