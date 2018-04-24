@@ -49,7 +49,7 @@
       if(sizeof($company_car_choices) == 0) {
         return $this->render('reservations/cars.html.twig', array(
             'rights' => $_SESSION['rights'],
-              'error' => "Le(s) établissement(s) au(x)quel(s) vous êtes affilié ne dispose pas de véhicule !",
+              'error' => "Le(s) établissement(s) au(x)quel(s) vous êtes affilié ne dispose(nt) pas de véhicule !",
               'success' => false
         ));
       }
@@ -114,12 +114,8 @@
 
             $plan = new AvailableTimeCar();
             $res = $plan->get_timeslots_with_CarId($res['id_company_car_planning'], array('end_date' => $planning_end, 'start_date' => $planning_start));
-            //dump($res);
             $res = $plan->humanize_arrays($res);
             $planning = $this->humanize_planning($res);
-            //$planning = $res;
-            dump("BONJOUR");
-            dump($planning);
           }
         }
 
@@ -137,7 +133,8 @@
                   'form' => $car_form->createView(),
                   'rights' => $_SESSION['rights'],
                   'success' => true,
-                  'planning_form' => $form_planning->createView()
+                  'planning_form' => $form_planning->createView(),
+                  'error_booking' => "Les dates ne correspondent pas !"
             ));
           } else if($date_start == $date_end) {
             if($start_time >= $end_time) {
@@ -145,7 +142,8 @@
                     'form' => $car_form->createView(),
                     'rights' => $_SESSION['rights'],
                     'success' => true,
-                    'planning_form' => $form_planning->createView()
+                    'planning_form' => $form_planning->createView(),
+                    'error_booking' => "Les horaires ne correspondent pas !"
               ));
             }
           }
@@ -175,10 +173,47 @@
             'id_resa' => null
           );
 
-          $new_resa['id_state'] = $api->table_add("state", $new_state);
-          $id_resa_car = $api->table_add("resa_car", $new_resa);
-          $api->table_update("state", array('id_resa' => $id_resa_car), array('id_state' => $new_resa['id_state']));
-          return $this->redirectToRoute('history');
+          $plan = new AvailableTimeCar();
+          $planning_start = new DateTime();
+          $planning_start->setDate(
+            intval($reservationCar->getDateStart()->format('Y')),
+            intval($reservationCar->getDateStart()->format('m')),
+            intval($reservationCar->getDateStart()->format('d'))
+          );
+          $planning_start->setTime(
+              intval($reservationCar->getStartTime()->format('H')),
+              intval($reservationCar->getStartTime()->format('i')),
+              intval($reservationCar->getStartTime()->format('s'))
+          );
+
+          $planning_end = new DateTime();
+          $planning_end->setDate(
+            intval($reservationCar->getDateEnd()->format('Y')),
+            intval($reservationCar->getDateEnd()->format('m')),
+            intval($reservationCar->getDateEnd()->format('d'))
+          );
+          $planning_end->setTime(
+              intval($reservationCar->getEndTime()->format('H')),
+              intval($reservationCar->getEndTime()->format('i')),
+              intval($reservationCar->getEndTime()->format('s'))
+          );
+
+          $res = $plan->get_timeslots_with_CarId($reservationCar->getIdCompanyCar(), array('end_date' => $planning_end, 'start_date' => $planning_start), false);
+          if($res['reservationAllowed']) {
+            $new_resa['id_state'] = $api->table_add("state", $new_state);
+            $id_resa_car = $api->table_add("resa_car", $new_resa);
+            $api->table_update("state", array('id_resa' => $id_resa_car), array('id_state' => $new_resa['id_state']));
+            return $this->redirectToRoute('history');
+          } else {
+            return $this->render('reservations/cars.html.twig', array(
+                  'form' => $car_form->createView(),
+                  'rights' => $_SESSION['rights'],
+                  'success' => true,
+                  'planning_form' => $form_planning->createView(),
+                  'planning' => $planning,
+                  'error_booking' => "Ce créneau n'est pas disponible ! Pensez à vérifier le planning"
+            ));
+          }
         }
       }
 
@@ -187,7 +222,8 @@
             'rights' => $_SESSION['rights'],
             'success' => true,
             'planning_form' => $form_planning->createView(),
-            'planning' => $planning
+            'planning' => $planning,
+            'error_booking' => null
       ));
     }
 
@@ -238,6 +274,21 @@
       }
 
       return $planning;
+    }
+
+    private function is_available($start_time, $end_time, $planning) {
+      foreach($planning as $day) {
+        foreach($day['plan'] as $creneau) {
+          $begin_date = date_create_from_format('D. d F H:i:s', $day['day'] . ' ' . $creneau['begin']);
+          $end_date = date_create_from_format('D. d F H:i:s', $day['day'] . ' ' . $creneau['end']);
+
+          if(($start_time > $begin_date && $start_time < $end_date) || ($end_time > $begin_date && $end_time < $end_date)) {
+            if(!$creneau['dispo'])
+              return false;
+          }
+        }
+      }
+      return true;
     }
   }
 

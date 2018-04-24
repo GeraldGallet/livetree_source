@@ -54,7 +54,7 @@
             if( $password != $password_confirmation){//On vérifie que le mot de passe et sa confirmation correspondent
               return $this->render('passwordforget.html.twig', array(// Sinon on uli affiche une erreur
                 'form' => $form->createView(),
-                'error' => "Votre mot de passe ne correspond pas",
+                'error' => "Votre mot de passe ne correspond pas avec sa confirmation",
                 'state' => "Subscribe2"
               ));
             }

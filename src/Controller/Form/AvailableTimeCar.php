@@ -228,7 +228,7 @@ class AvailableTimeCar
             } else {
 
                 $configured = $this->configure_resa_car_like_resa_bornes($result);
-                dump($configured);
+                //dump($configured);
                 return $configured;
             }
         } else {
@@ -264,7 +264,6 @@ class AvailableTimeCar
     }
     private static function mySetTime(DateTime &$date, DateTime $time){
         $date->modify("+2 hour");
-        dump($date);
         $date->setTime(
             intval($time->format('H')),
             intval($time->format('i')),

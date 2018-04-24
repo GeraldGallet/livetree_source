@@ -18,23 +18,24 @@
   use Symfony\Component\Form\Extension\Core\Type\HiddenType;
   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
   use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-
+//Classe controlant l'historique des réservations d'un utilisateur
   class History extends Controller
   {
     /**
       * @Route("/profil/historique", name="history")
       */
     public function load_history(Request $request) {
+      //On vérifie les autorisations
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
       date_default_timezone_set('Europe/Paris');
-      $resa_borne_futur = [];
-      $resa_borne_past = [];
-      $resa_car_futur = [];
-      $resa_car_past = [];
-      $api = new CustomApi();
-      $state_of_form = new State();
+      $resa_borne_futur = [];//Réservation d'une borne qui n'est pas encore passé
+      $resa_borne_past = [];//Réservations d'une borne déjà passé
+      $resa_car_futur = [];//Réservation d'un véhicule qui n'est pas encore passé
+      $resa_car_past = [];//Réservations d'un véhicule déjà passé
+      $api = new CustomApi();//l'interface pour l'API
+      $state_of_form = new State();//Entité pour l'état des lieux
 
       $currentDate = new DateTime("now");
       $currentDate = date_format($currentDate, 'Y-m-d H:i:s');

@@ -314,7 +314,7 @@ class AvailableTime
         if (isset($id_place)) {
             $api_interface = new CustomApi();
             $result = $api_interface->table_get("resa_borne", array('id_place' => $id_place));
-           dump($result);
+           //dump($result);
             if (!isset($result) || empty($result)) {
                 throw new \Exception("Les reservations actuelles sont inaccessibles " .
                     "ou il n'y en a pas pour ce parking: check node app or database");
