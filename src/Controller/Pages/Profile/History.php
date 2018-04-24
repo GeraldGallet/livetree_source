@@ -77,6 +77,53 @@
           'facility' => $api->table_get("facility", array('id_facility' => ($car['id_facility'])))[0]['name']
         );
 
+        if($resa['km_start'] == null) {
+          $temp_resa['km_start_done'] = false;
+          $km_start_form = $this->get("form.factory")->createNamedBuilder('km_start_form')
+            ->add('km', NumberType::class, array('label' => "Kilométrage au départ: "))
+            ->add('id_resa', HiddenType::class, array('data' => $resa['id_resa']))
+            ->add('confirm', SubmitType::class, array('label' => 'Confirmer'))
+        	  ->getForm();
+
+          $temp_resa['km_start_form'] = $km_start_form->createView();
+          if('POST' === $request->getMethod()) {
+            $km_start_form->handleRequest($request);
+
+            // On change la limite
+            if($request->request->has('km_start_form') && $km_start_form->isValid()) {
+              $api->table_update("resa_car", array('km_start' => $km_start_form->getData()['km']), array('id_resa' => $km_start_form->getData()['id_resa']));
+              return $this->redirectToRoute('history');
+            }
+          }
+        } else {
+          $temp_resa['km_start_done'] = true;
+          $temp_resa['km_start'] = $resa['km_start'];
+        }
+
+        if($resa['km_end'] == null) {
+          $temp_resa['km_end_done'] = false;
+          $km_start_form = $this->get("form.factory")->createNamedBuilder('km_end_form')
+            ->add('km', NumberType::class, array('label' => "Kilométrage au départ: "))
+            ->add('id_resa', HiddenType::class, array('data' => $resa['id_resa']))
+            ->add('confirm', SubmitType::class, array('label' => 'Confirmer'))
+        	  ->getForm();
+
+          $temp_resa['km_end_form'] = $km_start_form->createView();
+          if('POST' === $request->getMethod()) {
+            $km_start_form->handleRequest($request);
+
+            // On change la limite
+            if($request->request->has('km_end_form') && $km_start_form->isValid()) {
+              $api->table_update("resa_car", array('km_end' => $km_start_form->getData()['km']), array('id_resa' => $km_start_form->getData()['id_resa']));
+              return $this->redirectToRoute('history');
+            }
+          }
+        } else {
+          $temp_resa['km_end_done'] = true;
+          $temp_resa['km_end'] = $resa['km_end'];
+        }
+
+
         $state = $api->table_get("state", array('id_state' => $resa['id_state']))[0];
         $temp_state = [];
         if($state['front'] == NULL) {
