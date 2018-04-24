@@ -394,8 +394,8 @@
         'subject' => "Annulation de votre réservation n°" . $id_resa,
         'html' => "<p>Votre réservation de voiture décrite ci-dessous a été supprimée par l'Administrateur " . $_SESSION['first_name'] . " " . $_SESSION['last_name'] . "</p>
         <ul>
-          <li>Début: " . $resa['date_start'] . " à " . $resa['start_time'] . "</li>
-          <li>Fin: " . $resa['date_end'] . " à " . $resa['end_time'] . "</li>
+          <li>Début: " . substr($resa['date_start'], 0, 10) . " à " . $resa['start_time'] . "</li>
+          <li>Fin: " . substr($resa['date_end'], 0, 10) . " à " . $resa['end_time'] . "</li>
           <li>Raison: " . $resa['id_reason'] . "</li>
           <li>Voiture: " . $api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0]['name'] . "</li>
         <ul>
