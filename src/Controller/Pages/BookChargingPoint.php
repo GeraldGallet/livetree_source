@@ -18,7 +18,7 @@
   use Symfony\Component\Form\Extension\Core\Type\TimeType;
   use Symfony\Component\Form\Extension\Core\Type\RangeType;
   use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
+//Classe controlant la réservation de Borne
   class BookChargingPoint extends Controller
   {
 
@@ -26,15 +26,16 @@
       * @Route("/bornes",name="bornes")
       */
     public function new(Request $request) {
+      //On vérifie si l'utilisateur est connecté
       if(!isset($_SESSION['id_user']))
         return $this->redirectToRoute('accueil');
 
       date_default_timezone_set('Europe/Paris');
-      $api = new CustomApi();
-      $planning = null;
-      $error_booking = null;
-      $res = $api->table_get("has_access", array('id_user' => $_SESSION['id_user']));
-      if(sizeof($res) == 0) {
+      $api = new CustomApi();//L'interface pour l'API
+      $planning = null;//Planing accessible par l'utilisateur
+      $error_booking = null;//erreur en cas de réservain
+      $res = $api->table_get("has_access", array('id_user' => $_SESSION['id_user']));//On vérifie si l'utilisateur a renseigné un ou des accès à des lieux
+      if(sizeof($res) == 0) {//Si il n'a rien renseigné on lui informe que pour réserver une borne i doit avoir accès à au moins un lieu
         return $this->render('reservations/bornes.html.twig', array(
           'success' => false,
           'error' => "Vous n'avez accès à aucun lieu ! Rendez-vous dans la section profil pour renseigner les lieux auquels vous avez accès. Si vous n'avez aucun accès, demandez à votre établissement comment en obtenir",
@@ -43,15 +44,15 @@
           'error_booking' => $error_booking
         ));
       } else {
-        $place_choices = [];
+        $place_choices = [];//Sinon on affiche les choix des diffèrents lieux de l'utilisateur
         foreach($res as $acc) {
           $place_temp = $api->table_get("place", array('id_place' => $acc['id_place']))[0];
           $places_choice[$place_temp['name']] = $place_temp['id_place'];
         }
       }
 
-      $res = $api->table_get("personal_car", array('id_user' => $_SESSION['id_user']));
-      if(sizeof($res) == 0) {
+      $res = $api->table_get("personal_car", array('id_user' => $_SESSION['id_user']));//On vérifie si l'utilisaeur a renseigné un ou des véhicules
+      if(sizeof($res) == 0) {//Si aucun véhicule n'est renseigné on lui demande d'en ajouter un pour pouvoir reéserver une borne
         return $this->render('reservations/bornes.html.twig', array(
           'success' => false,
           'error' => "Vous n'avez aucune voiture enregistrée ! Rendez-vous dans la section profil pour enregistrer une voiture afin de pouvoir réserver une borne de recharge !",
@@ -59,7 +60,7 @@
           'planning' => $planning,
           'error_booking' => $error_booking
         ));
-      } else {
+      } else {//Sinon on affiche les différents véhicules de l'utilisateur
         $personal_car_choices = [];
         foreach($res as $pc) {
           $personal_car_choices[$pc['name']] = $pc['id_personal_car'];
