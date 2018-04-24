@@ -153,7 +153,8 @@
       );
       //$api_interface->send_mail($mail_body);
 
-      $result = $api_interface->custom_request("SELECT * FROM facility");
+      //$result = $api_interface->custom_request("SELECT * FROM facility");
+      dump($api_interface->table_get("resa_car", array('id_resa' => 13)));
       return $this->render('test.html.twig', array(
             'result' => $result,
       ));
