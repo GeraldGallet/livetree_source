@@ -62,6 +62,7 @@
 <h1>Réserver un véhicule</h1>
 <ul id="placementform" >
 {% if success %}
+<p>{{error_booking}}</p>
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(form) }}
 {{ form_end(form) }}
