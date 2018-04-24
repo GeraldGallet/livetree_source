@@ -156,11 +156,19 @@
       		$current_date = new DateTime("now");
           $current_date = $current_date->format('Y:m:d');
 
-      		if($start_date->format('Y:m:d') > $current_date) {
+      		if($start_date->format('Y:m:d') >= $current_date) {
+            $pass = false;
+
+            if($start_date->format('Y:m:d') == $current_date) {
+                if($obj->getStartDate()->format('H:i') >= (new DateTime("now"))->format('H:i'))
+                  $pass = true;
+            } else
+              $pass = true;
+
     		    $input_start_time = ($obj->getStartDate())->format('H:i');
     			  $input_end_time = ($obj->getEndDate())->format('H:i');
 
-            if($input_end_time >= $input_start_time) {
+            if($input_end_time >= $input_start_time && $pass) {
               if($obj->getCharge() < 100) {
                 $end_date = new DateTime();
                 $end_date->setDate($start_date->format('Y'), $start_date->format('m'), $start_date->format('d'));
