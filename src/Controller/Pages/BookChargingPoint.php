@@ -100,7 +100,12 @@
            'choices' => $personal_car_choices,
            'label' => "Voiture à recharger: "
          ))
-  	     ->add('subscribe', SubmitType::class, array('label' => 'Je réserve'))
+  	     ->add('subscribe', SubmitType::class, array(
+           'label' => 'Je réserve',
+           'attr' => [
+             'class' => "btn btn-outline-secondary",
+             ]
+       ))
   	     ->getForm();
 
       $obj_planning = new ShowPlanningEntity();
@@ -117,7 +122,12 @@
          'label' => "Fin: ",
          'widget' => 'single_text'
        ))
-        ->add('show_planning', SubmitType::class, array('label' => 'Je consulte le planning'))
+        ->add('show_planning', SubmitType::class, array(
+          'label' => 'Je consulte le planning',
+          'attr' => [
+            'class' => "btn btn-outline-secondary",
+            ]
+        ))
         ->getForm();
 
       if('POST' === $request->getMethod()) {

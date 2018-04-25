@@ -111,7 +111,11 @@
       ->add('name', TextType::class, array('label' => "Nom: "))
       ->add('address', TextType::class, array('label' => "Adresse: "))
       ->add('complementary', TextType::class, array('label' => "Informations complémentaires: "))
-      ->add('add_facility', SubmitType::class, array('label' => 'Ajouter l\'établissement'))
+      ->add('add_facility', SubmitType::class, array(
+        'label' => 'Ajouter l\'établissement',
+        'attr' => [
+          'class' => "btn btn-outline-secondary",
+          ]))
       ->getForm();
       $facility_form->handleRequest($request);
       $facility_form_view = $facility_form->createView();
@@ -134,7 +138,11 @@
         'choices'  => $choices_facilities,
         'label' => "Etablissement concerné: "
       ))
-      ->add('add_place', SubmitType::class, array('label' => 'Ajouter le lieu'))
+      ->add('add_place', SubmitType::class, array(
+        'label' => 'Ajouter le lieu',
+        'attr' => [
+          'class' => "btn btn-outline-secondary",
+          ]))
       ->getForm();
       $place_form->handleRequest($request);
 
@@ -146,7 +154,11 @@
         'choices'  => $choices_facilities,
         'label' => "Etablissement concerné: "
       ))
-      ->add('add_company_car', SubmitType::class, array('label' => 'Ajouter la voiture'))
+      ->add('add_company_car', SubmitType::class, array(
+        'label' => 'Ajouter la voiture',
+        'attr' => [
+          'class' => "btn btn-outline-secondary",
+          ]))
       ->getForm();
       $car_form->handleRequest($request);
 
@@ -157,7 +169,11 @@
         'choices'  => $choices_places,
         'label' => "Lieu: "
       ))
-      ->add('add_borne', SubmitType::class, array('label' => 'Ajouter la borne'))
+      ->add('add_borne', SubmitType::class, array(
+        'label' => 'Ajouter la borne',
+        'attr' => [
+          'class' => "btn btn-outline-secondary",
+          ]))
       ->getForm();
       $borne_form->handleRequest($request);
 
