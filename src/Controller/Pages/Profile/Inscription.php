@@ -63,7 +63,11 @@ class Inscription extends Controller
         ->add('indicative', ChoiceType::class, array(
           'choices'  => $indicative_choices))
         ->add('phone_number', NumberType::class, array('label' => 'Téléphone: '))
-        ->add('subscribe', SubmitType::class, array('label' => 'Je m\'inscris'));
+        ->add('subscribe', SubmitType::class, array(
+          'label' => 'Je m\'inscris',
+          'attr' => [
+            'class' => "btn btn-outline-secondary",
+            ]));
     $form = $form->getForm();
     $form->handleRequest($request);
     //Si le formulaire est valide

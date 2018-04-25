@@ -63,10 +63,10 @@
 {{ form_widget(go_to_form['number']) }} {{ form_widget(go_to_form['subscribe_go_to']) }}
 {{ form_end(go_to_form) }}
 
-<a href="{{ path('change_offset_user_admin', {'way': 0}) }}"><button>Revenir au début</button></a>
-<a href="{{ path('change_offset_user_admin', {'way': -1}) }}"><button>{{limit}} précédent{% if limit != 1%}s{% endif %}</button></a>
-<a href="{{ path('change_offset_user_admin', {'way': 1}) }}"><button>{{limit}} suivant{% if limit != 1%}s{% endif %}</button></a>
-<a href="/admin/profils/extract"><button>Extraire les données</button></a>
+<a href="{{ path('change_offset_user_admin', {'way': 0}) }}"><button class= "btn btn-outline-info">Revenir au début</button></a>
+<a href="{{ path('change_offset_user_admin', {'way': -1}) }}"><button class= "btn btn-outline-info">{{limit}} précédent{% if limit != 1%}s{% endif %}</button></a>
+<a href="{{ path('change_offset_user_admin', {'way': 1}) }}"><button class= "btn btn-outline-info">{{limit}} suivant{% if limit != 1%}s{% endif %}</button></a>
+<a href="/admin/profils/extract"><button class= "btn btn-outline-info">Extraire les données</button></a>
 {% for profile in profiles %}
 <hr>
   <ul class="list-group-item">
@@ -74,7 +74,7 @@
     {{profile.email}}<br/>
     {{profile.id_status}}
     {% if profile.id_status != "Admin" %}
-    <a href="{{ path('give_admin', {'id_user': profile.id_user}) }}"><button type="button">Passer en administrateur</button></a>
+    <a href="{{ path('give_admin', {'id_user': profile.id_user}) }}"><button type="button" class= "btn btn-outline-light">Passer en administrateur</button></a>
     {% endif %}
     <br/>
     {{profile.indicative}} {{profile.phone_number}}<br/>

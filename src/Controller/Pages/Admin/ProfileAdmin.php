@@ -123,7 +123,11 @@
               'size' => '10'
             )
           ))
-          ->add('subscribe_add', SubmitType::class, array('label' => 'Créer le compte'));
+          ->add('subscribe_add', SubmitType::class, array(
+            'label' => 'Créer le compte',
+            'attr' => [
+              'class' => "btn btn-outline-secondary",
+              ]));
       $form = $form->getForm();
 
       $limit_form = $this->get("form.factory")->createNamedBuilder('change_limit_form')
@@ -134,7 +138,11 @@
             'size' => '5'
           )
         ))
-        ->add('subscribe_change', SubmitType::class, array('label' => 'Changer le nombre de profil par page'))
+        ->add('subscribe_change', SubmitType::class, array(
+          'label' => 'Changer le nombre de profil par page',
+          'attr' => [
+              'class' => "btn btn-outline-secondary",
+              ]))
         ->getForm();
 
       $go_to_form = $this->get("form.factory")->createNamedBuilder('go_to_form')
@@ -145,7 +153,11 @@
             'size' => '5'
           )
         ))
-        ->add('subscribe_go_to', SubmitType::class, array('label' => 'Aller directement à ce profil'))
+        ->add('subscribe_go_to', SubmitType::class, array(
+          'label' => 'Aller directement à ce profil',
+          'attr' => [
+            'class' => "btn btn-outline-secondary",
+            ]))
         ->getForm();
 
       if('POST' === $request->getMethod()) {
