@@ -17,23 +17,23 @@
       <ul class="navbar-nav mr-auto">
         {% if rights >= 0 %}
         <li class="nav-item">
-          <a class="nav-link active_menu" href="/profil">Profil</a>
+          <a class="nav-link active_menu" href="/profil"><i class="fas fa-user"></i> Profil</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/profil/historique">Historique</a>
+          <a class="nav-link" href="/profil/historique"><i class="fas fa-history"></i> Historique</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/bornes">Bornes</a>
+          <a class="nav-link" href="/bornes"><i class="fas fa-plug"></i> Bornes</a>
         </li>
         {% endif %}
         {% if rights >= 1 %}
         <li class="nav-item">
-          <a class="nav-link" href="/voitures">Voitures</a>
+          <a class="nav-link" href="/voitures"><i class="fas fa-car"></i> Voitures</a>
         </li>
         {% endif %}
         {% if rights >= 2 %}
         <li class="nav-item">
-          <a class="nav-link" href="/admin">Administration</a>
+          <a class="nav-link" href="/admin"><i class="fas fa-shield-alt"></i> Administration</a>
         </li>
         {% endif %}
       </ul>
@@ -42,7 +42,7 @@
 </header>
 <br/><br/><br/>
 
-<h1>{{ first_name }} {{ last_name }}</h1><a href="/suppression"><button type="button" class="btn btn-danger">Supprimer mon compte</button></a>
+<h1>{{ first_name }} {{ last_name }}</h1><a href="/suppression"><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Supprimer mon compte</button></a>
 
 <br/>
 <h2>Mon compte</h2>
@@ -60,7 +60,7 @@
   <li><u>Lieux</u>:
     <ul>
       {% for place in places %}
-        <li>{{ place.name }} <a href="{{ path('delete_access', {'id_place': place.id_place}) }}"><button type="button" class="btn btn-danger">Je n'ai pas accès à ce lieu</button></a></li>
+        <li>{{ place.name }} <a href="{{ path('delete_access', {'id_place': place.id_place}) }}"><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Je n'ai pas accès à ce lieu</button></a></li>
       {% endfor %}
       {% if access_form != NULL %}
       <li>
@@ -78,7 +78,7 @@
 {% for car in personal_cars %}
   <ul class="list-group-item">
     <p><u>{{car.name}}</u> ({{car.model}})</p>
-    <p> {{car.power}} kW en puissance <a href="{{ path('delete_personal_car', {'car_name': car.name}) }}"><button type="button" class="btn btn-danger">Supprimer</button></a></p>
+    <p> {{car.power}} kW en puissance <a href="{{ path('delete_personal_car', {'car_name': car.name}) }}"><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Supprimer</button></a></p>
   </ul>
   <br/>
 {% endfor %}

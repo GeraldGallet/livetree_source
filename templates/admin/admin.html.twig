@@ -16,20 +16,20 @@
     <ul class="navbar-nav mr-auto">
       {% if rights >= 0 %}
       <li class="nav-item">
-        <a class="nav-link" href="/profil">Profil</a>
+        <a class="nav-link" href="/profil"><i class="fas fa-user"></i> Profil</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/bornes">Bornes</a>
+        <a class="nav-link" href="/bornes"><i class="fas fa-plug"></i> Bornes</a>
       </li>
       {% endif %}
       {% if rights >= 1 %}
       <li class="nav-item">
-        <a class="nav-link" href="/voitures">Voitures</a>
+        <a class="nav-link" href="/voitures"><i class="fas fa-car"></i> Voitures</a>
       </li>
       {% endif %}
       {% if rights >= 2 %}
       <li class="nav-item">
-        <a class="nav-link active_menu" href="/admin">Administration</a>
+        <a class="nav-link active_menu" href="/admin"><i class="fas fa-shield-alt"></i> Administration</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/admin/bornes">Admin - Bornes</a>
@@ -54,7 +54,7 @@
   <li>Adresse: {{facility.address}}</li>
   <li>Informations supplémentaires: {{facility.complementary}}</li>
   {% if rights == 3 %}
-    <a href="{{ path('delete_facility', {'name': facility.name}) }}"><button type="button" class="btn btn-danger">Supprimer</button></a>
+    <a href="{{ path('delete_facility', {'name': facility.name}) }}"><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Supprimer</button></a>
   {% endif %}
 </ul>
 {% endfor %}
@@ -71,7 +71,7 @@
   <li>Nom: {{place.name}}</li>
   <li>Adresse: {{place.address}}</li>
   <li>Etablissement affilié: {{place.facility}}</li>
-  <a href="{{ path('delete_place', {'id_place': place.id_place}) }}"><button type="button" class="btn btn-danger">Supprimer</button></a>
+  <a href="{{ path('delete_place', {'id_place': place.id_place}) }}"><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Supprimer</button></a>
 </ul>
 {% endfor %}
 {{ form_start(place_form, {'attr': {'novalidate': 'novalidate'}}) }}
@@ -86,7 +86,7 @@
   <li>Nom: {{car.name}}</li>
   <li>Modèle: {{car.model}}</li>
   <li>Puissance (kW): {{car.power}}</li>
-  <a href="{{ path('delete_company_car', {'id_company_car': car.id_company_car}) }}"><button type="button" class="btn btn-danger">Supprimer</button></a>
+  <a href="{{ path('delete_company_car', {'id_company_car': car.id_company_car}) }}"><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Supprimer</button></a>
 </ul>
 {% endfor %}
 {{ form_start(car_form, {'attr': {'novalidate': 'novalidate'}}) }}
@@ -100,7 +100,7 @@
   <li>Lieu: {{borne.place}}</li>
   <li>Emplacement: {{borne.desc_place}}</li>
   <li>Nom: {{borne.name}}</li>
-  <a href="{{ path('delete_borne', {'id_borne': borne.id_borne}) }}"><button type="button" class="btn btn-danger">Supprimer</button></a>
+  <a href="{{ path('delete_borne', {'id_borne': borne.id_borne}) }}"><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Supprimer</button></a>
 </ul>
 {% endfor %}
 {{ form_start(borne_form, {'attr': {'novalidate': 'novalidate'}}) }}

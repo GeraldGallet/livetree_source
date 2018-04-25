@@ -16,20 +16,20 @@
     <ul class="navbar-nav mr-auto">
       {% if rights >= 0 %}
       <li class="nav-item">
-        <a class="nav-link" href="/profil">Profil</a>
+        <a class="nav-link" href="/profil"><i class="fas fa-user"></i> Profil</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/bornes">Bornes</a>
+        <a class="nav-link" href="/bornes"><i class="fas fa-plug"></i> Bornes</a>
       </li>
       {% endif %}
       {% if rights >= 1 %}
       <li class="nav-item">
-        <a class="nav-link" href="/voitures">Voitures</a>
+        <a class="nav-link" href="/voitures"><i class="fas fa-car"></i> Voitures</a>
       </li>
       {% endif %}
       {% if rights >= 2 %}
       <li class="nav-item">
-        <a class="nav-link" href="/admin">Administration</a>
+        <a class="nav-link" href="/admin"><i class="fas fa-shield-alt"></i> Administration</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/admin/bornes">Admin - Bornes</a>
@@ -74,12 +74,12 @@
     {{profile.email}}<br/>
     {{profile.id_status}}
     {% if profile.id_status != "Admin" %}
-    <a href="{{ path('give_admin', {'id_user': profile.id_user}) }}"><button type="button" class="btn btn-success">Passer en administrateur</button></a>
+    <a href="{{ path('give_admin', {'id_user': profile.id_user}) }}"><button type="button">Passer en administrateur</button></a>
     {% endif %}
     <br/>
     {{profile.indicative}} {{profile.phone_number}}<br/>
-    {% if profile.activated %}Activé {% else %} Non - activé <a href="{{ path('activate_user_admin', {'id_user': profile.id_user}) }}"><button type="button" class="btn btn-success">Activer cet utilisateur</button></a>{% endif %}<br/>
-    <a href="{{ path('delete_user_admin', {'id_user': profile.id_user}) }}"><button type="button" class="btn btn-danger">Supprimer cet utilisateur</button></a>
+    {% if profile.activated %}Activé {% else %} Non - activé <a href="{{ path('activate_user_admin', {'id_user': profile.id_user}) }}"><button type="button">Activer cet utilisateur</button></a>{% endif %}<br/>
+    <a href="{{ path('delete_user_admin', {'id_user': profile.id_user}) }}"><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Supprimer cet utilisateur</button></a>
   </ul>
 {% endfor %}
 {% endblock %}

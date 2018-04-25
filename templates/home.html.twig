@@ -20,20 +20,20 @@
           <ul class="navbar-nav mr-auto">
             {% if rights >= 0 %}
             <li class="nav-item">
-              <a class="nav-link" href="/profil">Profil</a>
+              <a class="nav-link" href="/profil"><i class="fas fa-user"></i> Profil</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/bornes">Bornes</a>
+              <a class="nav-link" href="/bornes"><i class="fas fa-plug"></i> Bornes</a>
             </li>
             {% endif %}
             {% if rights >= 1 %}
             <li class="nav-item">
-              <a class="nav-link" href="/voitures">Voitures</a>
+              <a class="nav-link" href="/voitures"><i class="fas fa-car"></i> Voitures</a>
             </li>
             {% endif %}
             {% if rights >= 2 %}
             <li class="nav-item">
-              <a class="nav-link" href="/admin">Administration</a>
+              <a class="nav-link" href="/admin"><i class="fas fa-shield-alt"></i> Administration</a>
             </li>
             {% endif %}
           </ul>

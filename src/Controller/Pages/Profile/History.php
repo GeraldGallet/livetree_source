@@ -66,10 +66,15 @@
       $options = ['AND date_end >= \'' . $currentDate . '\' '];
       foreach($api->table_get("resa_car", array('id_user' => $_SESSION['id_user']), $options) as $resa) {
         $car = $api->table_get("company_car", array('id_company_car' => $resa['id_company_car']))[0];
+        $start_date_good = DateTime::createFromFormat('Y-m-d', substr($resa['date_start'], 0, 10));
+        $start_date_good->modify("+1 day");
+        $end_date_good = DateTime::createFromFormat('Y-m-d', substr($resa['date_end'], 0, 10));
+        $end_date_good->modify("+1 day");
+
         $temp_resa = array(
           'id_resa' => $resa['id_resa'],
-          'date_start' => substr($resa['date_start'], 0, 10),
-          'date_end' => substr($resa['date_end'], 0, 10),
+          'date_start' => $start_date_good->format('Y-m-d'),
+          'date_end' => $end_date_good->format('Y-m-d'),
           'start_time' => substr($resa['start_time'], 0, 5),
           'end_time' => substr($resa['end_time'], 0, 5),
           'km_planned' => $resa['km_planned'],
