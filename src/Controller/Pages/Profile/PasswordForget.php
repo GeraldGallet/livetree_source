@@ -24,7 +24,11 @@
 
         $form = $this->get('form.factory')->createNamedBuilder('password_forgot')//Création d'un formulaire pour renseigner l'adresse mail du compte oublié
             ->add('email', EmailType::class, array('label' => 'Email: '))
-            ->add('subscribe', SubmitType::class, array('label' => 'J\'envoie un mail'));
+            ->add('subscribe', SubmitType::class, array(
+              'label' => 'J\'envoie un mail',
+              'attr' => [
+                'class' => "btn btn-outline-secondary",
+                ]));
         $form = $form->getForm();
 
         if('POST' === $request->getMethod()) { //On vérifie que le formulaire  été envoyé

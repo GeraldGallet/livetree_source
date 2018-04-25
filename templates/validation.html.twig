@@ -21,6 +21,6 @@
 {% if success %}
   <p>Le compte a l'adresse {{email}} a bien été activé !</p>
 {% else %}
-  <p>Ce lien a expiré. Vous pouvez en renvoyer un autre en cliquant <a href="{{ path('new_mail', {'token': token}) }}">ici</a></p>
+  <p>Ce lien a expiré. Vous pouvez en renvoyer un autre en cliquant <a href="{{ path('new_mail', {'token': token}) }}" class="btn btn-outline-secondary" >ici</a></p>
 {% endif %}
 {% endblock %}

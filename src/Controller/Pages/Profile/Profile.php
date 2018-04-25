@@ -78,7 +78,11 @@
               ->add('id_place', ChoiceType::class, array(
                 'choices'  => $places_choices,
                 'label' => 'Nouveau lieu : '))
-              ->add('add_access', SubmitType::class, array('label' => 'J\'ai accès à ce lieu'))
+              ->add('add_access', SubmitType::class, array(
+                'label' => 'J\'ai accès à ce lieu',
+                'attr' => [
+                  'class' => "btn btn-outline-secondary",
+                  ]))
               ->getForm();
           $access_form->handleRequest($request);
           $access_form_view = $access_form->createView();
@@ -100,7 +104,11 @@
             ->add('name', TextType::class, array('label' => "Nom "))
             ->add('model', TextType::class, array('label' => "Modèle "))
             ->add('power', NumberType::class, array('label' => "Puissance (kW) "))
-            ->add('add_personal_car', SubmitType::class, array('label' => 'Ajouter une voiture'))
+            ->add('add_personal_car', SubmitType::class, array(
+              'label' => 'Ajouter une voiture',
+              'attr' => [
+                'class' => "btn btn-outline-secondary",
+                ]))
             ->getForm();
         $personal_car_form->handleRequest($request);
 

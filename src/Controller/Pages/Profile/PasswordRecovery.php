@@ -32,7 +32,11 @@
         $form = $this->get('form.factory')->createNamedBuilder('password_recovery')// Si oui on crée le formulaire pour que l'utilisateur puisse renseigné son nouveau mot de passe
         ->add('new_password', PasswordType::class, array('label' => 'Nouveau mot de passe: '))
         ->add('new_password_confirmation', PasswordType::class, array('label' => 'Confirmez nouveau mot de passe: '))
-        ->add('subscribe', SubmitType::class, array('label' => 'Je change mon Mot de Passe'));
+        ->add('subscribe', SubmitType::class, array(
+          'label' => 'Je change mon Mot de Passe',
+          'attr' => [
+            'class' => "btn btn-outline-secondary",
+            ]));
         $form = $form->getForm();
         //On récupere le formulaire on vérifie qu'il est valide
         if('POST' === $request->getMethod()) {
