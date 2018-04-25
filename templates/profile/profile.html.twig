@@ -8,47 +8,43 @@
 
 {% block body %}
 <header>
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-  <a class="navbar-brand" href="/">Accueil</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarCollapse">
-    <ul class="navbar-nav mr-auto">
-      {% if rights >= 0 %}
-      <li class="nav-item active">
-        <a class="nav-link" href="/profil">Profil</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/bornes">Bornes</a>
-      </li>
-      {% endif %}
-      {% if rights >= 1 %}
-      <li class="nav-item">
-        <a class="nav-link" href="/voitures">Voitures</a>
-      </li>
-      {% endif %}
-      {% if rights >= 2 %}
-      <li class="nav-item">
-        <a class="nav-link" href="/admin">Administration</a>
-      </li>
-      {% endif %}
-    </ul>
-  </div>
-</nav>
-<ul id="sousmenu" >
-<p>
-<br />
-<img src="universitecatholille.png" width="100" height="70" alt="Universite Catholique de Lille" />
-<img src="LOGO-LIVE-TREE.jpg" width="100" height="70" alt="Logo Live Tree" />
-</p>
-<li><a href='/profil'>Mon compte</a></li>
-<li><a href='/profil/historique'>Mes réservations</a></li>
-</ul>
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="/">Accueil</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        {% if rights >= 0 %}
+        <li class="nav-item">
+          <a class="nav-link active_menu" href="/profil">Profil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profil/historique">Historique</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/bornes">Bornes</a>
+        </li>
+        {% endif %}
+        {% if rights >= 1 %}
+        <li class="nav-item">
+          <a class="nav-link" href="/voitures">Voitures</a>
+        </li>
+        {% endif %}
+        {% if rights >= 2 %}
+        <li class="nav-item">
+          <a class="nav-link" href="/admin">Administration</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
 </header>
+<br/><br/><br/>
+
+<h1>{{ first_name }} {{ last_name }}</h1><a href="/suppression"><button type="button" class="btn btn-danger">Supprimer mon compte</button></a>
+
 <br/>
-<ul id="placementprofil" >
-<h1>{{ first_name }} {{ last_name }}</h1><a href="/suppression"><button>Supprimer mon compte</button></a>
 <h2>Mon compte</h2>
 <ul>
   <li><u>Email</u>: {{ email }}</li>
@@ -64,7 +60,7 @@
   <li><u>Lieux</u>:
     <ul>
       {% for place in places %}
-        <li>{{ place.name }} <a href="{{ path('delete_access', {'id_place': place.id_place}) }}"><button>Je n'ai pas accès à ce lieu</button></a></li>
+        <li>{{ place.name }} <a href="{{ path('delete_access', {'id_place': place.id_place}) }}"><button type="button" class="btn btn-danger">Je n'ai pas accès à ce lieu</button></a></li>
       {% endfor %}
       {% if access_form != NULL %}
       <li>
@@ -77,17 +73,16 @@
   </li>
 </ul>
 
+<br/>
 <h2>Mes voitures</h2>
 {% for car in personal_cars %}
-  <ul>
-    <li><b> {{car.name}} </b></li>
-    <li> {{car.model}} </li>
-    <li> {{car.power}} </li>
-    <li><a href="{{ path('delete_personal_car', {'car_name': car.name}) }}"><button>Supprimer</button></a></li>
+  <ul class="list-group-item">
+    <p><u>{{car.name}}</u> ({{car.model}})</p>
+    <p> {{car.power}} kW en puissance <a href="{{ path('delete_personal_car', {'car_name': car.name}) }}"><button type="button" class="btn btn-danger">Supprimer</button></a></p>
   </ul>
+  <br/>
 {% endfor %}
 {{ form_start(personal_car_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(personal_car_form) }}
 {{ form_end(personal_car_form) }}
-</ul>
 {% endblock %}

@@ -32,23 +32,28 @@
       <li class="nav-item">
         <a class="nav-link active" href="/admin">Administration</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/bornes">Admin - Bornes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active_menu" href="/admin/voitures">Admin - Voitures</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/profils">Admin - Profils</a>
+      </li>
       {% endif %}
     </ul>
   </div>
 </nav>
 </header>
-<br/>
-<br/>
-<a href='/admin'>Général</a>
-<a href='/admin/bornes'>Bornes</a>
-<a href='/admin/voitures'>Voitures</a>
-<a href='/admin/profils'>Profils</a>
+<br/><br/><br/>
 <h1>Administration des voitures</h1>
 <h2>Ajouter une réservation</h2>
 {{ form_start(car_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(car_form) }}
 {{ form_end(car_form) }}
 
+<br/>
 <h2>Réservations de voitures ({{actual_min}}-{{actual_max}}/{{total}})</h2>
 {{ form_start(limit_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
 {{ form_widget(limit_form['new_limit']) }} {{ form_widget(limit_form['subscribe_change']) }}
@@ -64,12 +69,11 @@
 <a href="{{ path('extract_car_admin', {'data': resa_car_extractable|json_encode()}) }}"><button>Extraire les données</button></a>
 {% for resa in resa_car %}
 <hr>
-<ul>
-  <li>Utilisateur: {{resa.id_user}}</li>
-  <li>Début: {{resa.date_start}}  {{resa.start_time}}</li>
-  <li>Début: {{resa.date_end}}  {{resa.end_time}}</li>
-  <li>Kilométrage prévu: {{resa.km_planned}} kms</li>
-  <li>
+<ul class="list-group-item">
+  <p>Utilisateur: {{resa.id_user}}</li>
+  Début: {{resa.date_start}}  {{resa.start_time}}<br/>
+  Fin: {{resa.date_end}}  {{resa.end_time}}<br/>
+  Kilométrage prévu: {{resa.km_planned}} kms<br/>
     {% if resa.km_start_done %}
     Kilométrage au départ: {{resa.km_start}} kms
     {% else %}
@@ -77,8 +81,7 @@
     {{ form_row(resa.km_start_form.km) }} {{ form_row(resa.km_start_form.confirm) }}
     {{ form_end(resa.km_start_form) }}
     {% endif %}
-  </li>
-  <li>
+  <br/>
     {% if resa.km_end_done %}
     Kilométrage au retour: {{resa.km_end}} kms
     {% else %}
@@ -86,10 +89,10 @@
     {{ form_row(resa.km_end_form.km) }} {{ form_row(resa.km_end_form.confirm) }}
     {{ form_end(resa.km_end_form) }}
     {% endif %}
-  </li>
-  <li>Etablissement: {{resa.facility}}</li>
-  <li>Raison: {{resa.id_reason}}</li>
-  <li>Voiture: {{resa.id_company_car}}</li>
+  <br/>
+  <li>Etablissement: {{resa.facility}}<br/>
+  <li>Raison: {{resa.id_reason}}<br/>
+  <li>Voiture: {{resa.id_company_car}}<br/>
   <li>Etat des lieux:
     {% if resa.state.done %}
     <ul>
@@ -105,9 +108,8 @@
     {{ form_widget(resa.state.form) }}
     {{ form_end(resa.state.form) }}
     {% endif %}
-  </li>
-  <li><a href="{{ path('delete_resa_car_admin', {'id_resa': resa.id_resa}) }}"><button>Supprimer</button></a></li>
+  <br/>
+  <li><a href="{{ path('delete_resa_car_admin', {'id_resa': resa.id_resa}) }}"><button type="button" class="btn btn-danger">Supprimer</button></a>
 </ul>
-<br/>
 {% endfor %}
 {% endblock %}

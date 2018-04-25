@@ -255,7 +255,7 @@
       } else if($way == 0) {
         $_SESSION['offset_charging_points'] = 0;
       }
-      return $this->redirectToRoute('admin_cars');
+      return $this->redirectToRoute('admin_bornes');
     }
 
     /**

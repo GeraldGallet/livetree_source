@@ -39,12 +39,13 @@
           $api = new CustomApi();
           $db_user = $api->table_get("user", array('email' => $user->getEmail()));
           if(sizeof($db_user) == 0) {
-            return $this->render('accueil.html.twig', array(
+            return $this->render('home.html.twig', array(
               'connected' => $connected,
               'connection_form' => $view,
               'error' => 'La combinaison email/mot de passe n\'existe pas !',
               'last_name' => $last_name,
-              'first_name' => $first_name
+              'first_name' => $first_name,
+              'rights' => $rights
             ));
           } else
             $db_user = $db_user[0];

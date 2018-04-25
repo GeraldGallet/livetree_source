@@ -29,26 +29,32 @@
       </li>
       {% endif %}
       {% if rights >= 2 %}
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="/admin">Administration</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="/admin/bornes">Admin - Bornes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/voitures">Admin - Voitures</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/profils">Admin - Profils</a>
       </li>
       {% endif %}
     </ul>
   </div>
 </nav>
 </header>
-<br/>
-<br/>
-<a href='/admin'>Général</a>
-<a href='/admin/bornes'>Bornes</a>
-<a href='/admin/voitures'>Voitures</a>
-<a href='/admin/profils'>Profils</a>
+
+<br/><br/><br/>
 <h1>Administration des bornes</h1>
 <h2>Ajouter une réservation</h2>
 {{ form_start(resa_form, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(resa_form) }}
 {{ form_end(resa_form) }}
 
+<br/>
 <h2>Réservations de bornes ({{actual_min}}-{{actual_max}}/{{total}})</h2>
 {{ form_start(limit_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
 {{ form_widget(limit_form['new_limit']) }} {{ form_widget(limit_form['subscribe_change']) }}
@@ -64,13 +70,13 @@
 <a href="/admin/bornes/extract"><button>Extraire les données</button></a>
 {% for resa in resa_bornes %}
 <hr>
-<ul>
-  <li>Début: {{resa.start_date|date('Y-m-d H:i:s')}}</li>
-  <li>Fin: {{resa.end_date|date('H:i:s')}}</li>
-  <li>Charge estimée en arrivant: {{resa.charge}}</li>
-  <li>Lieu: {{resa.id_place}}</li>
-  <li>Utilisateur: {{resa.id_user}}</li>
-  <li><a href="{{ path('delete_resa_borne_admin', {'id_resa': resa.id_resa}) }}"><button>Supprimer</button></a></li>
+<ul class="list-group-item">
+  <p>Début: {{resa.start_date|date('Y-m-d H:i:s')}}<br/>
+  Fin: {{resa.end_date|date('H:i:s')}}<br/>
+  Charge estimée en arrivant: {{resa.charge}}<br/>
+  Lieu: {{resa.id_place}}<br/>
+  Utilisateur: {{resa.id_user}}<br/>
+  <a href="{{ path('delete_resa_borne_admin', {'id_resa': resa.id_resa}) }}"><button type="button" class="btn btn-danger">Supprimer</button></a></p>
 </ul>
 {% endfor %}
 {% endblock %}

@@ -41,7 +41,7 @@
         <a class="nav-link" href="/profil">Profil</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link active" href="/bornes">Bornes</a>
+        <a class="nav-link active_menu" href="/bornes">Bornes</a>
       </li>
       {% endif %}
       {% if rights >= 1 %}
@@ -58,9 +58,8 @@
   </div>
 </nav>
 </header>
-<br/>
+<br/><br/><br/>
 <h1>Réserver une borne</h1>
-<ul id="placementform" >
 {% if success %}
 <p>{{error_booking}}</p>
 {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
@@ -72,6 +71,7 @@
 {{ form_row(form.subscribe) }}
 
 {{ form_end(form) }}
+<br/>
 <h2>Voir le planning</h2>
 {{ form_start(form_planning, {'attr': {'novalidate': 'novalidate'}}) }}
 {{ form_widget(form_planning) }}
@@ -92,5 +92,4 @@
 {% else %}
   <p>{{ error }}</p>
 {% endif %}
-</ul>
 {% endblock %}

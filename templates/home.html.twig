@@ -12,7 +12,7 @@
 {% block body %}
       <header>
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <a class="navbar-brand" href="/">Accueil<span class="sr-only">(current)</span></a>
+        <a class="navbar-brand" id="active-item" href="/">Accueil<span class="sr-only">(current)</span></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -42,8 +42,9 @@
     </header>
     <p>
     <br />
-    <img src="{{ asset('img/universitecatholille.png') }}" width="100" height="70" alt="Universite Catholique de Lille" />
-    <img src="{{ asset('/templates/Nico/LIVETRESSITE/LOGO-LIVE-TREE.jpg') }}" width="100" height="70" alt="Logo Live Tree" />
+    <br />
+    <img src="{{ asset('images/LOGO-LIVE-TREE.jpg') }}" width="100" height="70" alt="Logo Live Tree" />
+    <img src="{{ asset('images/universitecatholille.png') }}" width="100" height="70" alt="Universite Catholique de Lille" />
   </p>
   {% if connected %}
     <a href=/deconnexion>{{first_name}} {{last_name}} (Déconnexion)</a>
@@ -59,13 +60,13 @@
   <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
     <div class="carousel-item active">
-      <a href="https://livetree.fr"><img class="d-block w-100" src="actualitelivetree2.jpg" alt="Premiereactualite"></a>
+      <a href="https://livetree.fr"><img class="d-block w-100" src="{{asset('images/actualitelivetree2.jpg')}}" alt="Premiereactualite"></a>
     </div>
     <div class="carousel-item">
-      <a href="https://livetree.fr"><img class="d-block w-100" src="actualitelivetree.jpg" alt="Deuxiemeactualite"></a>
+      <a href="https://livetree.fr"><img class="d-block w-100" src="{{asset('images/actualitelivetree.jpg')}}" alt="Deuxiemeactualite"></a>
     </div>
     <div class="carousel-item">
-      <a href="https://livetree.fr"><img class="d-block w-100" src="Printemps-Live-Tree.jpg" alt="Troisiemeactualite"></a>
+      <a href="https://livetree.fr"><img class="d-block w-100" src="{{asset('images/Printemps-Live-Tree.jpg')}}" alt="Troisiemeactualite"></a>
     </div>
   </div>
   <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">

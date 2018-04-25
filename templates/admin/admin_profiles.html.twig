@@ -29,24 +29,31 @@
       {% endif %}
       {% if rights >= 2 %}
       <li class="nav-item">
-        <a class="nav-link active" href="/admin">Administration</a>
+        <a class="nav-link" href="/admin">Administration</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/bornes">Admin - Bornes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/voitures">Admin - Voitures</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active_menu" href="/admin/profils">Admin - Profils</a>
       </li>
       {% endif %}
     </ul>
   </div>
 </nav>
 </header>
-<br/>
-<a href='/admin'>Général</a>
-<a href='/admin/bornes'>Bornes</a>
-<a href='/admin/voitures'>Voitures</a>
-<a href='/admin/profils'>Profils</a>
+<br/><br/><br/>
 <h1>Administration des profils</h1>
 <h2>Créer un profil</h2>
 <p>{{ error }}</p>
 {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
 {{ form_widget(form) }}
 {{ form_end(form) }}
+
+<br/>
 <h2>Gérer les profils ({{actual_min}}-{{actual_max}}/{{total}})</h2>
 {{ form_start(limit_form, {'attr': {'novalidate': 'novalidate', 'id': 'form'}}) }}
 {{ form_widget(limit_form['new_limit']) }} {{ form_widget(limit_form['subscribe_change']) }}
@@ -62,17 +69,17 @@
 <a href="/admin/profils/extract"><button>Extraire les données</button></a>
 {% for profile in profiles %}
 <hr>
-  <ul>
-    <li>{{profile.first_name}} {{profile.last_name}} ({{profile.id_user}}) </li>
-    <li>{{profile.email}}</li>
-    <li>{{profile.id_status}}
+  <ul class="list-group-item">
+    <p>{{profile.first_name}} {{profile.last_name}} ({{profile.id_user}}) <br/>
+    {{profile.email}}<br/>
+    {{profile.id_status}}
     {% if profile.id_status != "Admin" %}
-    <a href="{{ path('give_admin', {'id_user': profile.id_user}) }}"><button>Passer en administrateur</button></a>
+    <a href="{{ path('give_admin', {'id_user': profile.id_user}) }}"><button type="button" class="btn btn-success">Passer en administrateur</button></a>
     {% endif %}
-    </li>
-    <li>{{profile.indicative}} {{profile.phone_number}}</li>
-    <li>{% if profile.activated %}Activé {% else %} Non - activé <a href="{{ path('activate_user_admin', {'id_user': profile.id_user}) }}"><button>Activer cet utilisateur</button></a>{% endif %}</li>
-    <a href="{{ path('delete_user_admin', {'id_user': profile.id_user}) }}"><button>Supprimer cet utilisateur</button></a>
+    <br/>
+    {{profile.indicative}} {{profile.phone_number}}<br/>
+    {% if profile.activated %}Activé {% else %} Non - activé <a href="{{ path('activate_user_admin', {'id_user': profile.id_user}) }}"><button type="button" class="btn btn-success">Activer cet utilisateur</button></a>{% endif %}<br/>
+    <a href="{{ path('delete_user_admin', {'id_user': profile.id_user}) }}"><button type="button" class="btn btn-danger">Supprimer cet utilisateur</button></a>
   </ul>
 {% endfor %}
 {% endblock %}
