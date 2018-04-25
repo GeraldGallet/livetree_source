@@ -206,20 +206,31 @@
               intval($reservationCar->getEndTime()->format('s'))
           );
 
-          $res = $plan->get_timeslots_with_CarId($reservationCar->getIdCompanyCar(), array('end_date' => $planning_end, 'start_date' => $planning_start), false);
-          if($res['reservationAllowed']) {
-            $new_resa['id_state'] = $api->table_add("state", $new_state);
-            $id_resa_car = $api->table_add("resa_car", $new_resa);
-            $api->table_update("state", array('id_resa' => $id_resa_car), array('id_state' => $new_resa['id_state']));
-            return $this->redirectToRoute('history');
-          } else {
+          try {
+            $res = $plan->get_timeslots_with_CarId($reservationCar->getIdCompanyCar(), array('end_date' => $planning_end, 'start_date' => $planning_start), false);
+            if($res['reservationAllowed']) {
+              $new_resa['id_state'] = $api->table_add("state", $new_state);
+              $id_resa_car = $api->table_add("resa_car", $new_resa);
+              $api->table_update("state", array('id_resa' => $id_resa_car), array('id_state' => $new_resa['id_state']));
+              return $this->redirectToRoute('history');
+            } else {
+              return $this->render('reservations/cars.html.twig', array(
+                'form' => $car_form->createView(),
+                'rights' => $_SESSION['rights'],
+                'success' => true,
+                'planning_form' => $form_planning->createView(),
+                'planning' => $planning,
+                'error_booking' => "Ce créneau n'est pas disponible ! Pensez à vérifier le planning"
+              ));
+            }
+          } catch(Exception $e) {
             return $this->render('reservations/cars.html.twig', array(
-                  'form' => $car_form->createView(),
-                  'rights' => $_SESSION['rights'],
-                  'success' => true,
-                  'planning_form' => $form_planning->createView(),
-                  'planning' => $planning,
-                  'error_booking' => "Ce créneau n'est pas disponible ! Pensez à vérifier le planning"
+              'form' => $car_form->createView(),
+              'rights' => $_SESSION['rights'],
+              'success' => true,
+              'planning_form' => $form_planning->createView(),
+              'planning' => $planning,
+              'error_booking' => $e->getMessage()
             ));
           }
         }

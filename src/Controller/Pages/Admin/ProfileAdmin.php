@@ -46,7 +46,7 @@
       } else {
         foreach($api->table_get_all("facility") as $fac) {
           array_push($facility_choices, $fac['id_facility']);
-          $facility_options .= 'id_facility = ' . $work['id_facility'] . " OR ";
+          $facility_options .= 'id_facility = ' . $fac['id_facility'] . " OR ";
         }
       }
       $facility_options .= "1) ";

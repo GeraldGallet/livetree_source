@@ -148,7 +148,7 @@
           if($resa['km_end'] == null) {
             $temp_resa['km_end_done'] = false;
             $km_start_form = $this->get("form.factory")->createNamedBuilder('km_end_form')
-              ->add('km', NumberType::class, array('label' => "Kilométrage au départ: "))
+              ->add('km', NumberType::class, array('label' => "Kilométrage au retour: "))
               ->add('id_resa', HiddenType::class, array('data' => $resa['id_resa']))
               ->add('confirm', SubmitType::class, array(
                 'label' => 'Confirmer',

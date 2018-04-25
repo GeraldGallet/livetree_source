@@ -195,17 +195,20 @@
                   'id_place' => $obj->getIdPlace(),
                   'id_personal_car' => $obj->getidPersonalCar()
                 );
-                $res = $plan->get_timeslots_with_placeId($obj->getIdPlace(), array('end_date' => $end_date, 'start_date' => $start_date));
-                $res = $plan->humanize_arrays($res);
-                $planning = $this->humanize_planning($res);
-                $available = $this->is_available($start_date, $end_date, $planning[0]);
-                if($available) {
-                  $id = $api->table_add("resa_borne", $resa_borne);
-                  return $this->redirectToRoute('history');
-                } else
+
+                try {
+                  $res = $plan->get_timeslots_with_placeId($obj->getIdPlace(), array('end_date' => $end_date, 'start_date' => $start_date));
+                  $res = $plan->humanize_arrays($res);
+                  $planning = $this->humanize_planning($res);
+                  $available = $this->is_available($start_date, $end_date, $planning[0]);
+                  if($available) {
+                    $id = $api->table_add("resa_borne", $resa_borne);
+                    return $this->redirectToRoute('history');
+                  } else
                   $error_booking = "Ce créneau n'est pas libre ! Vérifiez le planning avant de réserver";
-
-
+                } catch(Exception $e) {
+                  $error_booking = $e->getMessage();
+                }
               }
 		        }
     		  }
