@@ -123,7 +123,11 @@
             $km_start_form = $this->get("form.factory")->createNamedBuilder('km_start_form')
               ->add('km', NumberType::class, array('label' => "Kilométrage au départ: "))
               ->add('id_resa', HiddenType::class, array('data' => $resa['id_resa']))
-              ->add('confirm', SubmitType::class, array('label' => 'Confirmer'))
+              ->add('confirm', SubmitType::class, array(
+                'label' => 'Confirmer',
+                'attr' => [
+                  'class' => "btn btn-outline-light",
+                  ]))
           	  ->getForm();
 
             $temp_resa['km_start_form'] = $km_start_form->createView();
@@ -146,7 +150,11 @@
             $km_start_form = $this->get("form.factory")->createNamedBuilder('km_end_form')
               ->add('km', NumberType::class, array('label' => "Kilométrage au départ: "))
               ->add('id_resa', HiddenType::class, array('data' => $resa['id_resa']))
-              ->add('confirm', SubmitType::class, array('label' => 'Confirmer'))
+              ->add('confirm', SubmitType::class, array(
+                'label' => 'Confirmer',
+                'attr' => [
+                  'class' => "btn btn-outline-light",
+                  ]))
           	  ->getForm();
 
             $temp_resa['km_end_form'] = $km_start_form->createView();
@@ -187,7 +195,11 @@
               ))
             ->add('commentary', TextType::class, array('label' => "Commentaire (facultatif) "))
             ->add('id_state', HiddenType::class, array('data' => $resa['id_state']))
-      	    ->add('confirm', SubmitType::class, array('label' => 'Je valide cet état des lieux'))
+      	    ->add('confirm', SubmitType::class, array(
+              'label' => 'Je valide cet état des lieux',
+              'attr' => [
+                'class' => "btn btn-outline-light",
+                ]))
         	  ->getForm();
             $state_form->handleRequest($request);
 
@@ -264,7 +276,11 @@
           'label' => "Utilisateur",
           'choices' => $user_choice
         ))
-        ->add('add_facility', SubmitType::class, array('label' => 'J\'enregistre la réservation'))
+        ->add('add_facility', SubmitType::class, array(
+          'label' => 'J\'enregistre la réservation',
+          'attr' => [
+              'class' => "btn btn-outline-secondary",
+            ]))
         ->getForm();
 
       // Pour changer le nombre d'elements par page
@@ -276,7 +292,11 @@
             'size' => '5'
           )
         ))
-        ->add('subscribe_change', SubmitType::class, array('label' => 'Changer le nombre de réservations par page'))
+        ->add('subscribe_change', SubmitType::class, array(
+          'label' => 'Changer le nombre de réservations par page',
+          'attr' => [
+            'class' => "btn btn-outline-secondary",
+            ]))
         ->getForm();
 
       // Voir directement une reservation precise
@@ -288,7 +308,11 @@
             'size' => '5'
           )
         ))
-        ->add('subscribe_go_to', SubmitType::class, array('label' => 'Aller directement à cette réservation'))
+        ->add('subscribe_go_to', SubmitType::class, array(
+          'label' => 'Aller directement à cette réservation',
+          'attr' => [
+            'class' => "btn btn-outline-secondary",
+            ]))
         ->getForm();
 
       // On recoit une confirmation d'un formulaire

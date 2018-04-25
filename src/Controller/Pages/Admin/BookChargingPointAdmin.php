@@ -113,7 +113,11 @@
            'choices' => array('2' => 2),
            'label' => "Voiture à recharger: "
          ))
-         ->add('subscribe', SubmitType::class, array('label' => 'Je réserve'))
+         ->add('subscribe', SubmitType::class, array(
+           'label' => 'Je réserve',
+           'attr' => [
+             'class' => "btn btn-outline-secondary",
+             ]))
          ->getForm();
 
        $limit_form = $this->get("form.factory")->createNamedBuilder('change_limit_form')
@@ -124,7 +128,11 @@
              'size' => '5'
            )
          ))
-         ->add('subscribe_change', SubmitType::class, array('label' => 'Changer le nombre de réservations par page'))
+         ->add('subscribe_change', SubmitType::class, array(
+           'label' => 'Changer le nombre de réservations par page',
+           'attr' => [
+             'class' => "btn btn-outline-secondary",
+             ]))
          ->getForm();
 
        $go_to_form = $this->get("form.factory")->createNamedBuilder('go_to_form')
@@ -135,7 +143,11 @@
              'size' => '5'
            )
          ))
-         ->add('subscribe_go_to', SubmitType::class, array('label' => 'Aller directement à cette réservation'))
+         ->add('subscribe_go_to', SubmitType::class, array(
+           'label' => 'Aller directement à cette réservation',
+           'attr' => [
+             'class' => "btn btn-outline-secondary",
+             ]))
          ->getForm();
 
       if('POST' === $request->getMethod()) {

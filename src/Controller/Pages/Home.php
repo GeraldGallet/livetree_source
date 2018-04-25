@@ -28,7 +28,11 @@
         $connection_form = $this->createFormBuilder($user)
             ->add('email', EmailType::class)
             ->add('password', PasswordType::class)
-            ->add('connect', SubmitType::class, array('label' => 'Se connecter'))
+            ->add('connect', SubmitType::class, array(
+              'label' => 'Se connecter',
+              'attr' => [
+                'class' => "btn btn-outline-secondary",
+                ]))
             ->getForm();
         $connection_form->handleRequest($request);
         $view = $connection_form->createView();

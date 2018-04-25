@@ -70,7 +70,11 @@
         ->add('id_reason', ChoiceType::class, array('choices' => $reason_choices, 'label' => "Raison de l'emprunt"))
         ->add('reason_details', TextType::class, array('label' => "Détails si nécessaire"))
         ->add('km_planned', NumberType::class, array('label' => "Kilométrage prévu"))
-        ->add('add_facility', SubmitType::class, array('label' => 'J\'enregistre ma réservation'))
+        ->add('add_facility', SubmitType::class, array(
+          'label' => 'J\'enregistre ma réservation',
+          'attr' => [
+            'class' => "btn btn-outline-secondary",
+            ]))
         ->getForm();
 
       $obj_planning = new ShowPlanningEntity();
@@ -87,7 +91,11 @@
          'label' => "Fin: ",
          'widget' => 'single_text'
        ))
-        ->add('show_planning', SubmitType::class, array('label' => 'Je consulte le planning'))
+        ->add('show_planning', SubmitType::class, array(
+          'label' => 'Je consulte le planning',
+          'attr' => [
+            'class' => "btn btn-outline-secondary",
+            ]))
         ->getForm();
 
 
